@@ -29,19 +29,13 @@ class User extends Authenticatable
         'role' => 'string', // Explicitly cast role to string
     ];
 
-    protected $appends = ['role_name'];
 
-    public function getRoleNameAttribute(): string
-    {
-        return $this->isAdmin() ? 'Admin' : 'Student';
-    }
-
-    public function isAdmin(): bool
+    public function isAdmin()
     {
         return $this->role === 'admin';
     }
 
-    public function isStudent(): bool
+    public function isStudent()
     {
         return $this->role === 'student';
     }
