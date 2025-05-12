@@ -47,6 +47,13 @@ return [
             'report' => false,
         ],
 
+        'papers' => [
+        'driver' => 'local',
+        'root' => storage_path('app/papers'),
+        'url' => env('APP_URL').'/storage/papers',
+        'visibility' => 'private',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

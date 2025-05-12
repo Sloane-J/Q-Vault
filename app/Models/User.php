@@ -2,49 +2,101 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'department_id',
         'role',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'role' => 'string',
-    ];
-
-    public function setRoleAttribute(string $role): void
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        $allowedRoles = ['admin', 'student'];
-        
-        if (!in_array($role, $allowedRoles)) {
-            throw new \InvalidArgumentException("Invalid role. Allowed roles are: " . implode(', ', $allowedRoles));
-        }
-
-        $this->attributes['role'] = $role;
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 
-    public function isAdmin(): bool
+    /**
+     * Generate user initials from name
+     * 
+     * @return string
+     */
+    public function initials()
+    {
+        // Split the name into words
+        $words = explode(' ', $this->name);
+        
+        // Take first letter of first and last word (if available)
+        $initials = '';
+        
+        if (!empty($words)) {
+            // Always take the first letter of the first word
+            $initials .= strtoupper(substr($words[0], 0, 1));
+            
+            // If there's more than one word, take the first letter of the last word
+            if (count($words) > 1) {
+                $initials .= strtoupper(substr(end($words), 0, 1));
+            }
+        }
+        
+        return $initials ?: 'UN'; // Default to 'UN' if no name is available
+    }
+
+    /**
+     * Relationship with Department
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    /**
+     * Check if user is an admin
+     * 
+     * @return bool
+     */
+    public function isAdmin()
     {
         return $this->role === 'admin';
     }
 
-    public function isStudent(): bool
+    /**
+     * Check if user is a student
+     * 
+     * @return bool
+     */
+    public function isStudent()
     {
         return $this->role === 'student';
     }

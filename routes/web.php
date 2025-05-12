@@ -2,28 +2,26 @@
 
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
-use Livewire\Livewire;
 use App\Http\Middleware\EnsureUserRole;
 
-// Public Routes
+// Public Route
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Authentication Routes
+// Authenticated Routes
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Centralized Dashboard Route with Role-Based Redirection
+
+    // Dashboard with Role Redirection
     Route::get('/dashboard', function () {
         $user = auth()->user();
-        
-        // Log dashboard access attempt
+
         \Log::info('Dashboard access', [
             'user_id' => $user->id,
             'email' => $user->email,
             'role' => $user->role
         ]);
 
-        // Role-based redirection
         return match($user->role) {
             'admin' => redirect()->route('admin.dashboard'),
             'student' => redirect()->route('student.dashboard'),
@@ -31,68 +29,52 @@ Route::middleware(['auth', 'verified'])->group(function () {
         };
     })->name('dashboard');
 
-    // Settings Routes (Accessible to all authenticated users)
+    // User Settings
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::redirect('/', 'profile');
-
         Volt::route('/profile', 'settings.profile')->name('profile');
         Volt::route('/password', 'settings.password')->name('password');
         Volt::route('/appearance', 'settings.appearance')->name('appearance');
     });
 
-    // Admin-Only Routes
-    Route::middleware([EnsureUserRole::class . ':admin'])
-        ->prefix('admin')
-        ->name('admin.')
-        ->group(function () {
-            // Existing dashboard route
-            Route::get('/dashboard', function () {
-                return view('dashboard');
-            })->name('dashboard');
+    // Admin Routes
+    Route::middleware([EnsureUserRole::class . ':admin'])->group(function () {
 
-            // Additional Admin Routes
-            Route::group([
-                'prefix' => 'manage',
-                'name' => 'manage.'
-            ], function () {
-                Volt::route('/users', 'admin.manage.users')->name('users');
-                Volt::route('/departments', 'admin.manage.departments')->name('departments');
-                Volt::route('/papers', 'admin.manage.papers')->name('papers');
-            });
+        Route::get('/admin/dashboard', function () {
+            return view('dashboard'); // Admin dashboard view
+        })->name('admin.dashboard');
 
-            // Analytics and Reporting
-            Volt::route('/analytics', 'admin.analytics')->name('analytics');
-            Volt::route('/logs', 'admin.logs')->name('logs');
-        });
+        Volt::route('/admin/users', 'admin.manage.users')->name('admin.users');
+        Volt::route('/admin/departments', 'admin.manage.departments')->name('admin.departments');
+        Volt::route('/admin/papers', 'admin.manage.papers')->name('admin.papers');
 
-    // Student-Only Routes
-    Route::middleware([EnsureUserRole::class . ':student'])
-        ->prefix('student')
-        ->name('student.')
-        ->group(function () {
-            // Existing dashboard route
-            Route::get('/dashboard', function () {
-                return view('dashboard');
-            })->name('dashboard');
+        // View-Based Department Page (not Livewire)
+        Route::get('/admin/department', function () {
+            return view('admin.department');
+        })->name('admin.department.view');
 
-            // Paper Management for Students
-            Route::group([
-                'prefix' => 'papers',
-                'name' => 'papers.'
-            ], function () {
-                Volt::route('/', 'student.papers.index')->name('index');
-                Volt::route('/search', 'student.papers.search')->name('search');
-                Volt::route('/download', 'student.papers.download')->name('download');
-            });
+        // Analytics and Logs
+        Volt::route('/admin/analytics', 'admin.analytics')->name('admin.analytics');
+        Volt::route('/admin/logs', 'admin.logs')->name('admin.logs');
+    });
 
-            // Student Profile
-            Volt::route('/profile', 'student.profile')->name('profile');
-        });
+    // Student Routes
+    Route::middleware([EnsureUserRole::class . ':student'])->group(function () {
+
+        Route::get('/student/dashboard', function () {
+            return view('student.dashboard');
+        })->name('student.dashboard');
+
+        Volt::route('/student/papers', 'student.papers.index')->name('student.papers.index');
+        Volt::route('/student/papers/search', 'student.papers.search')->name('student.papers.search');
+        Volt::route('/student/papers/download', 'student.papers.download')->name('student.papers.download');
+
+        Volt::route('/student/profile', 'student.profile')->name('student.profile');
+    });
 });
 
-// Fallback Route for Unauthorized Access
+// Fallback Route
 Route::fallback(function () {
-    // Log unauthorized access attempts
     if (auth()->check()) {
         \Log::warning('Unauthorized route access', [
             'user_id' => auth()->id(),
@@ -105,5 +87,4 @@ Route::fallback(function () {
     return redirect()->route('dashboard')->with('error', 'Unauthorized access');
 });
 
-// Include default authentication routes
 require __DIR__.'/auth.php';

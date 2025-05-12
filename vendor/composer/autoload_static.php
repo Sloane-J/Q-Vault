@@ -26,6 +26,7 @@ class ComposerStaticInit9929ae0f39b99702c171f9c9695fdcb9
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '40275907c8566c390185147049ef6e5d' => __DIR__ . '/..' . '/livewire/livewire/src/helpers.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
+        '29ffe97919493792170d47eb03a68da9' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/helpers.php',
         '476ca15b8d69b04665cd879be9cb4c68' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Collections/functions.php',
         '265b4faa2b3a9766332744949e83bf97' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Collections/helpers.php',
         'c7a3c339e7e14b60e06a2d7fcce9476b' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Events/functions.php',
@@ -176,6 +177,8 @@ class ComposerStaticInit9929ae0f39b99702c171f9c9695fdcb9
         'B' => 
         array (
             'Brick\\Math\\' => 11,
+            'BladeUI\\Icons\\' => 14,
+            'BladeUI\\Heroicons\\' => 18,
         ),
         'A' => 
         array (
@@ -530,6 +533,14 @@ class ComposerStaticInit9929ae0f39b99702c171f9c9695fdcb9
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
         ),
+        'BladeUI\\Icons\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src',
+        ),
+        'BladeUI\\Heroicons\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/blade-ui-kit/blade-heroicons/src',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -540,14 +551,31 @@ class ComposerStaticInit9929ae0f39b99702c171f9c9695fdcb9
     public static $classMap = array (
         'App\\Http\\Controllers\\Auth\\VerifyEmailController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/VerifyEmailController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\DepartmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/DepartmentController.php',
         'App\\Http\\Middleware\\EnsureUserRole' => __DIR__ . '/../..' . '/app/Http/Middleware/EnsureUserRole.php',
         'App\\Livewire\\Actions\\Logout' => __DIR__ . '/../..' . '/app/Livewire/Actions/Logout.php',
         'App\\Livewire\\Admin\\Dashboard' => __DIR__ . '/../..' . '/app/Livewire/Admin/Dashboard.php',
+        'App\\Livewire\\DepartmentManagement' => __DIR__ . '/../..' . '/app/Livewire/DepartmentManagement.php',
         'App\\Livewire\\Student\\Dashboard' => __DIR__ . '/../..' . '/app/Livewire/Student/Dashboard.php',
+        'App\\Models\\Department' => __DIR__ . '/../..' . '/app/Models/Department.php',
+        'App\\Models\\Paper' => __DIR__ . '/../..' . '/app/Models/Paper.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\VoltServiceProvider' => __DIR__ . '/../..' . '/app/Providers/VoltServiceProvider.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'BladeUI\\Heroicons\\BladeHeroiconsServiceProvider' => __DIR__ . '/..' . '/blade-ui-kit/blade-heroicons/src/BladeHeroiconsServiceProvider.php',
+        'BladeUI\\Icons\\BladeIconsServiceProvider' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php',
+        'BladeUI\\Icons\\Components\\Icon' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Components/Icon.php',
+        'BladeUI\\Icons\\Components\\Svg' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Components/Svg.php',
+        'BladeUI\\Icons\\Concerns\\RendersAttributes' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Concerns/RendersAttributes.php',
+        'BladeUI\\Icons\\Console\\CacheCommand' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Console/CacheCommand.php',
+        'BladeUI\\Icons\\Console\\ClearCommand' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Console/ClearCommand.php',
+        'BladeUI\\Icons\\Exceptions\\CannotRegisterIconSet' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Exceptions/CannotRegisterIconSet.php',
+        'BladeUI\\Icons\\Exceptions\\SvgNotFound' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Exceptions/SvgNotFound.php',
+        'BladeUI\\Icons\\Factory' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Factory.php',
+        'BladeUI\\Icons\\Generation\\IconGenerator' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Generation/IconGenerator.php',
+        'BladeUI\\Icons\\IconsManifest' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/IconsManifest.php',
+        'BladeUI\\Icons\\Svg' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Svg.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
         'Brick\\Math\\BigInteger' => __DIR__ . '/..' . '/brick/math/src/BigInteger.php',
         'Brick\\Math\\BigNumber' => __DIR__ . '/..' . '/brick/math/src/BigNumber.php',
