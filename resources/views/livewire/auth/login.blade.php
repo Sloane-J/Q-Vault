@@ -20,79 +20,57 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
     public bool $remember = false;
 
-    /**
-     * Handle an incoming authentication request.
-     */
-     public function login(): void
-{
-    $this->validate();
+    public function login(): void
+    {
+        $this->validate();
+        $this->ensureIsNotRateLimited();
 
-    $this->ensureIsNotRateLimited();
+        if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+            \Log::warning('Failed login attempt', [
+                'email' => $this->email,
+                'ip' => request()->ip(),
+                'user_agent' => request()->userAgent()
+            ]);
 
-    if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
-        RateLimiter::hit($this->throttleKey());
-        
-        // Log failed login attempt
-        \Log::warning('Failed login attempt', [
-            'email' => $this->email,
-            'ip' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        }
+
+        RateLimiter::clear($this->throttleKey());
+        Session::regenerate();
+
+        $user = Auth::user();
+        $user->update([
+            'last_login_at' => now(),
+            'last_login_ip' => request()->ip()
         ]);
 
-        throw ValidationException::withMessages([
-            'email' => __('auth.failed'),
-        ]);
-    }
-
-    RateLimiter::clear($this->throttleKey());
-    Session::regenerate();
-
-    // Get authenticated user
-    $user = Auth::user();
-
-    // Log successful login
-    \Log::info('User logged in', [
-        'user_id' => $user->id,
-        'email' => $user->email,
-        'ip' => request()->ip(),
-        'role' => $user->role
-    ]);
-
-    // Role-based redirection with additional checks
-    $redirectTo = match(true) {
-        $user->isAdmin() && Route::has('admin.dashboard') => route('admin.dashboard', absolute: false),
-        default => route('dashboard', absolute: false),
-    };
-
-    // Final validation before redirect
-    if (!app('router')->getRoutes()->match(app('request')->create($redirectTo))) {
-        \Log::error('Invalid redirect route', [
+        \Log::info('User logged in', [
             'user_id' => $user->id,
-            'attempted_route' => $redirectTo
+            'email' => $user->email,
+            'ip' => request()->ip(),
+            'role' => $user->role
         ]);
-        $redirectTo = route('dashboard', absolute: false);
+
+        // Simplified role-based redirection
+        $redirectTo = match($user->role) {
+            'admin' => route('admin.dashboard'),
+            'student' => route('student.dashboard'),
+            default => route('dashboard')
+        };
+
+        $this->redirectIntended(default: $redirectTo, navigate: true);
     }
 
-    $this->redirectIntended(default: $redirectTo, navigate: true);
-}
-
-        // Add to your login method after Auth::attempt()
-$user->update([
-    'last_login_at' => now(),
-    'last_login_ip' => request()->ip()
-]);
-
-    /**
-     * Ensure the authentication request is not rate limited.
-     */
     protected function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
         event(new Lockout(request()));
-
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
@@ -103,23 +81,19 @@ $user->update([
         ]);
     }
 
-    /**
-     * Get the authentication rate limiting throttle key.
-     */
     protected function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
     }
-}; ?>
+};
+?>
 
 <div class="flex flex-col gap-6">
     <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
 
-    <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="login" class="flex flex-col gap-6">
-        <!-- Email Address -->
         <flux:input
             wire:model="email"
             :label="__('Email address')"
@@ -130,7 +104,6 @@ $user->update([
             placeholder="email@example.com"
         />
 
-        <!-- Password -->
         <div class="relative">
             <flux:input
                 wire:model="password"
@@ -149,7 +122,6 @@ $user->update([
             @endif
         </div>
 
-        <!-- Remember Me -->
         <flux:checkbox wire:model="remember" :label="__('Remember me')" />
 
         <div class="flex items-center justify-end">

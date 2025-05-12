@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -26,16 +25,26 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'role' => 'string', // Explicitly cast role to string
+        'role' => 'string',
     ];
 
+    public function setRoleAttribute(string $role): void
+    {
+        $allowedRoles = ['admin', 'student'];
+        
+        if (!in_array($role, $allowedRoles)) {
+            throw new \InvalidArgumentException("Invalid role. Allowed roles are: " . implode(', ', $allowedRoles));
+        }
 
-    public function isAdmin()
+        $this->attributes['role'] = $role;
+    }
+
+    public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
-    public function isStudent()
+    public function isStudent(): bool
     {
         return $this->role === 'student';
     }
