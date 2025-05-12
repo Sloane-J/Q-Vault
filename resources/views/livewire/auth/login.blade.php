@@ -23,25 +23,64 @@ new #[Layout('components.layouts.auth')] class extends Component {
     /**
      * Handle an incoming authentication request.
      */
-    public function login(): void
-    {
-        $this->validate();
+     public function login(): void
+{
+    $this->validate();
 
-        $this->ensureIsNotRateLimited();
+    $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
-            RateLimiter::hit($this->throttleKey());
+    if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        RateLimiter::hit($this->throttleKey());
+        
+        // Log failed login attempt
+        \Log::warning('Failed login attempt', [
+            'email' => $this->email,
+            'ip' => request()->ip(),
+            'user_agent' => request()->userAgent()
+        ]);
 
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
-        }
-
-        RateLimiter::clear($this->throttleKey());
-        Session::regenerate();
-
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        throw ValidationException::withMessages([
+            'email' => __('auth.failed'),
+        ]);
     }
+
+    RateLimiter::clear($this->throttleKey());
+    Session::regenerate();
+
+    // Get authenticated user
+    $user = Auth::user();
+
+    // Log successful login
+    \Log::info('User logged in', [
+        'user_id' => $user->id,
+        'email' => $user->email,
+        'ip' => request()->ip(),
+        'role' => $user->role
+    ]);
+
+    // Role-based redirection with additional checks
+    $redirectTo = match(true) {
+        $user->isAdmin() && Route::has('admin.dashboard') => route('admin.dashboard', absolute: false),
+        default => route('dashboard', absolute: false),
+    };
+
+    // Final validation before redirect
+    if (!app('router')->getRoutes()->match(app('request')->create($redirectTo))) {
+        \Log::error('Invalid redirect route', [
+            'user_id' => $user->id,
+            'attempted_route' => $redirectTo
+        ]);
+        $redirectTo = route('dashboard', absolute: false);
+    }
+
+    $this->redirectIntended(default: $redirectTo, navigate: true);
+}
+
+        // Add to your login method after Auth::attempt()
+$user->update([
+    'last_login_at' => now(),
+    'last_login_ip' => request()->ip()
+]);
 
     /**
      * Ensure the authentication request is not rate limited.

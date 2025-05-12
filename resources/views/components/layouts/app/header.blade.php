@@ -12,9 +12,26 @@
             </a>
 
             <flux:navbar class="-mb-px max-lg:hidden">
-                <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                <flux:navbar.item 
+                    icon="layout-grid" 
+                    :href="route('dashboard')" 
+                    :current="request()->routeIs('dashboard')" 
+                    wire:navigate
+                >
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
+
+                @if(auth()->user()->isAdmin())
+                    <!-- Admin-only links -->
+                    <flux:navbar.item 
+                        icon="shield-check" 
+                        :href="route('admin.dashboard')" 
+                        :current="request()->routeIs('admin.dashboard')" 
+                        wire:navigate
+                    >
+                        {{ __('Admin Panel') }}
+                    </flux:navbar.item>
+                @endif
             </flux:navbar>
 
             <flux:spacer />
@@ -97,12 +114,28 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')">
-                    <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+    <flux:navlist.group :heading="__('Platform')">
+                <flux:navlist.item 
+                    icon="layout-grid" 
+                    :href="route('dashboard')" 
+                    :current="request()->routeIs('dashboard')" 
+                    wire:navigate
+                >
                     {{ __('Dashboard') }}
+                </flux:navlist.item>
+
+                @if(auth()->user()->isAdmin())
+                    <flux:navlist.item 
+                        icon="shield-check" 
+                        :href="route('admin.dashboard')" 
+                        :current="request()->routeIs('admin.dashboard')" 
+                        wire:navigate
+                    >
+                        {{ __('Admin Panel') }}
                     </flux:navlist.item>
-                </flux:navlist.group>
-            </flux:navlist>
+                @endif
+                    </flux:navlist.group>
+                </flux:navlist>
 
             <flux:spacer />
 
