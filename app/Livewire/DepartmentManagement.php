@@ -51,6 +51,23 @@ class DepartmentManagement extends Component
         $this->showModal = true;
     }
 
+        // Add these computed properties
+    public function getActiveTodayCountProperty()
+    {
+        return \App\Models\User::role('student')
+            ->whereHas('sessions', function($query) {
+                $query->where('last_activity', '>=', now()->subDay()->timestamp);
+            })
+            ->count();
+    }
+
+    public function getNewThisWeekCountProperty()
+    {
+        return \App\Models\User::role('student')
+            ->where('created_at', '>=', now()->subWeek())
+            ->count();
+    }
+
     // Open edit modal with data
     public function openEditModal($id)
     {

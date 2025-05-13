@@ -34,12 +34,12 @@
         </div>
     
         <!-- Placeholder Section -->
-        <div class="relative flex-1 h-full overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
+        
             <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split('student-list', []);
+[$__name, $__params] = $__split('student-table', []);
 
 $__html = app('livewire')->mount($__name, $__params, 'lw-3637520716-0', $__slots ?? [], get_defined_vars());
 
@@ -50,8 +50,8 @@ unset($__name);
 unset($__params);
 unset($__split);
 if (isset($__slots)) unset($__slots);
-?>    
-        </div>
+?>   
+       
     </div>
     
 

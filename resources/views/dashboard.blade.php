@@ -25,9 +25,9 @@
         </div>
     
         <!-- Placeholder Section -->
-        <div class="relative flex-1 h-full overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
-            <livewire:student-list />    
-        </div>
+        
+            <livewire:student-table/>   
+       
     </div>
     
 

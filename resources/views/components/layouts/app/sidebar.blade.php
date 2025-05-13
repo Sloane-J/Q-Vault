@@ -16,7 +16,7 @@
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
 
                     <flux:navlist.item 
-    icon="home" 
+    icon="academic-cap" 
     :href="route('admin.department.view')" 
     :current="request()->routeIs('admin.department.view')"
 >

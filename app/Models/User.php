@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// Remove: use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany; // <-- ADDED: For the sessions relationship
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // <-- ADDED: For the department relationship (assuming Department model exists)
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable // <-- REMOVED: implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
@@ -20,7 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'department_id',
+        'department_id', // Assuming you have a departments table and Department model
         'role',
     ];
 
@@ -42,62 +44,74 @@ class User extends Authenticatable implements MustVerifyEmail
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            'email_verified_at' => 'datetime', // Still good to have the column, even if not enforcing verification
             'password' => 'hashed',
         ];
     }
 
     /**
      * Generate user initials from name
-     * 
+     *
      * @return string
      */
-    public function initials()
+    public function initials(): string
     {
         // Split the name into words
         $words = explode(' ', $this->name);
-        
+
         // Take first letter of first and last word (if available)
         $initials = '';
-        
+
         if (!empty($words)) {
             // Always take the first letter of the first word
             $initials .= strtoupper(substr($words[0], 0, 1));
-            
+
             // If there's more than one word, take the first letter of the last word
             if (count($words) > 1) {
                 $initials .= strtoupper(substr(end($words), 0, 1));
             }
         }
-        
-        return $initials ?: 'UN'; // Default to 'UN' if no name is available
+
+        return $initials ?: 'UN'; // Default to 'UN' if no name or only spaces in name
     }
 
     /**
-     * Relationship with Department
+     * Relationship with Department.
      */
-    public function department()
+    public function department(): BelongsTo // Added type hint
     {
+        // Make sure you have an App\Models\Department model
         return $this->belongsTo(Department::class);
     }
 
     /**
-     * Check if user is an admin
-     * 
+     * Check if user is an admin.
+     *
      * @return bool
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
     /**
-     * Check if user is a student
-     * 
+     * Check if user is a student.
+     *
      * @return bool
      */
-    public function isStudent()
+    public function isStudent(): bool
     {
         return $this->role === 'student';
+    }
+
+    /**
+     * Get the sessions for the user.
+     * ADDED FOR SESSION TRACKING
+     */
+    public function sessions(): HasMany
+    {
+        // Assumes your 'sessions' table has a 'user_id' foreign key
+        // and your Session model is App\Models\Session (created in the previous step)
+        return $this->hasMany(Session::class);
     }
 }
