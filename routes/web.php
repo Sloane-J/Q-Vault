@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Volt\Volt;
 use App\Http\Middleware\EnsureUserRole;
-use App\Http\Livewire\DepartmentManagement;
+use App\Livewire\PaperManager;
+use App\Livewire\PaperUploader;
 
 // Public Route
 Route::get('/', function () {
@@ -26,7 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return match($user->role) {
             'admin' => redirect()->route('admin.dashboard'),
             'student' => redirect()->route('student.dashboard'),
-            default => redirect()->route('home')->with('error', 'Unauthorized access')
+            default => redirect()->route('home')->with('error', 'Unauthorized access'),
         };
     })->name('dashboard');
 
@@ -42,27 +44,31 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware([EnsureUserRole::class . ':admin'])->prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/dashboard', function () {
-            return view('dashboard'); // Admin dashboard view
+            return view('dashboard');
         })->name('dashboard');
 
         Volt::route('/users', 'admin.manage.users')->name('users');
 
-        // Department management routes
-        // ✅ This route now correctly loads the Blade view containing the Livewire component
         Route::get('/department', function () {
             return view('admin.department');
         })->name('department.view');
 
-        // Optional legacy route - kept for potential backward compatibility
+        // Updated papers route to use your PaperManager component
+        Route::get('/papers', PaperManager::class)->name('papers.view');
+
+        // Optional: Add PaperUploader route if needed
+        Route::get('/papers/upload', PaperUploader::class)->name('papers.upload');
+
         Route::get('/department-old', function () {
             return view('admin.department');
         })->name('department.view.old');
 
         Route::get('/departments', function () {
-            return view('admin.departments'); // Keeping this route as it might be used for something else
+            return view('admin.departments');
         })->name('departments');
 
-        Volt::route('/papers', 'admin.manage.papers')->name('papers');
+        // Keep Volt route for other paper-related functionality
+        Volt::route('/papers/manage', 'admin.papers')->name('papers.manage');
 
         // Analytics and Logs
         Volt::route('/analytics', 'admin.analytics')->name('analytics');
@@ -83,8 +89,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Volt::route('/profile', 'student.profile')->name('profile');
     });
 
+    // Test upload route
     Route::get('/test-upload', function () {
-        // Test public storage
         Storage::disk('public')->put('papers/test.txt', 'Hello World!');
         return "File uploaded to public storage!";
     });

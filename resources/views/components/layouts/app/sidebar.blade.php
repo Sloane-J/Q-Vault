@@ -12,20 +12,33 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+        <flux:navlist.group :heading="__('Platform')" class="grid">
+            <flux:navlist.item 
+                icon="home" 
+                :href="route('dashboard')" 
+                :current="request()->routeIs('dashboard')" 
+                wire:navigate
+            >
+                {{ __('Dashboard') }}
+            </flux:navlist.item>
 
-                    <flux:navlist.item 
-    icon="academic-cap" 
-    :href="route('admin.department.view')" 
-    :current="request()->routeIs('admin.department.view')"
->
-    {{ __('Departments') }}
-</flux:navlist.item>
+            <flux:navlist.item 
+                icon="academic-cap" 
+                :href="route('admin.department.view')" 
+                :current="request()->routeIs('admin.department.*')"
+            >
+                {{ __('Departments') }}
+            </flux:navlist.item>
 
-
-                </flux:navlist.group>
-            </flux:navlist>
+            <flux:navlist.item 
+                icon="newspaper" 
+                :href="route('admin.papers')" 
+                :current="request()->routeIs('admin.papers.*')"
+            >
+                {{ __('Paper Management') }}
+            </flux:navlist.item>
+            </flux:navlist.group>
+        </flux:navlist>
 
             <flux:spacer />
 
