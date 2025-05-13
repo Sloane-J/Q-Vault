@@ -82,6 +82,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Volt::route('/profile', 'student.profile')->name('profile');
     });
+
+    Route::get('/test-upload', function () {
+        // Test public storage
+        Storage::disk('public')->put('papers/test.txt', 'Hello World!');
+        return "File uploaded to public storage!";
+    });
 });
 
 // Fallback Route
