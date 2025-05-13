@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('paper_versions', function (Blueprint $table) {
+        Schema::create('view_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('paper_id')->constrained()->onDelete('cascade');
-            $table->string('file_path');
-            $table->string('version_number');
-            $table->text('change_notes')->nullable();
-            $table->foreignId('uploaded_by')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('ip_address')->nullable();
+            $table->string('user_agent')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('paper_versions');
+        Schema::dropIfExists('view_logs');
     }
 };

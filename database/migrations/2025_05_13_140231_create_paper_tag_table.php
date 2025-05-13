@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('paper_tag', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('paper_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            
+            // Ensure a tag can only be associated with a paper once
+            $table->unique(['paper_id', 'tag_id']);
         });
     }
 

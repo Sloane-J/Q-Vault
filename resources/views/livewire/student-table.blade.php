@@ -5,9 +5,9 @@
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div class="flex flex-col justify-center items-start p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
+            <div class=flex flex-col justify-center items-start p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
                 <h3 class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">Total Students</h3>
-                <p class="text-2xl font-bold">{{ $students->total() }}</p>
+                <p class=" text-2xl font-bold">{{ $students->total() }}</p>
             </div>
             <div class="flex flex-col justify-center items-start p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
                 <h3 class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">Active Today</h3>
