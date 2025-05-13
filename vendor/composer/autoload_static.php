@@ -555,6 +555,7 @@ class ComposerStaticInit9929ae0f39b99702c171f9c9695fdcb9
         'App\\Http\\Middleware\\EnsureUserRole' => __DIR__ . '/../..' . '/app/Http/Middleware/EnsureUserRole.php',
         'App\\Livewire\\Actions\\Logout' => __DIR__ . '/../..' . '/app/Livewire/Actions/Logout.php',
         'App\\Livewire\\Admin\\Dashboard' => __DIR__ . '/../..' . '/app/Livewire/Admin/Dashboard.php',
+        'App\\Livewire\\Dashboard' => __DIR__ . '/../..' . '/app/Livewire/Dashboard.php',
         'App\\Livewire\\DepartmentManagement' => __DIR__ . '/../..' . '/app/Livewire/DepartmentManagement.php',
         'App\\Livewire\\Student\\Dashboard' => __DIR__ . '/../..' . '/app/Livewire/Student/Dashboard.php',
         'App\\Models\\Department' => __DIR__ . '/../..' . '/app/Models/Department.php',

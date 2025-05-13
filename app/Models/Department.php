@@ -18,30 +18,23 @@ class Department extends Model
         'name',
         'code',
         'description',
-        'is_active'
+        'is_active',
     ];
 
     /**
-     * Relationship with courses
+     * The attributes that should be cast.
+     *
+     * @var array
      */
-    public function courses()
-    {
-        return $this->hasMany(Course::class);
-    }
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
 
     /**
-     * Relationship with users (department admins)
+     * Get the papers associated with the department.
      */
-    public function admins()
+    public function papers()
     {
-        return $this->hasMany(User::class, 'department_id');
-    }
-
-    /**
-     * Relationship with exam papers
-     */
-    public function examPapers()
-    {
-        return $this->hasMany(ExamPaper::class);
+        return $this->hasMany(Paper::class);
     }
 }

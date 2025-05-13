@@ -12,6 +12,7 @@ return array(
     'App\\Http\\Middleware\\EnsureUserRole' => $baseDir . '/app/Http/Middleware/EnsureUserRole.php',
     'App\\Livewire\\Actions\\Logout' => $baseDir . '/app/Livewire/Actions/Logout.php',
     'App\\Livewire\\Admin\\Dashboard' => $baseDir . '/app/Livewire/Admin/Dashboard.php',
+    'App\\Livewire\\Dashboard' => $baseDir . '/app/Livewire/Dashboard.php',
     'App\\Livewire\\DepartmentManagement' => $baseDir . '/app/Livewire/DepartmentManagement.php',
     'App\\Livewire\\Student\\Dashboard' => $baseDir . '/app/Livewire/Student/Dashboard.php',
     'App\\Models\\Department' => $baseDir . '/app/Models/Department.php',

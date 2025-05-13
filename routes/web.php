@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Http\Middleware\EnsureUserRole;
+use App\Http\Livewire\DepartmentManagement;
 
 // Public Route
 Route::get('/', function () {
@@ -38,38 +39,48 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Admin Routes
-    Route::middleware([EnsureUserRole::class . ':admin'])->group(function () {
+    Route::middleware([EnsureUserRole::class . ':admin'])->prefix('admin')->name('admin.')->group(function () {
 
-        Route::get('/admin/dashboard', function () {
+        Route::get('/dashboard', function () {
             return view('dashboard'); // Admin dashboard view
-        })->name('admin.dashboard');
+        })->name('dashboard');
 
-        Volt::route('/admin/users', 'admin.manage.users')->name('admin.users');
-        Volt::route('/admin/departments', 'admin.manage.departments')->name('admin.departments');
-        Volt::route('/admin/papers', 'admin.manage.papers')->name('admin.papers');
+        Volt::route('/users', 'admin.manage.users')->name('users');
 
-        // View-Based Department Page (not Livewire)
-        Route::get('/admin/department', function () {
+        // Department management routes
+        // ✅ This route now correctly loads the Blade view containing the Livewire component
+        Route::get('/department', function () {
             return view('admin.department');
-        })->name('admin.department.view');
+        })->name('department.view');
+
+        // Optional legacy route - kept for potential backward compatibility
+        Route::get('/department-old', function () {
+            return view('admin.department');
+        })->name('department.view.old');
+
+        Route::get('/departments', function () {
+            return view('admin.departments'); // Keeping this route as it might be used for something else
+        })->name('departments');
+
+        Volt::route('/papers', 'admin.manage.papers')->name('papers');
 
         // Analytics and Logs
-        Volt::route('/admin/analytics', 'admin.analytics')->name('admin.analytics');
-        Volt::route('/admin/logs', 'admin.logs')->name('admin.logs');
+        Volt::route('/analytics', 'admin.analytics')->name('analytics');
+        Volt::route('/logs', 'admin.logs')->name('logs');
     });
 
     // Student Routes
-    Route::middleware([EnsureUserRole::class . ':student'])->group(function () {
+    Route::middleware([EnsureUserRole::class . ':student'])->prefix('student')->name('student.')->group(function () {
 
-        Route::get('/student/dashboard', function () {
+        Route::get('/dashboard', function () {
             return view('student.dashboard');
-        })->name('student.dashboard');
+        })->name('dashboard');
 
-        Volt::route('/student/papers', 'student.papers.index')->name('student.papers.index');
-        Volt::route('/student/papers/search', 'student.papers.search')->name('student.papers.search');
-        Volt::route('/student/papers/download', 'student.papers.download')->name('student.papers.download');
+        Volt::route('/papers', 'student.papers.index')->name('papers.index');
+        Volt::route('/papers/search', 'student.papers.search')->name('papers.search');
+        Volt::route('/papers/download', 'student.papers.download')->name('papers.download');
 
-        Volt::route('/student/profile', 'student.profile')->name('student.profile');
+        Volt::route('/profile', 'student.profile')->name('profile');
     });
 });
 
