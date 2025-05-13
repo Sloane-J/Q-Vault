@@ -15,7 +15,7 @@
         <div class="grid gap-6 md:grid-cols-3 w-full">
             <!-- Total Users -->
             <div class="flex flex-col justify-center items-start p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
-                <h3 class="text-lg font-semibold mb-1">Total Students</h3>
+                <h3 class=" text-lg font-semibold mb-1">Total Students</h3>
                 <p class="text-3xl font-bold"><?php echo e(\App\Models\User::count()); ?></p>
             </div>
             
