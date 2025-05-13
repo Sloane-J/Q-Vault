@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Department extends Model
+class Course extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
         'code',
+        'department_id',
         'description',
         'is_active',
     ];
@@ -24,9 +25,9 @@ class Department extends Model
     ];
 
     // Relationships
-    public function courses(): HasMany
+    public function department(): BelongsTo
     {
-        return $this->hasMany(Course::class);
+        return $this->belongsTo(Department::class);
     }
 
     public function papers(): HasMany
@@ -38,5 +39,10 @@ class Department extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeByDepartment($query, $departmentId)
+    {
+        return $query->where('department_id', $departmentId);
     }
 }

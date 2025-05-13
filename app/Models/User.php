@@ -114,4 +114,30 @@ class User extends Authenticatable // <-- REMOVED: implements MustVerifyEmail
         // and your Session model is App\Models\Session (created in the previous step)
         return $this->hasMany(Session::class);
     }
+
+        // In User model
+    public function uploadedPapers()
+    {
+        return $this->hasMany(Paper::class, 'uploaded_by');
+    }
+
+    public function uploadedVersions()
+    {
+        return $this->hasMany(PaperVersion::class, 'uploaded_by');
+    }
+
+    public function departments()
+    {
+        return $this->hasMany(Department::class, 'head_of_department_id');
+    }
+
+    public function downloads()
+    {
+        return $this->hasMany(DownloadLog::class);
+    }
+
+    public function views()
+    {
+        return $this->hasMany(ViewLog::class);
+    }
 }
