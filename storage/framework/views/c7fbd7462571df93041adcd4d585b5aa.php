@@ -35,26 +35,22 @@
     
         <!-- Placeholder Section -->
         <div class="relative flex-1 h-full overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
-            <?php if (isset($component)) { $__componentOriginal1e4630c5daeca7ac226f30794c203a2d = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal1e4630c5daeca7ac226f30794c203a2d = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.placeholder-pattern','data' => ['class' => 'absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('placeholder-pattern'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal1e4630c5daeca7ac226f30794c203a2d)): ?>
-<?php $attributes = $__attributesOriginal1e4630c5daeca7ac226f30794c203a2d; ?>
-<?php unset($__attributesOriginal1e4630c5daeca7ac226f30794c203a2d); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal1e4630c5daeca7ac226f30794c203a2d)): ?>
-<?php $component = $__componentOriginal1e4630c5daeca7ac226f30794c203a2d; ?>
-<?php unset($__componentOriginal1e4630c5daeca7ac226f30794c203a2d); ?>
-<?php endif; ?>
+            <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('student-list', []);
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-3637520716-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>    
         </div>
     </div>
     

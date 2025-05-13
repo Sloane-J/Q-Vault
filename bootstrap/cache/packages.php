@@ -91,4 +91,28 @@
       0 => 'Termwind\\Laravel\\TermwindServiceProvider',
     ),
   ),
+  'power-components/livewire-powergrid' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'PowerComponents\\LivewirePowerGrid\\Providers\\PowerGridServiceProvider',
+    ),
+  ),
+  'wireui/heroicons' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'WireUi\\Heroicons\\HeroiconsServiceProvider',
+    ),
+  ),
+  'wireui/wireui' => 
+  array (
+    'aliases' => 
+    array (
+    ),
+    'providers' => 
+    array (
+      0 => 'WireUi\\ServiceProvider',
+    ),
+  ),
 );
