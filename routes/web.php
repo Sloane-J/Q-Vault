@@ -7,6 +7,7 @@ use App\Http\Middleware\EnsureUserRole;
 use App\Livewire\Admin\PaperManager;
 use App\Livewire\Admin\PaperUploader;
 use App\Livewire\Student\DownloadHistory;
+use App\Models\Paper;
 
 // Public Route
 Route::get('/', function () {
@@ -48,26 +49,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return view('dashboard');
         })->name('dashboard');
 
-       // Volt::route('/users', 'admin.manage.users')->name('users');
-
         Route::get('/department', function () {
             return view('admin.department');
         })->name('department.view');
 
-        // Paper Management Routes - organized in a single group
+        // Paper Management Routes
         Route::prefix('papers')->name('papers.')->group(function () {
             // Main papers view/listing
             Route::get('/', PaperManager::class)->name('index');
             
-            // Paper uploader - using the component in the proper namespace
+            // Paper uploader
             Route::get('/upload', PaperUploader::class)->name('upload');
             
-            // Paper management via Volt (if you're using that for other paper operations)
+            // Paper management
             Volt::route('/manage', 'admin.papers.manage')->name('manage');
             
-            // Additional paper routes can go here
-            Route::get('/edit/{id}', App\Livewire\Admin\Papers\PaperEditor::class)->name('edit');
-            Route::get('/view/{id}', App\Livewire\Admin\Papers\PaperViewer::class)->name('view');
+            // Paper viewing - FIXED: Using Route Model Binding
+            Route::get('/{paper}/view', function (Paper $paper) {
+                return view('admin.paper-manager', ['paper' => $paper]);
+            })->name('view');
         });
 
         Route::get('/department-old', function () {
@@ -101,7 +101,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             })->name('browse');
         });
         
-        // Add route for download history component
+        // Download history
         Route::get('/download-history', DownloadHistory::class)->name('download.history');
 
         Volt::route('/profile', 'student.profile')->name('profile');

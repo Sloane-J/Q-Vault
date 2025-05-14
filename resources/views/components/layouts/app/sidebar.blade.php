@@ -32,11 +32,13 @@
 
             <flux:navlist.item 
                 icon="newspaper" 
-                :href="route('admin.papers.view')" 
+                :href="route('admin.papers.index')" 
                 :current="request()->routeIs('admin.papers.*')"
             >
                 {{ __('Paper Management') }}
             </flux:navlist.item>
+
+            
             </flux:navlist.group>
         </flux:navlist>
 
