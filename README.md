@@ -1,95 +1,111 @@
-# Q-Vault
-# Past Exam Paper Management System
+# Q-Vault - Past Exam Paper Management System
 
 ![Project Banner](https://via.placeholder.com/1200x400/3b82f6/ffffff?text=Past+Exam+Paper+Management)
 
-A comprehensive digital platform for managing and accessing past exam papers, built with Laravel and Livewire.
+**Q-Vault** is a robust Laravel + Livewire application designed for managing and accessing past examination papers with ease. The system supports both administrative and student access levels, offering secure upload, search, and analytics features.
 
-## Features
+---
 
-- **Role-Based Access Control**
-  - Admin dashboard with full system control
-  - Student portal for paper access
-- **Paper Management**
-  - Upload and version control
-  - Advanced search with filters
-  - Download tracking
-- **Department Organization**
-  - Categorize papers by department
-  - HND/B-Tech level differentiation
-- **Analytics Dashboard**
-  - Download statistics
-  - User activity monitoring
+## 🚀 Features
 
-## Technology Stack
+### Role-Based Access Control
+- Dedicated admin dashboard with full control
+- Student portal with search and download access
+
+### Paper Management
+- Upload, versioning, and secure storage
+- Advanced filtering and keyword search
+- Download tracking and usage logging
+
+### Departmental Organization
+- Papers categorized by department and academic level
+- Supports HND and B-Tech distinctions
+
+### Analytics Dashboard
+- View download statistics and trends
+- Monitor user activities and engagement
+
+---
+
+## 🛠️ Technology Stack
 
 ### Core
-- **Laravel 10** - PHP framework
-- **Livewire 3** - Full-stack framework
-- **Alpine.js** - Frontend interactivity
-- **Tailwind CSS** - Utility-first styling
+- **Laravel 10** – Backend framework
+- **Livewire 3** – Reactive components without SPA complexity
+- **Alpine.js** – Lightweight frontend interactivity
+- **Tailwind CSS** – Utility-first CSS framework
 
 ### Database
-- MySQL (Production)
-- SQLite (Development)
+- **MySQL** (Production)
+- **SQLite** (Development)
 
-### Additional Packages
-- Laravel Snappy (PDF generation)
-- Spatie Permissions (Role management)
-- Laravel Excel (Data export)
+### Key Packages
+- **Laravel Snappy** – PDF generation
+- **Spatie Permissions** – Role and permission management
+- **Laravel Excel** – Import/export capabilities
 
-## Installation
+---
+
+## ⚙️ Installation
 
 ### Prerequisites
 - PHP 8.2+
 - Composer 2.5+
 - Node.js 18+
-- MySQL 8.0+ or SQLite
+- MySQL 8.0+ or SQLite (for local dev)
 
-### Setup Steps
+### Setup Instructions
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-repo/past-exam-system.git
-   cd past-exam-system
-   ```
-2. composer install
+```bash
+# Clone the repo
+git clone https://github.com/your-repo/past-exam-system.git
+cd past-exam-system
+
+# Install PHP dependencies
+composer install
+
+# Install JS dependencies
 npm install
 
+# Copy environment file
 cp .env.example .env
 
+# Generate app key
 php artisan key:generate
 
-touch database/database.sqlite  # For SQLite development
+# Set up database (SQLite example)
+touch database/database.sqlite
+
+# Run migrations and seeders
 php artisan migrate --seed
 
+# Build frontend assets
 npm run build
 
+# Start the server
 php artisan serve
 
-Common Commads
-
+## Common Artisan and NPM Commands
 # Run tests
 php artisan test
 
 # Start development servers
 npm run dev
 
-# Generate Livewire component
+# Create Livewire component
 php artisan make:livewire Student/PaperBrowser
 
-# Clear caches
+# Clear all caches
 php artisan optimize:clear
 
-Environment Variables
-Key	Description	Example
-APP_ENV	Application environment	local
-DB_CONNECTION	Database driver	sqlite
-FILESYSTEM_DISK	Paper storage	local
+| Key              | Description             | Example |
+| ---------------- | ----------------------- | ------- |
+| APP\_ENV         | Application environment | local   |
+| DB\_CONNECTION   | Database driver         | sqlite  |
+| FILESYSTEM\_DISK | Disk for storing papers | local   |
 
 
-## Project Structure
-
+Project Structure
 app/
 ├── Http/
 │   ├── Controllers/
@@ -108,38 +124,41 @@ resources/
 routes/
 tests/
 
-## Deployment
-Production Requirements
-Configure .env with production values
+🚢 Deployment
+Production Setup
+Configure .env with production database and storage values
 
-Set up queue worker for background jobs
+Set up a queue worker for background tasks
 
-Configure storage link: php artisan storage:link
+Create a symbolic link for storage: php artisan storage:link
 
-## Deployment Scripts
- git pull origin main
+Deployment Script
+
+git pull origin main
 composer install --optimize-autoloader --no-dev
 npm run build
 php artisan migrate --force
 php artisan optimize
 
-Contributing
+🤝 Contributing
 Fork the repository
 
-Create feature branch (git checkout -b feature/amazing-feature)
+Create a feature branch:
+git checkout -b feature/amazing-feature
 
-Commit changes (git commit -m 'Add amazing feature')
+COMMIT YOUR CHANGES
+git commit -m "Add amazing feature"
 
-Push to branch (git push origin feature/amazing-feature)
+PUSH TO GITHUB 
+git push origin feature/amazing-feature
 
-Open Pull Request
+📄 License
+This project is open-source and available under the MIT License.
 
-License
-MIT License. See LICENSE for more information.
-
-Support
+🙋 Support
 For issues or questions, please open an issue.
 
-Project Maintainers:
-[Your Name] - [your.email@example.com]
-[Team Member] - [team.member@example.com]
+Maintainers
+[Your Name] – [your.email@example.com]
+
+[Team Member] – [team.member@example.com]
