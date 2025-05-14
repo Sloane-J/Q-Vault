@@ -6,6 +6,7 @@ use Livewire\Volt\Volt;
 use App\Http\Middleware\EnsureUserRole;
 use App\Livewire\PaperManager;
 use App\Livewire\PaperUploader;
+use App\Livewire\Student\DownloadHistory;
 
 // Public Route
 Route::get('/', function () {
@@ -47,7 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return view('dashboard');
         })->name('dashboard');
 
-        Volt::route('/users', 'admin.manage.users')->name('users');
+       // Volt::route('/users', 'admin.manage.users')->name('users');
 
         Route::get('/department', function () {
             return view('admin.department');
@@ -79,12 +80,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware([EnsureUserRole::class . ':student'])->prefix('student')->name('student.')->group(function () {
 
         Route::get('/dashboard', function () {
-            return view('student.dashboard');
+            return view('dashboard');
         })->name('dashboard');
 
         Volt::route('/papers', 'student.papers.index')->name('papers.index');
         Volt::route('/papers/search', 'student.papers.search')->name('papers.search');
         Volt::route('/papers/download', 'student.papers.download')->name('papers.download');
+
+                
+        Route::get('/student/papers/browse', function () {
+            return view('student.browse');
+        })->name('student.papers.browse');  
+        
+        // Add route for download history component
+        Route::get('/download-history', DownloadHistory::class)->name('download.history');
 
         Volt::route('/profile', 'student.profile')->name('profile');
     });

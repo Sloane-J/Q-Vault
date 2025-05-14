@@ -48,6 +48,7 @@
                     <p class="text-lg">{{ auth()->user()->department->name ?? 'Not Assigned' }}</p>
                 </div>
             </div>
+            <livewire:student.download-history />
         </div>
     @endif
 

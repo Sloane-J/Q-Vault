@@ -72,6 +72,22 @@ if (isset($__slots)) unset($__slots);
                     <p class="text-lg"><?php echo e(auth()->user()->department->name ?? 'Not Assigned'); ?></p>
                 </div>
             </div>
+            <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('student.download-history', []);
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-3637520716-1', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
         </div>
     <?php endif; ?>
 

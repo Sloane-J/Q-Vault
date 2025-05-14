@@ -1,0 +1,1 @@
+<?php /**PATH /home/user/Q-Vault/resources/views/livewire/paper-uploader.blade.php ENDPATH**/ ?>

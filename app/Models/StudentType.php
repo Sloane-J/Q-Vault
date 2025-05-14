@@ -8,14 +8,26 @@ use Illuminate\Database\Eloquent\Model;
 class StudentType extends Model
 {
     use HasFactory;
-
+    
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'student_type';
+    
     protected $fillable = [
         'name',
         'description',
     ];
-
-    // Note: We don't have a student_types table in migrations,
-    // This is more of a helper model for validation/selection
+    
+    /**
+     * Get the levels for this student type.
+     */
+    public function levels()
+    {
+        return $this->hasMany(Level::class);
+    }
     
     public static function getTypes(): array
     {
