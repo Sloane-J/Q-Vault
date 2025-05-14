@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Volt\Volt;
 use App\Http\Middleware\EnsureUserRole;
-use App\Livewire\PaperManager;
-use App\Livewire\PaperUploader;
+use App\Livewire\Admin\PaperManager;
+use App\Livewire\Admin\PaperUploader;
 use App\Livewire\Student\DownloadHistory;
 
 // Public Route
@@ -54,22 +54,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return view('admin.department');
         })->name('department.view');
 
-        // Updated papers route to use your PaperManager component
-        Route::get('/papers', PaperManager::class)->name('papers.view');
-
-        // Optional: Add PaperUploader route if needed
-        Route::get('/papers/upload', PaperUploader::class)->name('papers.upload');
+        // Paper Management Routes - organized in a single group
+        Route::prefix('papers')->name('papers.')->group(function () {
+            // Main papers view/listing
+            Route::get('/', PaperManager::class)->name('index');
+            
+            // Paper uploader - using the component in the proper namespace
+            Route::get('/upload', PaperUploader::class)->name('upload');
+            
+            // Paper management via Volt (if you're using that for other paper operations)
+            Volt::route('/manage', 'admin.papers.manage')->name('manage');
+            
+            // Additional paper routes can go here
+            Route::get('/edit/{id}', App\Livewire\Admin\Papers\PaperEditor::class)->name('edit');
+            Route::get('/view/{id}', App\Livewire\Admin\Papers\PaperViewer::class)->name('view');
+        });
 
         Route::get('/department-old', function () {
             return view('admin.department');
         })->name('department.view.old');
 
         Route::get('/departments', function () {
-            return view('admin.departments');
+            return view('admin.department');
         })->name('departments');
-
-        // Keep Volt route for other paper-related functionality
-        Volt::route('/papers/manage', 'admin.papers')->name('papers.manage');
 
         // Analytics and Logs
         Volt::route('/analytics', 'admin.analytics')->name('analytics');
@@ -83,14 +90,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return view('dashboard');
         })->name('dashboard');
 
-        Volt::route('/papers', 'student.papers.index')->name('papers.index');
-        Volt::route('/papers/search', 'student.papers.search')->name('papers.search');
-        Volt::route('/papers/download', 'student.papers.download')->name('papers.download');
-
-                
-        Route::get('/student/papers/browse', function () {
-            return view('student.browse');
-        })->name('student.papers.browse');  
+        // Student paper routes
+        Route::prefix('papers')->name('papers.')->group(function () {
+            Volt::route('/', 'student.papers.index')->name('index');
+            Volt::route('/search', 'student.papers.search')->name('search');
+            Volt::route('/download', 'student.papers.download')->name('download');
+            
+            Route::get('/browse', function () {
+                return view('livewire.student.papers.browse');
+            })->name('browse');
+        });
         
         // Add route for download history component
         Route::get('/download-history', DownloadHistory::class)->name('download.history');
