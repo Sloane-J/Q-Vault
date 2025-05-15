@@ -36,7 +36,6 @@ PaperVersion component for version management
 PaperPreview component for PDF viewing
 
 
-
 5. Interface Development
 
 Admin paper upload form with all metadata fields

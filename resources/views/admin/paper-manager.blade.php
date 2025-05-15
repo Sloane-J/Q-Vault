@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-layouts.app :title="__('Paper Management')">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Paper Management') }}
@@ -11,4 +11,4 @@
             @livewire('admin.paper-manager')
         </div>
     </div>
-</x-app-layout>
+</x-app.layout>

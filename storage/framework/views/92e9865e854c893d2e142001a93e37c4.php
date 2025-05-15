@@ -46,10 +46,15 @@ endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         
-                        <div>
-                            <label for="course_name" class="block text-sm font-medium text-gray-700">Course Name</label>
-                            <input type="text" id="course_name" wire:model="course_name" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['course_name'];
+                       <div>
+                        <label for="course_id" class="block text-sm font-medium text-gray-700">Course Name</label>
+                        <select id="course_id" wire:model="course_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="">Select Course</option>
+                            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($course->id); ?>"><?php echo e($course->name); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
+                        </select>
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['course_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -57,7 +62,7 @@ $message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs"
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
-                        </div>
+                    </div>
                         
                         <div>
                             <label for="level" class="block text-sm font-medium text-gray-700">Level</label>

@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Papers')">
+<x-layouts.app :title="__('Paper Management')">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Paper Management') }}

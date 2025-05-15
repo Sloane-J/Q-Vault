@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+=<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
@@ -12,7 +12,7 @@
             </a>
 
             <flux:navlist variant="outline">
-        <flux:navlist.group :heading="__('Platform')" class="grid">
+        <flux:navlist.group :heading="__('Q Vault')" class="grid">
             <flux:navlist.item 
                 icon="home" 
                 :href="route('dashboard')" 
@@ -30,12 +30,36 @@
                 {{ __('Departments') }}
             </flux:navlist.item>
 
+                        <!-- Paper Management Dropdown -->
+            <flux:dropdown position="right" class="w-full">
+                <flux:navlist.item 
+                    icon="newspaper"
+                    :current="request()->routeIs('admin.papers.*')"
+                    class="w-full flex justify-between items-center"
+                >
+                    <span>{{ __('Paper Management') }}</span>
+                    <flux:icon name="chevron-right" class="h-4 w-4" />
+                </flux:navlist.item>
+                
+                <flux:menu>
+                    <flux:menu.item :href="route('admin.papers.index')" icon="document-text">
+                        {{ __('Papers List') }}
+                    </flux:menu.item>
+                    <flux:menu.item :href="route('admin.paper-manager')" icon="document-plus">
+                        {{ __('Paper Manager') }}
+                    </flux:menu.item>
+                    <flux:menu.item :href="route('admin.papers.versions')" icon="document-duplicate">
+                        {{ __('Version Management') }}
+                    </flux:menu.item>
+                </flux:menu>
+            </flux:dropdown>
+
             <flux:navlist.item 
-                icon="newspaper" 
-                :href="route('admin.papers.index')" 
-                :current="request()->routeIs('admin.papers.*')"
+                icon="book-open" 
+                :href="route('admin.courses')" 
+                :current="request()->routeIs('admin.courses.*')"
             >
-                {{ __('Paper Management') }}
+                {{ __('Course Management') }}
             </flux:navlist.item>
 
             

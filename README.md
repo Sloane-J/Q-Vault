@@ -58,7 +58,7 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-repo/past-exam-system.git
+git clone https://github.com/Sloane-J/q-vault.git
 cd past-exam-system
 
 # Install PHP dependencies

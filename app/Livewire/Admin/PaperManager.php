@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use App\Models\Paper;
+use App\Models\Course;
 use App\Models\Department;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -96,6 +97,9 @@ class PaperManager extends Component
         $examTypes = ['Final', 'Resit', 'Mid-semester'];
         $studentTypes = ['HND', 'B-Tech', 'Top-up'];
         
+        // Add the courses variable that's missing
+        $courses = \App\Models\Course::orderBy('name')->get();
+        
         return view('livewire.admin.paper-manager', [
             'papers' => $papers,
             'departments' => $departments,
@@ -103,6 +107,7 @@ class PaperManager extends Component
             'levels' => $levels,
             'examTypes' => $examTypes,
             'studentTypes' => $studentTypes,
+            'courses' => $courses, // Add this line to fix the error
         ]);
     }
     

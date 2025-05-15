@@ -5,15 +5,15 @@
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div class="flex flex-col justify-center items-start p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-green-50 dark:bg-green-500 shadow-sm">
+            <div class="flex flex-col justify-center items-start p-4 rounded-xl border border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-500/10 shadow-sm">
                 <h3 class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">Total Students</h3>
                 <p class="text-2xl font-bold">{{ $students->total() }}</p>
             </div>
-            <div class="flex flex-col justify-center items-start p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
+            <div class="flex flex-col justify-center items-start p-4 rounded-xl border border-pink-200 dark:border-pink-700 bg-pink-50 dark:bg-pink-500/10 shadow-sm">
                 <h3 class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">Active Today</h3>
                 <p class="text-2xl font-bold">{{ $activeTodayCount }}</p>
             </div>
-            <div class="flex flex-col justify-center items-start p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
+            <div class="flex flex-col justify-center items-start p-4 rounded-xl border border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-500/10 shadow-sm">
                 <h3 class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">New This Week</h3>
                 <p class="text-2xl font-bold">{{ $newThisWeekCount }}</p>
             </div>
@@ -126,7 +126,7 @@
                 @empty
                     <tr>
                         <td colspan="5" class="px-6 py-4 text-center text-sm text-neutral-500 dark:text-neutral-400">
-                            No students found matching your criteria.
+                            No students found matching your search.
                         </td>
                     </tr>
                 @endforelse

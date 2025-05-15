@@ -62,17 +62,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/upload', PaperUploader::class)->name('upload');
             
             // Paper management
-            Volt::route('/manage', 'admin.papers.manage')->name('manage');
+            Route::get('/paper-manager', function () {
+                return view('admin.paper-manager');
+            })->name('paper-manager');
             
-            // Paper viewing - FIXED: Using Route Model Binding
+            // Paper versions management
+            Route::get('/versions', function () {
+                return view('admin.papers.versions');
+            })->name('versions');
+            
+            // Paper viewing with model binding
             Route::get('/{paper}/view', function (Paper $paper) {
                 return view('admin.paper-manager', ['paper' => $paper]);
             })->name('view');
         });
 
-        Route::get('/department-old', function () {
-            return view('admin.department');
-        })->name('department.view.old');
+        // Course management
+        Route::get('/courses', function() {
+            return view('admin.courses');
+        })->name('courses');
 
         Route::get('/departments', function () {
             return view('admin.department');
