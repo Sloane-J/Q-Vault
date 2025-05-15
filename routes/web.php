@@ -63,13 +63,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
             
             // Paper management
             Route::get('/paper-manager', function () {
-                return view('admin.paper-manager');
+                return view('livewire.admin.paper-manager');
             })->name('paper-manager');
             
             // Paper versions management
             Route::get('/versions', function () {
-                return view('admin.papers.versions');
-            })->name('versions');
+                return view('livewire.admin.papers.paper-versions');
+            })->name('versions'); 
+
+            Route::get('/papers/{paper}/versions', function ($paper) {
+                return view('papers.papers.versions', ['paperId' => $paper]);
+            })->middleware(['auth'])->name('papers.versions');
             
             // Paper viewing with model binding
             Route::get('/{paper}/view', function (Paper $paper) {

@@ -249,6 +249,6 @@ class PaperManager extends Component
 
     public function render()
     {
-        return view('livewire.paper-uploader');
+        return view('livewire.admin.papers.paper-uploader');
     }
 }

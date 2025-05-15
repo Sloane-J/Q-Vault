@@ -30,9 +30,9 @@
                 {{ __('Departments') }}
             </flux:navlist.item>
 
-                        <!-- Paper Management Dropdown -->
+            <!-- Paper Management Dropdown -->
             <flux:dropdown position="right" class="w-full">
-                <flux:navlist.item 
+                <flux:navlist.item
                     icon="newspaper"
                     :current="request()->routeIs('admin.papers.*')"
                     class="w-full flex justify-between items-center"
@@ -40,20 +40,23 @@
                     <span>{{ __('Paper Management') }}</span>
                     <flux:icon name="chevron-right" class="h-4 w-4" />
                 </flux:navlist.item>
-                
+            
                 <flux:menu>
                     <flux:menu.item :href="route('admin.papers.index')" icon="document-text">
-                        {{ __('Papers List') }}
+                        {{ __('List Papers') }}
                     </flux:menu.item>
-                    <flux:menu.item :href="route('admin.paper-manager')" icon="document-plus">
+                    <flux:menu.item :href="route('admin.papers.upload')" icon="numbered-list">
+                        {{ __('Upload Paper') }}
+                    </flux:menu.item>
+                    <flux:menu.item :href="route('admin.papers.paper-manager')" icon="server-stack">
                         {{ __('Paper Manager') }}
                     </flux:menu.item>
-                    <flux:menu.item :href="route('admin.papers.versions')" icon="document-duplicate">
+                    <flux:menu.item :href="route('admin.papers.versions')" icon="folder-open">
                         {{ __('Version Management') }}
                     </flux:menu.item>
                 </flux:menu>
             </flux:dropdown>
-
+            
             <flux:navlist.item 
                 icon="book-open" 
                 :href="route('admin.courses')" 
