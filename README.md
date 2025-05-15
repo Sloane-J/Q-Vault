@@ -56,16 +56,22 @@
 
 ### Setup Instructions
 
-```bash
 # Clone the repo
+```bash
 git clone https://github.com/Sloane-J/q-vault.git
 cd past-exam-system
+```
+
 
 # Install PHP dependencies
+```bash
 composer install
+```
 
 # Install JS dependencies
+```bash
 npm install
+```
 
 # Copy environment file
 cp .env.example .env
