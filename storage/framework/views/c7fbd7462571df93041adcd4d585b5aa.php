@@ -31,6 +31,12 @@
                 <h3 class="text-lg font-semibold mb-1">Departments</h3>
                 <p class="text-3xl font-bold"><?php echo e(\App\Models\Department::count()); ?></p>
             </div>
+
+             <!-- Courses -->
+            <div class="flex flex-col justify-center items-start p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
+                <h3 class="text-lg font-semibold mb-1">Courses</h3>
+                <p class="text-3xl font-bold"><?php echo e(\App\Models\Course::count()); ?></p>
+            </div>
         </div>
     
         <!-- Placeholder Section -->
