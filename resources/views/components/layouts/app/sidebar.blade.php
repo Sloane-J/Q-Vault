@@ -30,32 +30,17 @@
                 {{ __('Departments') }}
             </flux:navlist.item>
 
-            <!-- Paper Management Dropdown -->
-            <flux:dropdown position="right" class="w-full">
-                <flux:navlist.item
-                    icon="newspaper"
-                    :current="request()->routeIs('admin.papers.*')"
-                    class="w-full flex justify-between items-center"
-                >
-                    <span>{{ __('Paper Management') }}</span>
-                    <flux:icon name="chevron-right" class="h-4 w-4" />
-                </flux:navlist.item>
-            
-                <flux:menu>
-                    <flux:menu.item :href="route('admin.papers.index')" icon="document-text">
-                        {{ __('List Papers') }}
-                    </flux:menu.item>
-                    <flux:menu.item :href="route('admin.papers.upload')" icon="numbered-list">
-                        {{ __('Upload Paper') }}
-                    </flux:menu.item>
-                    <flux:menu.item :href="route('admin.papers.paper-manager')" icon="server-stack">
-                        {{ __('Paper Manager') }}
-                    </flux:menu.item>
-                    <flux:menu.item :href="route('admin.papers.versions')" icon="folder-open">
-                        {{ __('Version Management') }}
-                    </flux:menu.item>
-                </flux:menu>
-            </flux:dropdown>
+           <!-- Paper Management Drop Down-->
+             <flux:navlist.group expandable heading="Paper Management" icon="newspaper" class="hidden lg:grid">
+                <flux:navlist.item :href="route('admin.papers.index')" icon="document-text">
+                        {{ __('List Papers') }}</flux:navlist.item>
+                <flux:navlist.item :href="route('admin.papers.upload')" icon="numbered-list">
+                        {{ __('Upload Paper') }}</flux:navlist.item>
+                <flux:navlist.item :href="route('admin.papers.paper-manager')" icon="server-stack">
+                        {{ __('Paper Manager') }}</flux:navlist.item>
+                <flux:navlist.item :href="route('admin.papers.versions')" icon="folder-open">
+                        {{ __('Version Management') }}</flux:navlist.item>
+            </flux:navlist.group>
             
             <flux:navlist.item 
                 icon="book-open" 
