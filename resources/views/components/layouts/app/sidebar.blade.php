@@ -1,4 +1,4 @@
-=<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
@@ -12,61 +12,57 @@
             </a>
 
             <flux:navlist variant="outline">
-        <flux:navlist.group :heading="__('Q Vault')" class="grid">
-            <flux:navlist.item 
-                icon="home" 
-                :href="route('dashboard')" 
-                :current="request()->routeIs('dashboard')" 
-                wire:navigate
-            >
-                {{ __('Dashboard') }}
-            </flux:navlist.item>
+                <flux:navlist.group :heading="__('Q Vault')" class="grid">
+                    <flux:navlist.item
+                        icon="home"
+                        :href="route('dashboard')"
+                        :current="request()->routeIs('dashboard')"
+                        wire:navigate
+                    >
+                        {{ __('Dashboard') }}
+                    </flux:navlist.item>
 
-            <flux:navlist.item 
-                icon="academic-cap" 
-                :href="route('admin.department.view')" 
-                :current="request()->routeIs('admin.department.*')"
-            >
-                {{ __('Departments') }}
-            </flux:navlist.item>
+                    <flux:navlist.item
+                        icon="academic-cap"
+                        :href="route('admin.department.view')"
+                        :current="request()->routeIs('admin.department.*')"
+                    >
+                        {{ __('Departments') }}
+                    </flux:navlist.item>
 
-           <!-- Paper Management Drop Down-->
-             <flux:navlist.group expandable heading="Paper Management" icon="newspaper" class="hidden lg:grid">
-                <flux:navlist.item :href="route('admin.papers.index')" icon="document-text">
-                        {{ __('List Papers') }}</flux:navlist.item>
-                <flux:navlist.item :href="route('admin.papers.upload')" icon="numbered-list">
-                        {{ __('Upload Paper') }}</flux:navlist.item>
-                <flux:navlist.item :href="route('admin.papers.paper-manager')" icon="server-stack">
-                        {{ __('Paper Manager') }}</flux:navlist.item>
-                <flux:navlist.item :href="route('admin.papers.versions')" icon="folder-open">
-                        {{ __('Version Management') }}</flux:navlist.item>
-            </flux:navlist.group>
-            
-            <flux:navlist.item 
-                icon="book-open" 
-                :href="route('admin.courses')" 
-                :current="request()->routeIs('admin.courses.*')"
-            >
-                {{ __('Course Management') }}
-            </flux:navlist.item>
+                   {{-- Paper Management Drop Down (Now visible on all screens) --}}
+                   <flux:navlist.group expandable heading="Paper Management" icon="newspaper">
+                    
+                        <flux:navlist.item :href="route('admin.papers.paper-manager')" icon="server-stack">
+                                {{ __('Paper Manager') }}</flux:navlist.aditem>
 
-            
-            </flux:navlist.group>
-        </flux:navlist>
+                        <flux:navlist.item :href="route('admin.papers.versions')" icon="folder-open">
+                                {{ __('Version Management') }}</flux:navlist.item>
+                    </flux:navlist.group>
+
+                    <flux:navlist.item
+                        icon="book-open"
+                        :href="route('admin.courses')"
+                        :current="request()->routeIs('admin.courses.*')"
+                    >
+                        {{ __('Course Management') }}
+                    </flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
 
             <flux:spacer />
 
             <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
+                    {{ __('Repository') }}
                 </flux:navlist.item>
 
                 <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                {{ __('Documentation') }}
+                    {{ __('Documentation') }}
                 </flux:navlist.item>
             </flux:navlist>
 
-            <!-- Desktop User Menu -->
+            {{-- Desktop User Menu --}}
             <flux:dropdown position="bottom" align="start">
                 <flux:profile
                     :name="auth()->user()->name"
@@ -112,7 +108,7 @@
             </flux:dropdown>
         </flux:sidebar>
 
-        <!-- Mobile User Menu -->
+        {{-- Mobile User Menu --}}
         <flux:header class="lg:hidden">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 

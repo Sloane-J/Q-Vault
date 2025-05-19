@@ -1,3 +1,6 @@
+@php
+    dump(get_defined_vars());
+@endphp
 <div>
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -222,7 +225,7 @@
                                             {{ $paper->title }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $paper->course_name }}
+                                            {{ $paper->course->name ?? 'N/A' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             <div>{{ $paper->department->name ?? 'N/A' }}</div>

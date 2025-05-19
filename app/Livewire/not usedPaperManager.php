@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\Livewire;
 
 use App\Models\Department;
@@ -38,7 +38,7 @@ class PaperManager extends Component
     public $departments = [];
     public $studentTypes = [];
     public $levels = [];
-    public $examTypes = ['midterm', 'final', 'quiz', 'assignment'];
+    public $examTypes = ['final'];
     public $years = [];
     public $semesters = [1, 2, 3];
     
