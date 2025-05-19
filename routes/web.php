@@ -58,9 +58,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             // Main papers view/listing
             Route::get('/', PaperManager::class)->name('index');
             
-            // Paper uploader
-            Route::get('/upload', PaperUploader::class)->name('upload');
-            
             // Paper management
             Route::get('/paper-manager', function () {
                 return view('livewire.admin.paper-manager');

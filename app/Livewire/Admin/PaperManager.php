@@ -26,71 +26,245 @@ class PaperManager extends Component
     public $student_type;
     public $semester;
     public $visibility = 'public';
-    public $file;
-    
-    // Edit Mode
-    public $showForm = false; // Controls visibility of the form
-    public $editMode = false; // Indicates if we are in edit mode
-    public $paperId; // Stores the ID of the paper being edited
-    
-    // Filters
-    public $search = '';
-    public $departmentFilter = '';
-    public $yearFilter = '';
-    public $levelFilter = '';
-    public $examTypeFilter = '';
-    public $studentTypeFilter = '';
-    public $semesterFilter = '';
+    public $file; // Holds the uploaded file
 
-    // Data for dropdowns (make these public to be accessible in the view if directly used,
-    // otherwise, pass them from the render method)
+    // Identifies the paper being edited. Null for creation.
+    public $paperId = null; 
+    
+    // UI state
+    public $showForm = false; // Controls visibility of the form
+    public $confirmingDeletion = false;
+    public $paperToDelete = null;
+
+    // Data for dropdowns
     public $departments = [];
-    public $courses = [];
+    public $courses = []; // Will be dynamically loaded based on department selection
     public $levels = [];
     public $examTypes = [];
     public $years = [];
     public $studentTypes = [];
     
-    protected $rules = [
-        'title' => 'required|string|max:255',
-        'department_id' => 'required|exists:departments,id',
-        'course_id' => 'required|exists:courses,id',
-        'level' => 'required|string',
-        'exam_type' => 'required|string',
-        'exam_year' => 'required|integer|min:2000|max:2099',
-        'student_type' => 'required|string',
-        'semester' => 'required|integer|min:1|max:2',
-        'visibility' => 'required|in:public,restricted',
-        'file' => 'nullable|file|mimes:pdf|max:10240', // File is nullable for edit mode
-    ];
+    // Define validation rules - adjusted for nullable file on update
+    protected function rules()
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'department_id' => 'required|exists:departments,id',
+            'course_id' => 'required|exists:courses,id',
+            'level' => 'required|string',
+            'exam_type' => 'required|string',
+            'exam_year' => 'required|integer|min:2000|max:2099',
+            'student_type' => 'required|string',
+            'semester' => 'required|integer|min:1|max:2',
+            'visibility' => 'required|in:public,restricted',
+            // File is required for new papers, nullable for existing ones (if not re-uploading)
+            'file' => $this->paperId ? 'nullable|file|mimes:pdf|max:10240' : 'required|file|mimes:pdf|max:10240',
+        ];
+    }
     
     protected $validationAttributes = [
         'department_id' => 'department',
         'course_id' => 'course',
     ];
-    
-    // Listen for changes on department_id to update courses
-    public function updatedDepartmentId($value)
-    {
-        $this->courses = Course::where('department_id', $value)->orderBy('name')->get();
-        $this->course_id = null; // Reset course selection when department changes
-    }
 
+    // Lifecycle hook: runs once when component is initialized
     public function mount()
     {
         $this->loadDropdownData();
     }
 
+    // Load static data for dropdowns
     private function loadDropdownData()
     {
         $this->departments = Department::orderBy('name')->get();
-        // Courses are loaded based on department_id via updatedDepartmentId
         $this->levels = ['100', '200', '300', '400', '500', '600']; // Example levels
         $this->examTypes = ['Mid-term', 'End of Semester', 'Special Resit']; // Example types
         $this->studentTypes = ['Regular', 'Distance', 'Mature']; // Example types
         $this->years = range(date('Y'), 2000); // Generate years from current year down to 2000
     }
     
+    // Livewire hook: Called when department_id property is updated
+    public function updatedDepartmentId($value)
+    {
+        if ($value) {
+            $this->courses = Course::where('department_id', $value)->orderBy('name')->get();
+        } else {
+            $this->courses = [];
+        }
+        $this->course_id = null; // Reset course selection when department changes
+    }
+
+    // Reset pagination when search filter changes
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+    
+    // Method to open the form for creating a new paper
+    public function openCreateForm()
+    {
+        $this->resetForm(); // Reset all form fields and validation
+        $this->showForm = true; // Show the form
+    }
+
+    // Method to open the form for editing an existing paper
+    public function editPaper($id)
+    {
+        $this->resetValidation(); // Clear any previous validation errors
+        $paper = Paper::findOrFail($id);
+        
+        $this->paperId = $id; // Set the ID to indicate edit mode
+        $this->title = $paper->title;
+        $this->department_id = $paper->department_id;
+        // Trigger the updatedDepartmentId method to populate courses for the selected department
+        $this->updatedDepartmentId($paper->department_id); 
+        $this->course_id = $paper->course_id;
+        $this->level = $paper->level;
+        $this->exam_type = $paper->exam_type;
+        $this->exam_year = $paper->exam_year;
+        $this->student_type = $paper->student_type;
+        $this->semester = $paper->semester;
+        $this->visibility = $paper->visibility;
+        $this->file = null; // Important: Clear the file input when editing. User re-uploads if needed.
+        $this->showForm = true; // Show the form
+    }
+
+    // Handles saving new papers and updating existing ones
+    public function savePaper()
+    {
+        $this->validate(); // Validate inputs based on rules() method
+
+        try {
+            // Determine if it's an update or create based on $this->paperId
+            if ($this->paperId) {
+                // UPDATE LOGIC
+                $paper = Paper::findOrFail($this->paperId);
+                
+                // Handle file upload if a new file is provided
+                if ($this->file) {
+                    // Delete old file if it exists
+                    if ($paper->file_path && Storage::disk('public')->exists($paper->file_path)) {
+                        Storage::disk('public')->delete($paper->file_path);
+                    }
+                    
+                    // Store new file
+                    $fileName = time() . '_' . Str::slug($this->title) . '.' . $this->file->getClientOriginalExtension();
+                    $filePath = $this->file->storeAs('papers', $fileName, 'public');
+                    $paper->file_path = $filePath;
+                }
+                
+                // Update paper details
+                $paper->update([
+                    'title' => $this->title,
+                    'department_id' => $this->department_id,
+                    'course_id' => $this->course_id,
+                    'course_name' => Course::find($this->course_id)->name,
+                    'level' => $this->level,
+                    'exam_type' => $this->exam_type,
+                    'exam_year' => $this->exam_year,
+                    'student_type' => $this->student_type,
+                    'semester' => $this->semester,
+                    'visibility' => $this->visibility,
+                    // file_path is updated conditionally above
+                ]);
+                
+                session()->flash('message', 'Paper successfully updated!');
+
+            } else {
+                // CREATE LOGIC
+                // Process and store the file (required for new paper as per rules)
+                $fileName = time() . '_' . Str::slug($this->title) . '.' . $this->file->getClientOriginalExtension();
+                $filePath = $this->file->storeAs('papers', $fileName, 'public');
+                
+                // Create new paper record
+                Paper::create([
+                    'title' => $this->title,
+                    'department_id' => $this->department_id,
+                    'course_id' => $this->course_id,
+                    'course_name' => Course::find($this->course_id)->name,
+                    'level' => $this->level,
+                    'exam_type' => $this->exam_type,
+                    'exam_year' => $this->exam_year,
+                    'student_type' => $this->student_type,
+                    'semester' => $this->semester,
+                    'visibility' => $this->visibility,
+                    'file_path' => $filePath,
+                    'uploaded_by' => auth()->id(), // Assuming authentication is set up
+                ]);
+                
+                session()->flash('message', 'Paper successfully uploaded!');
+            }
+            
+            $this->resetForm(); // Clear the form and hide it
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Illuminate\Support\Facades\Log::error('Paper save error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            session()->flash('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
+    
+    // Shows delete confirmation modal
+    public function confirmDelete($id)
+    {
+        $this->paperToDelete = $id;
+        $this->confirmingDeletion = true;
+    }
+
+    // Deletes the paper after confirmation
+    public function deletePaper()
+    {
+        try {
+            $paper = Paper::findOrFail($this->paperToDelete);
+            
+            // Delete file from storage
+            if ($paper->file_path && Storage::disk('public')->exists($paper->file_path)) {
+                Storage::disk('public')->delete($paper->file_path);
+            }
+            
+            $paper->delete();
+            
+            session()->flash('message', 'Paper successfully deleted!');
+            $this->confirmingDeletion = false;
+            $this->paperToDelete = null;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Paper delete error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            session()->flash('error', 'An error occurred during deletion: ' . $e->getMessage());
+        }
+    }
+    
+    // Resets all form-related properties and validation errors
+    public function resetForm()
+    {
+        $this->reset([
+            'title', 'department_id', 'course_id', 'level', 'exam_type',
+            'exam_year', 'student_type', 'semester', 'visibility', 'file',
+            'paperId', 'showForm'
+        ]);
+        $this->resetValidation();
+        // Ensure courses are cleared if no department is selected
+        $this->courses = []; 
+    }
+
+    // Resets all filter-related properties
+    public function resetFilters()
+    {
+        $this->reset([
+            'search', 'departmentFilter', 'yearFilter', 'levelFilter',
+            'examTypeFilter', 'studentTypeFilter', 'semesterFilter'
+        ]);
+        $this->resetPage(); // Important: reset pagination when filters change
+    }
+
+    // Toggle the form visibility
+    public function toggleForm()
+    {
+        $this->showForm = !$this->showForm;
+        if (!$this->showForm) {
+            $this->resetForm(); // Reset form state if closed
+        }
+    }
+
+    // Render method to fetch data and pass to the view
     public function render()
     {
         $query = Paper::query()
@@ -112,156 +286,22 @@ class PaperManager extends Component
             
         $papers = $query->with(['department', 'course'])->latest()->paginate(10);
         
+        // Ensure courses are loaded for the current department_id if the form is open
+        // This handles cases where user might have selected a department, refreshed, or re-entered
+        if ($this->showForm && $this->department_id && empty($this->courses)) {
+             $this->courses = Course::where('department_id', $this->department_id)->orderBy('name')->get();
+        } elseif (!$this->department_id) {
+            $this->courses = []; // No department selected, no courses
+        }
+
         return view('livewire.admin.paper-manager', [
             'papers' => $papers,
-            // Pass all necessary dropdown data to the view
             'departments' => $this->departments,
-            'courses' => $this->courses, // This will be dynamic based on department_id
+            'courses' => $this->courses, 
             'years' => $this->years,
             'levels' => $this->levels,
             'examTypes' => $this->examTypes,
             'studentTypes' => $this->studentTypes,
         ]);
-    }
-    
-    public function savePaper()
-    {
-        // Adjust rules for creation vs. update
-        $rules = $this->rules;
-        if (!$this->editMode) {
-            $rules['file'] = 'required|file|mimes:pdf|max:10240'; // File is required on creation
-        }
-
-        $this->validate($rules);
-        
-        if ($this->editMode) {
-            $paper = Paper::findOrFail($this->paperId);
-            
-            // Process file if a new one was uploaded
-            if ($this->file) {
-                // Delete old file
-                if ($paper->file_path && Storage::disk('public')->exists($paper->file_path)) {
-                    Storage::disk('public')->delete($paper->file_path);
-                }
-                
-                // Store new file
-                $fileName = time() . '_' . Str::slug($this->title) . '.' . $this->file->getClientOriginalExtension();
-                $filePath = $this->file->storeAs('papers', $fileName, 'public');
-                $paper->file_path = $filePath;
-            }
-            
-            // Update paper details
-            $paper->title = $this->title;
-            $paper->department_id = $this->department_id;
-            $paper->course_id = $this->course_id;
-            // Ensure course_name is updated if course_id changes, or remove if not needed in DB
-            $paper->course_name = Course::find($this->course_id)->name;
-            $paper->level = $this->level;
-            $paper->exam_type = $this->exam_type;
-            $paper->exam_year = $this->exam_year;
-            $paper->student_type = $this->student_type;
-            $paper->semester = $this->semester;
-            $paper->visibility = $this->visibility;
-            $paper->save();
-            
-            session()->flash('message', 'Paper successfully updated!');
-
-        } else {
-            // Process and store the file (required for new paper)
-            $fileName = time() . '_' . Str::slug($this->title) . '.' . $this->file->getClientOriginalExtension();
-            $filePath = $this->file->storeAs('papers', $fileName, 'public');
-            
-            // Create paper record
-            Paper::create([
-                'title' => $this->title,
-                'department_id' => $this->department_id,
-                'course_id' => $this->course_id,
-                'course_name' => Course::find($this->course_id)->name, // Ensure course_name is captured
-                'level' => $this->level,
-                'exam_type' => $this->exam_type,
-                'exam_year' => $this->exam_year,
-                'student_type' => $this->student_type,
-                'semester' => $this->semester,
-                'visibility' => $this->visibility,
-                'file_path' => $filePath,
-                'uploaded_by' => auth()->id(),
-            ]);
-            
-            session()->flash('message', 'Paper successfully uploaded!');
-        }
-        
-        $this->resetForm();
-    }
-    
-    public function editPaper($id)
-    {
-        $this->resetValidation();
-        $this->editMode = true;
-        $this->showForm = true; // Show the form when editing
-        $this->paperId = $id;
-        
-        $paper = Paper::findOrFail($id);
-        
-        $this->title = $paper->title;
-        $this->department_id = $paper->department_id;
-        // Trigger the updatedDepartmentId method to populate courses
-        $this->updatedDepartmentId($paper->department_id); 
-        $this->course_id = $paper->course_id;
-        $this->level = $paper->level;
-        $this->exam_type = $paper->exam_type;
-        $this->exam_year = $paper->exam_year;
-        $this->student_type = $paper->student_type;
-        $this->semester = $paper->semester;
-        $this->visibility = $paper->visibility;
-        $this->file = null; // Clear the file input in edit mode
-    }
-    
-    public function deletePaper($id)
-    {
-        $paper = Paper::findOrFail($id);
-        
-        // Delete file from storage
-        if ($paper->file_path && Storage::disk('public')->exists($paper->file_path)) {
-            Storage::disk('public')->delete($paper->file_path);
-        }
-        
-        // Delete record
-        $paper->delete();
-        
-        session()->flash('message', 'Paper successfully deleted!');
-    }
-    
-    public function cancelEdit()
-    {
-        $this->resetForm();
-    }
-    
-    public function resetForm()
-    {
-        $this->reset([
-            'title', 'department_id', 'course_id', 'level', 'exam_type',
-            'exam_year', 'student_type', 'semester', 'visibility', 'file',
-            'editMode', 'paperId', 'showForm' // Reset showForm as well
-        ]);
-        $this->resetValidation();
-        // Reload dropdown data to ensure fresh state, especially for courses
-        $this->loadDropdownData();
-    }
-    
-    public function resetFilters()
-    {
-        $this->reset([
-            'search', 'departmentFilter', 'yearFilter', 'levelFilter',
-            'examTypeFilter', 'studentTypeFilter', 'semesterFilter'
-        ]);
-        $this->resetPage(); // Reset pagination when filters are reset
-    }
-
-    public function toggleForm()
-    {
-        $this->showForm = !$this->showForm;
-        if (!$this->showForm) {
-            $this->resetForm(); // Reset form when hiding it
-        }
     }
 }
