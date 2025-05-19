@@ -24,10 +24,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         \Log::info('Dashboard access', [
             'user_id' => $user->id,
             'email' => $user->email,
-            'role' => $user->role
+            'role' => $user->role,
         ]);
 
-        return match($user->role) {
+        return match ($user->role) {
             'admin' => redirect()->route('admin.dashboard'),
             'student' => redirect()->route('student.dashboard'),
             default => redirect()->route('home')->with('error', 'Unauthorized access'),
@@ -45,49 +45,34 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin Routes
     Route::middleware([EnsureUserRole::class . ':admin'])->prefix('admin')->name('admin.')->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
 
-        Route::get('/department', function () {
-            return view('admin.department');
-        })->name('department.view');
+        Route::get('/department', fn () => view('admin.department'))->name('department.view');
+        Route::get('/departments', fn () => view('admin.department'))->name('departments');
 
-        // Paper Management Routes
-        Route::prefix('papers')->name('papers.')->group(function () {
-            // Main papers view/listing
+        Route::get('/courses', fn () => view('admin.courses'))->name('courses');
+
+            // Paper Management
+            Route::prefix('papers')->name('papers.')->group(function () {
             Route::get('/', PaperManager::class)->name('index');
-            
-            // Paper management
-            Route::get('/paper-manager', function () {
-                return view('livewire.admin.paper-manager');
-            })->name('paper-manager');
-            
-            // Paper versions management
-            Route::get('/versions', function () {
-                return view('livewire.admin.papers.paper-versions');
-            })->name('versions'); 
+            Route::get('/paper-manager', fn () => view('livewire.admin.paper-manager'))->name('paper-manager');
+            Route::get('/versions', fn () => view('livewire.admin.papers.paper-versions'))->name('versions');
 
-            Route::get('/papers/{paper}/versions', function ($paper) {
-                return view('papers.papers.versions', ['paperId' => $paper]);
-            })->middleware(['auth'])->name('papers.versions');
-            
-            // Paper viewing with model binding
+            Route::get('/{paper}/versions', function ($paper) {
+                return view('livewire.admin.papers.versions', ['paperId' => $paper]);
+            })->name('paper.versions');
+
+            // Route for showing the paper upload form (create)
+            Route::get('/paper-uploader', [PaperController::class, 'create'])->name('paper-uploader');
+
+            // Route for storing the uploaded paper (store)
+            Route::post('/paper-uploader', [PaperController::class, 'store'])->name('paper-uploader.store');
+
             Route::get('/{paper}/view', function (Paper $paper) {
                 return view('admin.paper-manager', ['paper' => $paper]);
             })->name('view');
         });
 
-        // Course management
-        Route::get('/courses', function() {
-            return view('admin.courses');
-        })->name('courses');
-
-        Route::get('/departments', function () {
-            return view('admin.department');
-        })->name('departments');
-
-        // Analytics and Logs
         Volt::route('/analytics', 'admin.analytics')->name('analytics');
         Volt::route('/logs', 'admin.logs')->name('logs');
     });
@@ -95,24 +80,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Student Routes
     Route::middleware([EnsureUserRole::class . ':student'])->prefix('student')->name('student.')->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
 
-        // Student paper routes
         Route::prefix('papers')->name('papers.')->group(function () {
             Volt::route('/', 'student.papers.index')->name('index');
             Volt::route('/search', 'student.papers.search')->name('search');
             Volt::route('/download', 'student.papers.download')->name('download');
-            
-            Route::get('/browse', function () {
-                return view('livewire.student.papers.browse');
-            })->name('browse');
-        });
-        
-        // Download history
-        Route::get('/download-history', DownloadHistory::class)->name('download.history');
 
+            Route::get('/browse', fn () => view('livewire.student.papers.browse'))->name('browse');
+        });
+
+        Route::get('/download-history', DownloadHistory::class)->name('download.history');
         Volt::route('/profile', 'student.profile')->name('profile');
     });
 
@@ -130,7 +108,7 @@ Route::fallback(function () {
             'user_id' => auth()->id(),
             'email' => auth()->user()->email,
             'role' => auth()->user()->role,
-            'attempted_route' => request()->fullUrl()
+            'attempted_route' => request()->fullUrl(),
         ]);
     }
 

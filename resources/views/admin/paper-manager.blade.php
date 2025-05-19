@@ -7,8 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Include the Livewire Component -->
             @livewire('admin.paper-manager')
         </div>
     </div>
-</x-app.layout>
+</x-layouts.app>
