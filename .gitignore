@@ -1,24 +1,59 @@
-gitignore
-/vendor
-/node_modules
-.env
-.env.backup
-.env.example
+# Laravel & Livewire Standard Gitignore
 
-/public/hot
-/public/storage
-
-/storage/*.key
-/storage/*.sqlite
-/storage/framework/cache/*
-/storage/framework/sessions/*
-/storage/framework/views/*
-/storage/logs/*
-
-/bootstrap/cache/*.php
-
-.vscode/
-
-phpunit.xml
+### Environment ###
+/.env
+/.env.*.local
+/.env.backup
+/.env.production
+/.phpunit.result.cache
 Homestead.json
 Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+
+### Laravel ###
+/vendor/
+/node_modules/
+/public/hot
+/public/storage
+/storage/*.key
+/storage/app/public/*
+/storage/debugbar/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
+/bootstrap/cache/*
+/.phpunit.cache
+
+### SQLite ###
+/database/database.sqlite
+/database/*.sqlite*
+
+### Testing ###
+/coverage
+.phpunit.result.cache
+
+### Build assets ###
+/public/build
+/public/css
+/public/js
+/public/mix-manifest.json
+
+### Frontend ###
+/resources/js/dist/*
+/resources/css/dist/*
+/resources/views/vendor/*
+/resources/lang/vendor/*
+
+### macOS ###
+.DS_Store
+._*
+
+### Windows ###
+Thumbs.db
+ehthumbs.db
+Desktop.ini
