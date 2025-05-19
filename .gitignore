@@ -26,6 +26,7 @@ yarn-error.log
 /storage/framework/testing/*
 /storage/framework/views/*
 /storage/logs/*
+/storage/app/*
 /bootstrap/cache/*
 /.phpunit.cache
 
