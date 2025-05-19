@@ -3,6 +3,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
 
+                {{-- Session Messages --}}
                 @if (session()->has('message'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                         <span class="block sm:inline">{{ session('message') }}</span>
@@ -13,27 +14,34 @@
                         <span class="block sm:inline">{{ session('error') }}</span>
                     </div>
                 @endif
-                
+
                 <div class="mb-4 text-right">
                     <button wire:click="toggleForm" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         {{ $showForm ? 'Hide Form' : 'Upload New Paper' }}
                     </button>
                 </div>
 
+                {{-- Paper Upload/Edit Form --}}
                 @if($showForm)
                     <div class="bg-gray-50 p-4 rounded-lg mb-6">
                         <h2 class="text-lg font-semibold mb-4">{{ $paperId ? 'Edit Paper' : 'Upload New Paper' }}</h2>
-                        
+
                         <form wire:submit.prevent="savePaper" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="title" class="block text-sm font-medium text-gray-700">Paper Title</label>
-                                <input type="text" id="title" wire:model="title" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                <input type="text" id="title" wire:model.defer="title" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 @error('title') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
-                            
+
+                            <div>
+                                <label for="description" class="block text-sm font-medium text-gray-700">Description (Optional)</label>
+                                <textarea id="description" wire:model.defer="description" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                                @error('description') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            </div>
+
                             <div>
                                 <label for="department_id" class="block text-sm font-medium text-gray-700">Department</label>
-                                <select id="department_id" wire:model="department_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <select id="department_id" wire:model.defer="department_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select Department</option>
                                     @foreach($departments as $department)
                                         <option value="{{ $department->id }}">{{ $department->name }}</option>
@@ -41,32 +49,32 @@
                                 </select>
                                 @error('department_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
-                            
+
                             <div>
-                                <label for="course_id" class="block text-sm font-medium text-gray-700">Course Name</label>
-                                <select id="course_id" wire:model="course_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <label for="course_name" class="block text-sm font-medium text-gray-700">Course Name</label>
+                                <select id="course_name" wire:model.defer="course_name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select Course</option>
                                     @foreach($courses as $course)
-                                        <option value="{{ $course->id }}">{{ $course->name }}</option>
+                                        <option value="{{ $course->name }}">{{ $course->name }}</option>
                                     @endforeach
                                 </select>
-                                @error('course_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                @error('course_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
-                                
+
                             <div>
                                 <label for="level" class="block text-sm font-medium text-gray-700">Level</label>
-                                <select id="level" wire:model="level" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <select id="level" wire:model.defer="level" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select Level</option>
-                                    @foreach($levels as $level)
-                                        <option value="{{ $level }}">{{ $level }}</option>
+                                    @foreach($levels as $levelOption)
+                                        <option value="{{ $levelOption }}">{{ $levelOption }}</option>
                                     @endforeach
                                 </select>
                                 @error('level') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
-                            
+
                             <div>
                                 <label for="exam_type" class="block text-sm font-medium text-gray-700">Exam Type</label>
-                                <select id="exam_type" wire:model="exam_type" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <select id="exam_type" wire:model.defer="exam_type" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select Exam Type</option>
                                     @foreach($examTypes as $type)
                                         <option value="{{ $type }}">{{ $type }}</option>
@@ -74,10 +82,10 @@
                                 </select>
                                 @error('exam_type') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
-                            
+
                             <div>
                                 <label for="exam_year" class="block text-sm font-medium text-gray-700">Exam Year</label>
-                                <select id="exam_year" wire:model="exam_year" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <select id="exam_year" wire:model.defer="exam_year" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select Year</option>
                                     @foreach($years as $year)
                                         <option value="{{ $year }}">{{ $year }}</option>
@@ -85,10 +93,10 @@
                                 </select>
                                 @error('exam_year') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
-                            
+
                             <div>
                                 <label for="student_type" class="block text-sm font-medium text-gray-700">Student Type</label>
-                                <select id="student_type" wire:model="student_type" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <select id="student_type" wire:model.defer="student_type" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select Student Type</option>
                                     @foreach($studentTypes as $type)
                                         <option value="{{ $type }}">{{ $type }}</option>
@@ -96,26 +104,26 @@
                                 </select>
                                 @error('student_type') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
-                            
+
                             <div>
                                 <label for="semester" class="block text-sm font-medium text-gray-700">Semester</label>
-                                <select id="semester" wire:model="semester" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <select id="semester" wire:model.defer="semester" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select Semester</option>
                                     <option value="1">Semester 1</option>
                                     <option value="2">Semester 2</option>
                                 </select>
                                 @error('semester') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
-                            
+
                             <div>
                                 <label for="visibility" class="block text-sm font-medium text-gray-700">Visibility</label>
-                                <select id="visibility" wire:model="visibility" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <select id="visibility" wire:model.defer="visibility" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="public">Public (All students)</option>
                                     <option value="restricted">Restricted (Admin approval needed)</option>
                                 </select>
                                 @error('visibility') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
-                            
+
                             <div class="md:col-span-2">
                                 <label for="file" class="block text-sm font-medium text-gray-700">
                                     {{ $paperId ? 'Replace File (Leave empty to keep current file)' : 'PDF File' }}
@@ -123,8 +131,11 @@
                                 <input type="file" id="file" wire:model="file" accept=".pdf" class="mt-1 block w-full">
                                 <div wire:loading wire:target="file" class="text-sm text-gray-500 mt-1">Uploading...</div>
                                 @error('file') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                @if ($paperId && $existingFilePath && !$file)
+                                    <p class="text-sm text-gray-500 mt-1">Current file: <a href="{{ Storage::url($existingFilePath) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">View</a></p>
+                                @endif
                             </div>
-                            
+
                             <div class="md:col-span-2 flex items-center justify-end space-x-3 mt-4">
                                 <button type="button" wire:click="resetForm" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                                     Cancel
@@ -136,26 +147,27 @@
                         </form>
                     </div>
                 @endif
-                
+
                 ---
 
+                {{-- Paper List and Filters --}}
                 <div>
                     <h2 class="text-lg font-semibold mb-4">Manage Papers</h2>
-                    
+
                     <div class="bg-gray-50 p-4 rounded-lg mb-4">
                         <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
                             <div class="flex-grow mb-2 md:mb-0">
                                 <label for="search" class="sr-only">Search</label>
                                 <input type="text" id="search" wire:model.debounce.300ms="search" placeholder="Search papers..." class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                             </div>
-                            
+
                             <div>
                                 <button wire:click="resetFilters" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     Reset Filters
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mt-2">
                             <div>
                                 <select wire:model="departmentFilter" class="block w-full py-1.5 px-2 text-sm border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
@@ -165,7 +177,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <select wire:model="yearFilter" class="block w-full py-1.5 px-2 text-sm border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                     <option value="">All Years</option>
@@ -174,16 +186,16 @@
                                     @endforeach
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <select wire:model="levelFilter" class="block w-full py-1.5 px-2 text-sm border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                     <option value="">All Levels</option>
-                                    @foreach($levels as $level)
-                                        <option value="{{ $level }}">{{ $level }}</option>
+                                    @foreach($levels as $levelOption)
+                                        <option value="{{ $levelOption }}">{{ $levelOption }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <select wire:model="examTypeFilter" class="block w-full py-1.5 px-2 text-sm border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                     <option value="">All Exam Types</option>
@@ -192,7 +204,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <select wire:model="studentTypeFilter" class="block w-full py-1.5 px-2 text-sm border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                     <option value="">All Student Types</option>
@@ -201,7 +213,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <select wire:model="semesterFilter" class="block w-full py-1.5 px-2 text-sm border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                     <option value="">All Semesters</option>
@@ -211,7 +223,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -239,7 +251,7 @@
                                             <div>Semester {{ $paper->semester }}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                                 {{ $paper->visibility == 'public' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                                                 {{ ucfirst($paper->visibility) }}
                                             </span>
@@ -252,7 +264,6 @@
                                                 <button wire:click="editPaper({{ $paper->id }})" class="text-blue-600 hover:text-blue-900">
                                                     Edit
                                                 </button>
-                                                {{-- Changed to confirmDelete to trigger modal --}}
                                                 <button wire:click="confirmDelete({{ $paper->id }})" class="text-red-600 hover:text-red-900">
                                                     Delete
                                                 </button>
@@ -269,7 +280,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div class="mt-4">
                         {{ $papers->links() }}
                     </div>
@@ -278,7 +289,7 @@
         </div>
     </div>
 
-    {{-- Assuming you have these Jetstream components or similar custom components --}}
+    {{-- Custom Confirmation Modal --}}
     <x-confirmation-modal wire:model="confirmingDeletion">
         <x-slot name="title">
             Delete Paper
@@ -289,11 +300,11 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-secondary-button wire:click="$set('confirmingDeletion', false)" wire:loading.attr="disabled">
+            <x-secondary-button wire:click="$set('confirmingDeletion', false)">
                 Cancel
             </x-secondary-button>
 
-            <x-danger-button class="ml-2" wire:click="deletePaper" wire:loading.attr="disabled">
+            <x-danger-button class="ml-2" wire:click="deletePaper">
                 Delete Paper
             </x-danger-button>
         </x-slot>
