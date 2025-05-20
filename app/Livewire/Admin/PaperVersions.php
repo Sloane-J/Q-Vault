@@ -30,13 +30,18 @@ class PaperVersions extends Component
         'changeNotes' => 'nullable|string|max:500',
     ];
 
-    public function mount($paperId)
+    public function mount($paperId) // Keep $paperId for initial parameter, but hydrate $paper from it
     {
         $this->paperId = $paperId;
-        $this->paper = Paper::findOrFail($paperId);
+        $this->paper = Paper::find($paperId);
+
+        if (!$this->paper) {
+            session()->flash('error', 'Paper not found');
+            return redirect()->route('admin.papers.index');
+        }
     }
 
-    public function render()
+ public function render()
     {
         $versions = PaperVersion::where('paper_id', $this->paperId)
             ->orderByDesc('created_at')
@@ -44,7 +49,8 @@ class PaperVersions extends Component
 
         return view('livewire.admin.papers.paper-versions', [
             'versions' => $versions,
-        ]);
+            'paper' => $this->paper,
+        ])->layout('components.layouts.app'); // <--- THIS IS REQUIRED FOR FULL-PAGE LIVEWIRE COMPONENTS
     }
 
     public function openUploadModal()
@@ -123,7 +129,7 @@ class PaperVersions extends Component
     {
         // Check if it's the only version
         $versionsCount = PaperVersion::where('paper_id', $this->paperId)->count();
-        
+
         if ($versionsCount <= 1) {
             $this->dispatch('notify', [
                 'type' => 'error',

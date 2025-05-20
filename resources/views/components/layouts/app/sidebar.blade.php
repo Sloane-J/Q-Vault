@@ -30,14 +30,23 @@
                         {{ __('Departments') }}
                     </flux:navlist.item>
 
-                   {{-- Paper Management Drop Down (Now visible on all screens) --}}
-                   <flux:navlist.group expandable heading="Paper Management" icon="newspaper">
-                    
-                        <flux:navlist.item :href="route('admin.papers.paper-manager')" icon="server-stack">
-                                {{ __('Paper Manager') }}</flux:navlist.aditem>
+                    {{-- Paper Management Drop Down --}}
+                    <flux:navlist.group expandable heading="Paper Management" icon="newspaper">
+                        <flux:navlist.item 
+                            :href="route('admin.papers.index')" 
+                            icon="server-stack"
+                            :current="request()->routeIs('admin.papers.index')"
+                        >
+                            {{ __('Paper Manager') }}
+                        </flux:navlist.item>
 
-                        <flux:navlist.item :href="route('admin.papers.versions')" icon="folder-open">
-                                {{ __('Version Management') }}</flux:navlist.item>
+                        <flux:navlist.item 
+                            :href="route('admin.papers.index')" 
+                            icon="folder-open"
+                            :current="request()->routeIs('admin.papers.paper.versions')"
+                        >
+                            {{ __('Version Management') }}
+                        </flux:navlist.item>
                     </flux:navlist.group>
 
                     <flux:navlist.item

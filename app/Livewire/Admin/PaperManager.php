@@ -66,9 +66,19 @@ class PaperManager extends Component
 
     public function mount()
     {
+        // Explicitly initialize properties
+        $this->showForm = false;
+        $this->confirmingDeletion = false;
+        $this->visibility = 'public';
+        
+        // Load dropdown data
+        $this->loadDropdownData();
+    }
+
+    protected function loadDropdownData()
+    {
         // Ideally, fetch from DB
         $this->departments = Department::all();
-
         $this->courses = Course::all();
 
         // Fallback static data (if needed)
@@ -115,21 +125,26 @@ class PaperManager extends Component
 
         if ($this->paperId) {
             $paper = Paper::find($this->paperId);
-            $paper->update([
-                'title' => $this->title,
-                'description' => $this->description,
-                'file_path' => $filePath,
-                'department_id' => $this->department_id,
-                'semester' => $this->semester,
-                'exam_type' => $this->exam_type,
-                'course_name' => $this->course_name,
-                'exam_year' => $this->exam_year,
-                'student_type' => $this->student_type,
-                'level' => $this->level,
-                'visibility' => $this->visibility,
-            ]);
-            session()->flash('message', 'Paper updated successfully.');
+            if ($paper) {
+                $paper->update([
+                    'title' => $this->title,
+                    'description' => $this->description,
+                    'file_path' => $filePath,
+                    'department_id' => $this->department_id,
+                    'semester' => $this->semester,
+                    'exam_type' => $this->exam_type,
+                    'course_name' => $this->course_name,
+                    'exam_year' => $this->exam_year,
+                    'student_type' => $this->student_type,
+                    'level' => $this->level,
+                    'visibility' => $this->visibility,
+                ]);
+                session()->flash('message', 'Paper updated successfully.');
+            } else {
+                session()->flash('error', 'Paper not found.');
+            }
         } else {
+            // Add user_id to new papers
             Paper::create([
                 'title' => $this->title,
                 'description' => $this->description,
@@ -142,6 +157,7 @@ class PaperManager extends Component
                 'student_type' => $this->student_type,
                 'level' => $this->level,
                 'visibility' => $this->visibility,
+                'user_id' => auth()->id(),
             ]);
             session()->flash('message', 'Paper uploaded successfully.');
         }
@@ -165,6 +181,8 @@ class PaperManager extends Component
         $this->student_type = $paper->student_type;
         $this->level = $paper->level;
         $this->visibility = $paper->visibility;
+        
+        // Ensure this is set to true to show the form
         $this->showForm = true;
     }
 
@@ -173,10 +191,14 @@ class PaperManager extends Component
         $this->reset([
             'paperId', 'title', 'description', 'file', 'existingFilePath',
             'department_id', 'semester', 'exam_type', 'course_name',
-            'exam_year', 'student_type', 'level', 'visibility', 'showForm'
+            'exam_year', 'student_type', 'level'
         ]);
-        $this->resetValidation();
+        
+        // Don't reset showForm here, as it controls UI state
+        // Default values
         $this->visibility = 'public';
+        
+        $this->resetValidation();
     }
 
     public function confirmDelete($paperId)
@@ -195,7 +217,7 @@ class PaperManager extends Component
                 }
                 $paper->delete();
 
-                session()->flash('message', 'Paper ' . $this->paperIdToDelete . ' deleted successfully.');
+                session()->flash('message', 'Paper deleted successfully.');
             }
             $this->confirmingDeletion = false;
             $this->paperIdToDelete = null;
@@ -213,6 +235,25 @@ class PaperManager extends Component
 
     public function render()
     {
+        // For development, use dummy data
+        // In production, replace with actual DB queries
+        $papers = $this->getPapers();
+
+        return view('livewire.admin.paper-manager', [
+            'papers' => $papers,
+            'departments' => $this->departments,
+            'courses' => $this->courses,
+            'studentTypes' => $this->studentTypes,
+            'levels' => $this->levels,
+            'examTypes' => $this->examTypes,
+            'years' => $this->years,
+        ]);
+    }
+
+    protected function getPapers()
+    {
+        // In production, replace with actual DB query
+        // For now, using dummy data for development
         $dummyPapers = collect([
             (object)[
                 'id' => 1, 'title' => 'Intro to Algorithms', 'description' => 'Fundamentals',
@@ -244,7 +285,7 @@ class PaperManager extends Component
         });
 
         $perPage = 10;
-        $page = $this->page ?: 1;
+        $page = $this->page ?? 1;
         $paged = $filtered->slice(($page - 1) * $perPage, $perPage)->values();
 
         $papers = new LengthAwarePaginator(
@@ -255,14 +296,6 @@ class PaperManager extends Component
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('livewire.admin.paper-manager', [
-            'papers' => $papers,
-            'departments' => $this->departments,
-            'courses' => $this->courses,
-            'studentTypes' => $this->studentTypes,
-            'levels' => $this->levels,
-            'examTypes' => $this->examTypes,
-            'years' => $this->years,
-        ]);
+        return $papers;
     }
 }
