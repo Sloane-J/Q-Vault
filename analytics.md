@@ -44,3 +44,12 @@ Total storage used
 Storage growth trends
 Storage usage by department
 File size distributions
+
+Modals
+
+ AdminActivity
+  contentanalysis
+  download analytics
+   storage analytic
+   system event
+   user activity 
