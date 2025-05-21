@@ -33,7 +33,7 @@ class ContentAnalytics extends Component
         return view('livewire.admin.analytics.content-analytics', [
             'analyticsData' => $this->getAnalyticsData(),
             'departments' => Department::orderBy('name')->get(),
-            'examTypes' => ['final', 'resit', 'supplementary'] // Assuming these are your exam types
+            'examTypes' => ['End of Semester', 'Resit'] // Assuming these are your exam types
         ]);
     }
 

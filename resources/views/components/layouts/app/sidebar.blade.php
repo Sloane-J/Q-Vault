@@ -56,6 +56,19 @@
                     >
                         {{ __('Course Management') }}
                     </flux:navlist.item>
+
+                     {{-- Paper Management Drop Down --}}
+                    <flux:navlist.group expandable heading="Analytics" icon="newspaper">
+                        <flux:navlist.item 
+                            :href="route('admin.papers.index')" 
+                            icon="server-stack"
+                            :current="request()->routeIs('admin.papers.index')"
+                        >
+                            {{ __('Analytics') }}
+                        </flux:navlist.item>
+
+                    </flux:navlist.group>
+
                 </flux:navlist.group>
             </flux:navlist>
 
