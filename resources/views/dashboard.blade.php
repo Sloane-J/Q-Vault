@@ -339,9 +339,9 @@
                     <p class="text-2xl font-bold">{{ \App\Models\Paper::where('student_type_id', auth()->user()->student_type_id)->count() }}</p>
                 </div>
                 <div class="bg-white dark:bg-neutral-800 p-4 rounded-xl shadow">
-                    <h3 class="font-semibold text-lg mb-2">Recent Downloads</h3>
+                    <h3 class="font-semibold text-lg mb-2">Recent Downloads</h3>                                                                                                                                                                                                                                                                                                                                                                                                                                  
                     <p class="text-2xl font-bold">{{ \App\Models\Download::where('user_id', auth()->id())->count() }}</p>
-                </div>
+                </div>                                                                                                                                                                    
                 <div class="bg-white dark:bg-neutral-800 p-4 rounded-xl shadow">
                     <h3 class="font-semibold text-lg mb-2">Your Department</h3>
                     <p class="text-lg">{{ auth()->user()->department->name ?? 'Not Assigned' }}</p>
@@ -350,6 +350,6 @@
             <livewire:student.download-history />
         </div>
     @endif
-
-   
-</x-layouts.app>
+                       
+                                   
+</x-layouts.app>                                                                                                                                                                                                      
