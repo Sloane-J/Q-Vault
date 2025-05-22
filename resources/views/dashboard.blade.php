@@ -70,7 +70,7 @@
             
             // Chart color options
             const chartColors = {
-                students: '#4f46e5', // indigo
+                students: '#4f46e5', // blue
                 papers: '#0ea5e9',   // sky blue
                 departments: '#10b981', // emerald
                 courses: '#f59e0b'   // amber
@@ -105,10 +105,10 @@
             };
 
             // Sample data - in a real app you'd get this from Livewire
-            const studentData = [30, 40, 45, 50, 49, 60, 70, 91];
-            const paperData = [40, 55, 65, 90, 115, 95, 90, 120];
+            const studentData = [3, 4, 5, 5, 9, 6, 7, 4];
+            const paperData = [4, 5, 6, 9, 11, 9, 9, 12];
             const departmentData = [5, 5, 6, 7, 8, 8, 9, 10];
-            const courseData = [25, 30, 35, 40, 45, 50, 55, 60];
+            const courseData = [2, 3, 3, 4, 4, 5, 5, 6];
 
             // Student Chart (Bar Chart)
             new ApexCharts(document.querySelector("#studentChart"), {
@@ -201,7 +201,7 @@
                     animations: {
                         enabled: true,
                         easing: 'easeinout',
-                        speed: 800
+                        speed: 900
                     }
                 },
                 series: [{
@@ -217,7 +217,7 @@
                     bar: {
                         distributed: true,
                         borderRadius: 4,
-                        columnWidth: '60%',
+                        columnWidth: '50%',
                         dataLabels: {
                             position: 'top'
                         }
@@ -294,7 +294,7 @@
                 },
                 series: [{
                     name: 'Downloads',
-                    data: [45, 68, 75, 91, 23, 42, 60]
+                    data: [4, 6, 7, 9, 2, 4, 6]
                 }],
                 xaxis: {
                     categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -339,10 +339,8 @@
                     <p class="text-2xl font-bold">{{ \App\Models\Paper::where('student_type_id', auth()->user()->student_type_id)->count() }}</p>
                 </div>
                 <div class="bg-white dark:bg-neutral-800 p-4 rounded-xl shadow">
-                    <h3 class="font-semibold text-lg mb-2">Recent Downloads</h3>                                                                                                                                                                                                                                                                                                                                                                                                                                  
-                    <p class="text-2xl font-bold">{{ \App\Models\Download::where('user_id', auth()->id())->count() }}</p>
-                </div>                                                                                                                                                                    
-                <div class="bg-white dark:bg-neutral-800 p-4 rounded-xl shadow">
+                    <h3 class="font-semibold text-lg mb-2">Recent Downloads</h3>                                                 <p class="text-2xl font-bold">{{ \App\Models\Download::where('user_id', auth()->id())->count() }}</p>
+                </div>                                                     <div class="bg-white dark:bg-neutral-800 p-4 rounded-xl shadow">
                     <h3 class="font-semibold text-lg mb-2">Your Department</h3>
                     <p class="text-lg">{{ auth()->user()->department->name ?? 'Not Assigned' }}</p>
                 </div>

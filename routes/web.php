@@ -46,7 +46,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', PaperManager::class)->name('index');
             Route::get('/paper-manager', PaperManager::class)->name('paper-manager');
             Route::get('/{paper}/versions', PaperVersions::class)->name('paper.versions');
-        });
+
+         });
     });
 
     // Student Routes

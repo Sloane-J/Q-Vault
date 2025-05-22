@@ -23,13 +23,37 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
-                                <input type="text" id="title" wire:model="title" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <input
+    type="text"
+    id="title"
+    wire:model="title"
+    class="mt-1 block w-full rounded-md
+           border border-neutral-300 dark:border-neutral-700 /* Refined border color */
+           bg-white dark:bg-neutral-800
+           text-neutral-800 dark:text-neutral-200 /* Added text color for dark/light mode */
+           shadow-sm
+           focus:border-blue-500 focus:ring-blue-500 focus:ring-1 /* Thin focus ring */
+           transition ease-in-out duration-150 /* Smooth transitions */
+           py-2 px-3 /* Added padding for better spacing */
+           sm:text-sm
+           placeholder-neutral-400 dark:placeholder-neutral-500 /* Placeholder styling */"
+>
                                 @error('title') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             
                             <div>
                                 <label for="department_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Department</label>
-                                <select id="department_id" wire:model="department_id" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                               <select
+                                    id="department_id"
+                                    wire:model="department_id"
+                                    class="block w-full rounded-md
+                                        border border-neutral-300 dark:border-neutral-700
+                                        bg-white dark:bg-neutral-800
+                                        text-neutral-800 dark:text-neutral-200
+                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                        transition ease-in-out duration-150
+                                        py-2 px-3 sm:text-sm"
+                                >
                                     <option value="">Select Department</option>
                                     @foreach($departments as $department)
                                         <option value="{{ $department->id }}">{{ $department->name }}</option>
@@ -40,13 +64,33 @@
                             
                             <div>
                                 <label for="course_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Course Name</label>
-                                <input type="text" id="course_name" wire:model="course_name" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <input
+    type="text"
+    id="title"
+    wire:model="title"
+    class="mt-1 block w-full rounded-md
+           border border-neutral-300 dark:border-neutral-700 /* Refined border color */
+           bg-white dark:bg-neutral-800
+           text-neutral-800 dark:text-neutral-200 /* Added text color for dark/light mode */
+           shadow-sm
+           focus:border-blue-500 focus:ring-blue-500 focus:ring-1 /* Thin focus ring */
+           transition ease-in-out duration-150 /* Smooth transitions */
+           py-2 px-3 /* Added padding for better spacing */
+           sm:text-sm
+           placeholder-neutral-400 dark:placeholder-neutral-500 /* Placeholder styling */"
+>
                                 @error('course_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             
                             <div>
                                 <label for="exam_year" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Year</label>
-                                <select id="exam_year" wire:model="exam_year" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <select id="exam_year" wire:model="exam_year" class="block w-full rounded-md
+                                        border border-neutral-300 dark:border-neutral-700
+                                        bg-white dark:bg-neutral-800
+                                        text-neutral-800 dark:text-neutral-200
+                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                        transition ease-in-out duration-150
+                                        py-2 px-3 sm:text-sm">
                                     <option value="">Select Year</option>
                                     @foreach($years as $year)
                                         <option value="{{ $year }}">{{ $year }}</option>
@@ -57,7 +101,13 @@
                             
                             <div>
                                 <label for="exam_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Exam Type</label>
-                                <select id="exam_type" wire:model="exam_type" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <select id="exam_type" wire:model="exam_type" class="block w-full rounded-md
+                                        border border-neutral-300 dark:border-neutral-700
+                                        bg-white dark:bg-neutral-800
+                                        text-neutral-800 dark:text-neutral-200
+                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                        transition ease-in-out duration-150
+                                        py-2 px-3 sm:text-sm">
                                     <option value="">Select Type</option>
                                     @foreach($examTypes as $type)
                                         <option value="{{ $type }}">{{ $type }}</option>
@@ -68,7 +118,13 @@
                             
                             <div>
                                 <label for="semester" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Semester</label>
-                                <select id="semester" wire:model="semester" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <select id="semester" wire:model="semester" class="block w-full rounded-md
+                                        border border-neutral-300 dark:border-neutral-700
+                                        bg-white dark:bg-neutral-800
+                                        text-neutral-800 dark:text-neutral-200
+                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                        transition ease-in-out duration-150
+                                        py-2 px-3 sm:text-sm">
                                     <option value="">Select Semester</option>
                                     <option value="1">Semester 1</option>
                                     <option value="2">Semester 2</option>
@@ -78,7 +134,13 @@
                             
                             <div>
                                 <label for="student_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Student Type</label>
-                                <select id="student_type" wire:model="student_type" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <select id="student_type" wire:model="student_type" class="block w-full rounded-md
+                                        border border-neutral-300 dark:border-neutral-700
+                                        bg-white dark:bg-neutral-800
+                                        text-neutral-800 dark:text-neutral-200
+                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                        transition ease-in-out duration-150
+                                        py-2 px-3 sm:text-sm">
                                     <option value="">Select Student Type</option>
                                     @foreach($studentTypes as $type)
                                         <option value="{{ $type }}">{{ $type }}</option>
@@ -89,7 +151,13 @@
                             
                             <div>
                                 <label for="level" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Level</label>
-                                <select id="level" wire:model="level" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <select id="level" wire:model="level" class="block w-full rounded-md
+                                        border border-neutral-300 dark:border-neutral-700
+                                        bg-white dark:bg-neutral-800
+                                        text-neutral-800 dark:text-neutral-200
+                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                        transition ease-in-out duration-150
+                                        py-2 px-3 sm:text-sm">
                                     <option value="">Select Level</option>
                                     @foreach($levels as $lvl)
                                         <option value="{{ $lvl }}">{{ $lvl }}</option>
@@ -100,7 +168,13 @@
                             
                             <div>
                                 <label for="visibility" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Visibility</label>
-                                <select id="visibility" wire:model="visibility" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <select id="visibility" wire:model="visibility" class="block w-full rounded-md
+                                        border border-neutral-300 dark:border-neutral-700
+                                        bg-white dark:bg-neutral-800
+                                        text-neutral-800 dark:text-neutral-200
+                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                        transition ease-in-out duration-150
+                                        py-2 px-3 sm:text-sm">
                                     <option value="public">Public</option>
                                     <option value="restricted">Restricted</option>
                                 </select>
@@ -109,7 +183,7 @@
                             
                             <div class="md:col-span-2">
                                 <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
-                                <textarea id="description" wire:model="description" rows="3" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                <textarea id="description" wire:model="description" rows="3" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
                                 @error('description') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             
@@ -119,22 +193,22 @@
                                     file:mr-4 file:py-2 file:px-4
                                     file:rounded-md file:border-0
                                     file:text-sm file:font-semibold
-                                    file:bg-indigo-50 file:text-indigo-700
-                                    hover:file:bg-indigo-100
+                                    file:bg-blue-50 file:text-blue-700
+                                    hover:file:bg-blue-100
                                 ">
                                 @if($existingFilePath)
                                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Current file: {{ basename($existingFilePath) }}</p>
                                 @endif
-                                <div wire:loading wire:target="file" class="mt-1 text-xs text-indigo-600">Uploading...</div>
+                                <div wire:loading wire:target="file" class="mt-1 text-xs text-blue-600">Uploading...</div>
                                 @error('file') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         
                         <div class="mt-4 flex justify-end space-x-3">
-                            <button type="button" wire:click="toggleForm" class="px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button type="button" wire:click="toggleForm" class="px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button type="submit" class="px-4 py-2 bg-blue-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 {{ $paperId ? 'Update Paper' : 'Save Paper' }}
                             </button>
                         </div>
@@ -144,7 +218,7 @@
                 {{-- Add Button --}}
                 <div class="mb-4 text-right">
                     <button wire:click="toggleForm" 
-                    class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm font-medium shadow-sm inline-block">
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium shadow-sm inline-block">
                         Add New Paper
                     </button>
                 </div>
@@ -157,7 +231,7 @@
                 {{-- Search and Reset --}}
                 <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
                     <div class="flex-grow mb-2 md:mb-0">
-                        <input type="text" wire:model.debounce.300ms="search" placeholder="Search papers..." class="block w-full shadow-sm sm:text-sm border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        <input type="text" wire:model.debounce.300ms="search" placeholder="Search papers..." class="pl-10 pr-4 py-2 w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition ease-in-out duration-150 text-base placeholder-neutral-400 dark:placeholder-neutral-500">
                     </div>
                     <div>
                         <button wire:click="resetFilters" class="px-3 py-1.5 text-sm bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-300 border border-neutral-200 dark:border-neutral-700 rounded-md hover:bg-gray-50 dark:hover:bg-neutral-700 shadow-sm">
@@ -168,42 +242,81 @@
 
                 {{-- Filters --}}
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mt-3">
-                    <select wire:model="departmentFilter" class="filter-select">
+                    <select
+                        wire:model="departmentFilter"
+                        class="filter-select
+                            pl-10 pr-4 py-2 w-full rounded-md
+                            border border-neutral-300 dark:border-neutral-700
+                            bg-white dark:bg-neutral-800
+                            text-neutral-800 dark:text-neutral-200
+                            focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                            transition ease-in-out duration-150 text-base"
+                    >
                         <option value="">All Departments</option>
                         @foreach($departments as $d)
                             <option value="{{ $d->id }}">{{ $d->name }}</option>
                         @endforeach
                     </select>
 
-                    <select wire:model="yearFilter" class="filter-select">
+                    <select wire:model="yearFilter" class="filter-select
+                            pl-10 pr-4 py-2 w-full rounded-md
+                            border border-neutral-300 dark:border-neutral-700
+                            bg-white dark:bg-neutral-800
+                            text-neutral-800 dark:text-neutral-200
+                            focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                            transition ease-in-out duration-150 text-base" >
                         <option value="">All Years</option>
                         @foreach($years as $y)
                             <option value="{{ $y }}">{{ $y }}</option>
                         @endforeach
                     </select>
 
-                    <select wire:model="levelFilter" class="filter-select">
+                    <select wire:model="levelFilter" class="filter-select
+                            pl-10 pr-4 py-2 w-full rounded-md
+                            border border-neutral-300 dark:border-neutral-700
+                            bg-white dark:bg-neutral-800
+                            text-neutral-800 dark:text-neutral-200
+                            focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                            transition ease-in-out duration-150 text-base">
                         <option value="">All Levels</option>
                         @foreach($levels as $lvl)
                             <option value="{{ $lvl }}">{{ $lvl }}</option>
                         @endforeach
                     </select>
 
-                    <select wire:model="examTypeFilter" class="filter-select">
+                    <select wire:model="examTypeFilter" class="filter-select
+                            pl-10 pr-4 py-2 w-full rounded-md
+                            border border-neutral-300 dark:border-neutral-700
+                            bg-white dark:bg-neutral-800
+                            text-neutral-800 dark:text-neutral-200
+                            focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                            transition ease-in-out duration-150 text-base">
                         <option value="">All Exam Types</option>
                         @foreach($examTypes as $type)
                             <option value="{{ $type }}">{{ $type }}</option>
                         @endforeach
                     </select>
 
-                    <select wire:model="studentTypeFilter" class="filter-select">
+                    <select wire:model="studentTypeFilter" class="filter-select
+                            pl-10 pr-4 py-2 w-full rounded-md
+                            border border-neutral-300 dark:border-neutral-700
+                            bg-white dark:bg-neutral-800
+                            text-neutral-800 dark:text-neutral-200
+                            focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                            transition ease-in-out duration-150 text-base">
                         <option value="">All Student Types</option>
                         @foreach($studentTypes as $type)
                             <option value="{{ $type }}">{{ $type }}</option>
                         @endforeach
                     </select>
 
-                    <select wire:model="semesterFilter" class="filter-select">
+                    <select wire:model="semesterFilter" class="filter-select
+                            pl-10 pr-4 py-2 w-full rounded-md
+                            border border-neutral-300 dark:border-neutral-700
+                            bg-white dark:bg-neutral-800
+                            text-neutral-800 dark:text-neutral-200
+                            focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                            transition ease-in-out duration-150 text-base">
                         <option value="">All Semesters</option>
                         <option value="1">Semester 1</option>
                         <option value="2">Semester 2</option>
@@ -214,13 +327,13 @@
             {{-- Papers Table --}}
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
-                    <thead class="bg-neutral-50 dark:bg-neutral-800">
+                    <thead class="bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700">
                         <tr>
-                            <th class="table-head">Title</th>
-                            <th class="table-head">Course</th>
-                            <th class="table-head">Details</th>
-                            <th class="table-head">Status</th>
-                            <th class="table-head">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Title</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Course</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Details</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-neutral-900 divide-y divide-neutral-200 dark:divide-neutral-700">
@@ -246,7 +359,7 @@
                                     @endif
                                 </td>
                                 <td class="table-cell text-sm space-x-2">
-                                    <a href="{{ Storage::url($paper->file_path) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">View</a>
+                                    <a href="{{ Storage::url($paper->file_path) }}" target="_blank" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">View</a>
                                     <button wire:click="editPaper({{ $paper->id }})" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">Edit</button>
                                     <button wire:click="confirmDelete({{ $paper->id }})" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">Delete</button>
                                 </td>
@@ -295,7 +408,7 @@
                             <button wire:click="deletePaper" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
                                 Delete
                             </button>
-                            <button wire:click="$set('confirmingDeletion', false)" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-neutral-200 dark:border-neutral-700 shadow-sm px-4 py-2 bg-white dark:bg-neutral-700 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button wire:click="$set('confirmingDeletion', false)" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-neutral-200 dark:border-neutral-700 shadow-sm px-4 py-2 bg-white dark:bg-neutral-700 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                                 Cancel
                             </button>
                         </div>
@@ -312,7 +425,7 @@
 @push('styles')
 <style>
     .filter-select {
-        @apply block w-full py-1.5 px-2 text-sm border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 dark:text-gray-300;
+        @apply block w-full py-1.5 px-2 text-sm border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-700 dark:text-gray-300;
     }
     .table-head {
         @apply px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider;

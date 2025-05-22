@@ -25,7 +25,7 @@
                 wire:model.live.debounce.300ms="search"
                 type="text"
                 placeholder="{{ __('Search departments by name or code...') }}"
-                class="pl-10 pr-4 py-2 w-full rounded-lg border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500 text-base"
+                class="pl-10 pr-4 py-2 w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition ease-in-out duration-150 text-base placeholder-neutral-400 dark:placeholder-neutral-500"
             />
         </div>
     </div>
@@ -135,7 +135,7 @@
                                     type="text"
                                     wire:model="name"
                                     id="name"
-                                    class="block w-full rounded-lg border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500"
+                                   class="block w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition ease-in-out duration-150 py-2 px-3 text-sm placeholder-neutral-400 dark:placeholder-neutral-500"
                                     required
                                 >
                                 @error('name')
@@ -151,7 +151,7 @@
                                     type="text"
                                     wire:model="code"
                                     id="code"
-                                    class="block w-full rounded-lg border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500"
+                                    class="block w-full rounded-md border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition ease-in-out duration-150 py-2 px-3 text-sm placeholder-neutral-400 dark:placeholder-neutral-500"
                                     required
                                 >
                                 @error('code')
@@ -167,7 +167,7 @@
                                     wire:model="description"
                                     id="description"
                                     rows="3"
-                                    class="block w-full rounded-lg border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500"
+                                    class="block w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition ease-in-out duration-150 py-2 px-3 text-sm placeholder-neutral-400 dark:placeholder-neutral-500"
                                 ></textarea>
                             </div>
 
@@ -176,7 +176,7 @@
                                     <input
                                         type="checkbox"
                                         wire:model="is_active"
-                                        class="form-checkbox h-5 w-5 text-blue-600 rounded border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 dark:checked:bg-blue-600 dark:checked:border-blue-600 focus:ring-blue-500"
+                                        class="block w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition ease-in-out duration-150 py-2 px-3 text-sm placeholder-neutral-400 dark:placeholder-neutral-500"
                                     >
                                     <span class="ml-2 text-sm text-neutral-700 dark:text-neutral-300">
                                         {{ __('Active Department') }}

@@ -57,25 +57,43 @@
                         {{ __('Course Management') }}
                     </flux:navlist.item>
 
-                     {{-- Paper Management Drop Down --}}
+                </flux:navlist.group>
+
+                    {{-- Analytics Drop Down --}}
                     <flux:navlist.group expandable heading="Analytics" icon="newspaper">
+                        {{-- For: dashboard.blade.php --}}
                         <flux:navlist.item 
+                            :href="route('admin.analytics')" 
+                            icon="home-modern"
+                            :current="request()->routeIs('admin.analytics.dashboard')"
+                        >
+                            {{ __('Dashboard') }}
+                        </flux:navlist.item>
+                            {{-- For: download-statistics.blade.php, user-engagement.blade.php, content-analytics.blade.php and user download history--}}
+                         <flux:navlist.item 
                             :href="route('admin.papers.index')" 
-                            icon="server-stack"
+                            icon="chart-bar"
                             :current="request()->routeIs('admin.papers.index')"
                         >
-                            {{ __('Analytics') }}
+                            {{ __('Analytics Details') }}
                         </flux:navlist.item>
 
-                    </flux:navlist.group>
+                        {{-- For: storage-analytics.blade.php, export-data.blade.php --}}
+                        <flux:navlist.item 
+                            :href="route('admin.papers.index')" 
+                            icon="wrench-screwdriver"
+                            :current="request()->routeIs('admin.papers.index')"
+                        >
+                            {{ __('Systems Analytics') }}
+                    </flux:navlist.item>
 
-                </flux:navlist.group>
+                    </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
 
             <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
+                <flux:navlist.item icon="folder-git-2" href="https://github.com/Sloane-J/Q-Vault" target="_blank">
                     {{ __('Repository') }}
                 </flux:navlist.item>
 

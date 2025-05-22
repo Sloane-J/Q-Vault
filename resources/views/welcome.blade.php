@@ -13,7 +13,7 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:200,300,400,500,600,700|space-grotesk:400,500,600,700" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700|space-grotesk:400,500,600,700" rel="stylesheet" />
         
         <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
@@ -23,21 +23,28 @@
                 theme: {
                     extend: {
                         colors: {
-                            dark: {
-                                900: '#000000',
-                                800: '#0A0A0A',
-                                700: '#141414',
-                                600: '#1A1A1A',
-                                500: '#222222',
-                                400: '#2A2A2A',
+                            primary: {
+                                50: '#f0f9ff',
+                                100: '#e0f2fe', 
+                                500: '#0ea5e9',
+                                600: '#0284c7',
+                                700: '#0369a1',
                             },
-                            accent: {
-                                500: '#3B82F6', // Blue
-                                400: '#60A5FA',
+                            gray: {
+                                50: '#f8fafc',
+                                100: '#f1f5f9',
+                                200: '#e2e8f0',
+                                300: '#cbd5e1',
+                                400: '#94a3b8',
+                                500: '#64748b',
+                                600: '#475569',
+                                700: '#334155',
+                                800: '#1e293b',
+                                900: '#0f172a',
                             }
                         },
                         fontFamily: {
-                            sans: ['Plus Jakarta Sans', 'sans-serif'],
+                            sans: ['Inter', 'sans-serif'],
                             display: ['Space Grotesk', 'sans-serif'],
                         },
                         animation: {
@@ -45,7 +52,7 @@
                             'slide-up': 'slideUp 0.5s ease-out',
                             'slide-down': 'slideDown 0.5s ease-out',
                             'slide-in-right': 'slideInRight 0.5s ease-out',
-                            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                            'float': 'float 6s ease-in-out infinite',
                         },
                         keyframes: {
                             fadeIn: {
@@ -64,6 +71,10 @@
                                 '0%': { transform: 'translateX(-20px)', opacity: '0' },
                                 '100%': { transform: 'translateX(0)', opacity: '1' },
                             },
+                            float: {
+                                '0%, 100%': { transform: 'translateY(0px)' },
+                                '50%': { transform: 'translateY(-20px)' },
+                            }
                         }
                     }
                 }
@@ -74,210 +85,283 @@
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         
         <style>
-            .bg-grid {
-                background-size: 40px 40px;
-                background-image: 
-                    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            .hero-gradient {
+                background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
             }
             
-            .glow {
-                box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            .floating-card {
+                backdrop-filter: blur(10px);
+                background: rgba(255, 255, 255, 0.8);
+                border: 1px solid rgba(255, 255, 255, 0.3);
             }
             
-            .hover-glow:hover {
-                box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
-            }
-            
-            /* Custom gradient overlay */
-            .gradient-mask {
-                -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-                mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            .glass-effect {
+                backdrop-filter: blur(20px);
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
             }
         </style>
     </head>
-    <body class="bg-dark-900 text-white min-h-screen" x-data="{ isLoaded: false }" x-init="setTimeout(() => isLoaded = true, 100)">
-        <!-- Background grid pattern -->
-        <div class="fixed inset-0 bg-grid opacity-20"></div>
+    <body class="bg-gray-50 min-h-screen" x-data="{ isLoaded: false }" x-init="setTimeout(() => isLoaded = true, 100)">
         
-        <!-- Background gradient -->
-        <div class="fixed inset-0 bg-gradient-to-br from-dark-900 via-dark-800 to-dark-700 opacity-80"></div>
-        
-        <!-- Ambient glow effects -->
-        <div class="fixed top-1/4 left-1/4 w-96 h-96 bg-accent-500/10 rounded-full filter blur-3xl animate-pulse-slow"></div>
-        <div class="fixed bottom-1/3 right-1/4 w-80 h-80 bg-indigo-500/5 rounded-full filter blur-3xl animate-pulse-slow" style="animation-delay: 1s;"></div>
-        
-        <div class="relative z-10" :class="{ 'opacity-0': !isLoaded, 'animate-fade-in': isLoaded }">
+        <div class="relative overflow-hidden" :class="{ 'opacity-0': !isLoaded, 'animate-fade-in': isLoaded }">
             <!-- Navigation Bar -->
-            <header class="w-full py-6 px-6 md:px-8 lg:px-12" x-data="{ scrolled: false }" @scroll.window="scrolled = window.pageYOffset > 20">
-                <div class="max-w-7xl mx-auto flex items-center justify-between" :class="{ 'py-2 bg-dark-800/80 backdrop-blur-sm rounded-xl shadow-lg': scrolled }" 
-                     x-transition:enter="transition duration-300" 
-                     x-transition:enter-start="opacity-0" 
-                     x-transition:enter-end="opacity-100">
-                    <!-- Logo -->
-                    <div class="flex items-center group">
-                        <div class="bg-dark-700 p-2 rounded-md group-hover:bg-dark-600 transition-all duration-300">
-                            <svg class="h-8 w-8 text-accent-500 group-hover:text-accent-400 transition-colors duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2L4 6V12C4 15.31 7.12 19.43 12 22C16.88 19.43 20 15.31 20 12V6L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+            <header class="relative z-20 w-full py-4 px-6 md:px-8" x-data="{ scrolled: false }" @scroll.window="scrolled = window.pageYOffset > 20">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex items-center justify-between p-4 rounded-2xl transition-all duration-300" 
+                         :class="{ 'bg-white/80 backdrop-blur-md shadow-lg': scrolled }">
+                        <!-- Logo -->
+                        <div class="flex items-center group">
+                            <div class="bg-primary-500 p-2 rounded-xl group-hover:bg-primary-600 transition-all duration-300 shadow-lg">
+                                <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2L4 6V12C4 15.31 7.12 19.43 12 22C16.88 19.43 20 15.31 20 12V6L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="ml-3 text-2xl font-bold font-display text-gray-800">Q-Vault</span>
                         </div>
-                        <span class="ml-3 text-2xl font-bold font-display text-white group-hover:text-accent-400 transition-colors duration-300">Q-Vault</span>
-                    </div>
-                    
-                    <!-- Auth Navigation -->
-                    @if (Route::has('login'))
-                        <nav class="flex items-center gap-4">
-                            @auth
-                                <a href="{{ url('/dashboard') }}" 
-                                   class="px-5 py-2 text-sm font-medium text-gray-300 hover:text-white transition-all duration-300 relative overflow-hidden group">
-                                    <span class="relative z-10">Dashboard</span>
-                                    <span class="absolute inset-x-0 bottom-0 h-0.5 bg-accent-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-                                </a>
-                            @else
-                                <a href="{{ route('login') }}" 
-                                   class="px-5 py-2 text-sm font-medium text-gray-300 hover:text-white transition-all duration-300 relative overflow-hidden group">
-                                    <span class="relative z-10">Log in</span>
-                                    <span class="absolute inset-x-0 bottom-0 h-0.5 bg-accent-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-                                </a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" 
-                                       class="px-5 py-2 bg-dark-700 hover:bg-dark-600 border border-dark-500 hover:border-accent-500 text-white rounded-md hover-glow text-sm font-medium transition-all duration-300">
-                                        Register
+                        
+                        <!-- Auth Navigation -->
+                        @if (Route::has('login'))
+                            <nav class="flex items-center gap-3">
+                                @auth
+                                    <a href="{{ url('/dashboard') }}" 
+                                       class="px-6 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 transition-all duration-300 rounded-xl hover:bg-gray-100">
+                                        Dashboard
                                     </a>
-                                @endif
-                            @endauth
-                        </nav>
-                    @endif
+                                @else
+                                    <a href="{{ route('login') }}" 
+                                       class="px-6 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 transition-all duration-300 rounded-xl hover:bg-gray-100">
+                                        Log in
+                                    </a>
+                                    @if (Route::has('register'))
+                                        <a href="{{ route('register') }}" 
+                                           class="px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-xl">
+                                            Get Started
+                                        </a>
+                                    @endif
+                                @endauth
+                            </nav>
+                        @endif
+                    </div>
                 </div>
             </header>
 
             <!-- Hero Section -->
-            <main class="relative">
-                <div class="max-w-7xl mx-auto px-6 md:px-8 lg:px-12 py-12 md:py-20 lg:py-28">
-                    <div class="grid md:grid-cols-2 gap-12 items-center">
+            <main class="relative hero-gradient min-h-screen">
+                <!-- Floating Elements -->
+                <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div class="absolute top-20 right-20 w-32 h-32 bg-primary-200 rounded-full opacity-20 animate-float"></div>
+                    <div class="absolute top-40 left-16 w-24 h-24 bg-primary-300 rounded-full opacity-30 animate-float" style="animation-delay: 1s;"></div>
+                    <div class="absolute bottom-32 right-32 w-20 h-20 bg-primary-400 rounded-full opacity-25 animate-float" style="animation-delay: 2s;"></div>
+                </div>
+
+                <div class="relative z-10 max-w-6xl mx-auto px-6 md:px-8 pt-12 pb-20">
+                    <div class="grid md:grid-cols-2 gap-12 items-center min-h-[80vh]">
                         <!-- Hero Content -->
-                        <div class="text-center md:text-left" x-show="isLoaded" x-transition:enter="transition duration-700" x-transition:enter-start="opacity-0 transform -translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0">
-                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-display leading-tight mb-6">
-                                <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300">Unlock Academic</span> 
-                                <span class="bg-clip-text text-transparent bg-gradient-to-r from-accent-400 to-accent-500 animate-pulse-slow">Excellence</span>
-                                <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300"> with Past Papers</span>
-                            </h1>
-                            <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-xl">
-                                Your comprehensive solution for accessing, managing, and studying past exam papers. Streamline your preparation and achieve better results.
-                            </p>
-                            <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <div class="text-center md:text-left space-y-8" x-show="isLoaded" x-transition:enter="transition duration-700" x-transition:enter-start="opacity-0 transform -translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0">
+                            <div class="space-y-6">
+                                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-display leading-tight text-gray-800">
+                                    Papers that help you 
+                                    <span class="text-primary-500">stay focused</span>
+                                </h1>
+                                <p class="text-lg md:text-xl text-gray-600 max-w-lg leading-relaxed">
+                                    Your comprehensive solution for accessing, managing, and studying past exam papers. Streamline your preparation and achieve better results.
+                                </p>
+                            </div>
+                            
+                            <!-- Email Input Section -->
+                            <div class="flex flex-col sm:flex-row gap-3 max-w-md">
+                                <div class="flex-1">
+                                    <input type="email" 
+                                           placeholder="Your email address"
+                                           class="w-full px-4 py-3 text-gray-800 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 shadow-sm">
+                                </div>
                                 @auth
                                     <a href="{{ url('/dashboard') }}" 
-                                       class="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden rounded-md bg-accent-500 text-white font-medium transition duration-300 ease-out border-2 border-accent-500 hover:border-accent-400 shadow-md hover:shadow-accent-500/40">
-                                        <span class="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 translate-y-full group-hover:translate-y-0 ease">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                            </svg>
-                                        </span>
-                                        <span class="relative block text-white transition-all duration-300 group-hover:translate-y-[-200%]">Go to Dashboard</span>
+                                       class="px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl whitespace-nowrap">
+                                        Go to Dashboard
                                     </a>
                                 @else
                                     <a href="{{ route('login') }}" 
-                                       class="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden rounded-md bg-accent-500 text-white font-medium transition duration-300 ease-out border-2 border-accent-500 hover:border-accent-400 shadow-md hover:shadow-accent-500/40">
-                                        <span class="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 translate-y-full group-hover:translate-y-0 ease">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                            </svg>
-                                        </span>
-                                        <span class="relative block text-white transition-all duration-300 group-hover:translate-y-[-200%]">Get Started</span>
+                                       class="px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl whitespace-nowrap">
+                                        Get Started
                                     </a>
-                                    @if (Route::has('register'))
-                                        <a href="{{ route('register') }}" 
-                                           class="relative inline-flex items-center justify-center px-8 py-3 overflow-hidden rounded-md bg-transparent text-accent-400 font-medium transition duration-300 ease-out border-2 border-accent-500 hover:bg-dark-700 group">
-                                            <span class="relative">Register Now</span>
-                                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-accent-400 transition-all duration-500 group-hover:w-full"></span>
-                                            <span class="absolute right-0 top-0 w-0 h-0.5 bg-accent-400 transition-all duration-500 group-hover:w-full"></span>
-                                        </a>
-                                    @endif
                                 @endauth
                             </div>
                         </div>
                         
-                        <!-- Hero Image -->
-                        <div class="relative hidden md:block" x-show="isLoaded" x-transition:enter="transition duration-700 delay-300" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                            <div class="absolute inset-0 bg-gradient-to-tr from-accent-500/10 to-indigo-500/10 rounded-2xl transform -rotate-6"></div>
-                            <div class="relative bg-dark-700 p-4 rounded-2xl border border-dark-500 shadow-xl transition-all duration-300 hover:shadow-accent-500/20">
-                                <div class="aspect-[4/3] bg-dark-600 rounded-md overflow-hidden border border-dark-500">
-                                    <svg class="w-full h-full text-dark-400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="currentColor" viewBox="0 0 640 512">
-                                        <path d="M480 80C480 35.82 515.8 0 560 0C604.2 0 640 35.82 640 80C640 124.2 604.2 160 560 160C515.8 160 480 124.2 480 80zM0 456.1C0 445.6 2.964 435.3 8.551 426.4L225.3 81.01C231.9 70.42 243.5 64 256 64C268.5 64 280.1 70.42 286.8 81.01L412.7 281.7L460.9 202.7C464.1 196.1 472.2 192 480 192C487.8 192 495 196.1 499.1 202.7L631.1 419.1C636.9 428.6 640 439.7 640 450.9C640 484.6 612.6 512 578.9 512H55.91C25.03 512 0 486.1 0 456.1L0 456.1z" />
-                                    </svg>
+                        <!-- Hero Visual -->
+                        <div class="relative" x-show="isLoaded" x-transition:enter="transition duration-700 delay-300" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
+                            <!-- Main Card -->
+                            <div class="relative">
+                                <div class="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
+                                    <!-- Profile Section -->
+                                    <div class="flex items-center mb-6">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h3 class="font-semibold text-gray-800">Student Dashboard</h3>
+                                            <p class="text-sm text-gray-500">Access your papers</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Paper Preview -->
+                                    <div class="space-y-4 mb-6">
+                                        <div class="aspect-[4/3] bg-gray-100 rounded-2xl overflow-hidden border border-gray-200 relative">
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="absolute top-3 right-3 bg-primary-100 text-primary-700 px-2 py-1 rounded-lg text-xs font-medium">
+                                                PDF
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Paper Info -->
+                                        <div class="space-y-3">
+                                            <div class="h-4 bg-gray-200 rounded-full w-3/4"></div>
+                                            <div class="h-3 bg-gray-100 rounded-full"></div>
+                                            <div class="h-3 bg-gray-100 rounded-full w-5/6"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Action Buttons -->
+                                    <div class="flex gap-3">
+                                        <button class="flex-1 bg-primary-500 text-white py-2.5 rounded-xl font-medium hover:bg-primary-600 transition-colors duration-300">
+                                            Download
+                                        </button>
+                                        <button class="px-4 py-2.5 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="mt-4 space-y-2">
-                                    <div class="h-4 bg-dark-500 rounded-full w-3/4"></div>
-                                    <div class="h-4 bg-dark-500 rounded-full"></div>
-                                    <div class="h-4 bg-dark-500 rounded-full w-5/6"></div>
+                                
+                                <!-- Floating Mini Cards -->
+                                <div class="absolute -top-4 -right-4 floating-card rounded-2xl p-4 shadow-lg animate-float">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-700">Verified</span>
+                                    </div>
                                 </div>
-                                <div class="mt-4 flex justify-between">
-                                    <div class="h-8 bg-accent-500/20 rounded-md w-24"></div>
-                                    <div class="h-8 bg-dark-500 rounded-md w-20"></div>
+                                
+                                <div class="absolute -bottom-6 -left-6 floating-card rounded-2xl p-4 shadow-lg animate-float" style="animation-delay: 1s;">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-700">Recent</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Key Features Badges -->
-                    <div class="mt-16 md:mt-24 grid grid-cols-2 sm:grid-cols-4 gap-4" x-show="isLoaded">
-                        <div class="feature-badge px-4 py-3 bg-dark-800/80 backdrop-blur-sm rounded-xl border border-dark-600 transition-all duration-300 hover:border-accent-500/50 hover:bg-dark-700/80 group"
-                             x-show="isLoaded" 
-                             x-transition:enter="transition duration-500 delay-100" 
-                             x-transition:enter-start="opacity-0 transform translate-y-4" 
-                             x-transition:enter-end="opacity-100 transform translate-y-0">
-                            <div class="flex items-center">
-                                <span class="flex-shrink-0 bg-accent-500/20 group-hover:bg-accent-500/30 p-2 rounded-md transition-all duration-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z" />
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z" clip-rule="evenodd" />
-                                    </svg>
-                                </span>
-                                <span class="ml-3 text-sm font-medium text-gray-200 group-hover:text-white transition-colors duration-300">Easy Search & Filters</span>
-                            </div>
+                    <!-- Featured Papers Section -->
+                    <div class="mt-20" x-show="isLoaded">
+                        <div class="text-center mb-12">
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Featured Papers</h2>
+                            <p class="text-gray-600 max-w-2xl mx-auto">Discover the most popular and recently added exam papers across all departments</p>
                         </div>
-                        <div class="feature-badge px-4 py-3 bg-dark-800/80 backdrop-blur-sm rounded-xl border border-dark-600 transition-all duration-300 hover:border-accent-500/50 hover:bg-dark-700/80 group"
-                             x-show="isLoaded" 
-                             x-transition:enter="transition duration-500 delay-200" 
-                             x-transition:enter-start="opacity-0 transform translate-y-4" 
-                             x-transition:enter-end="opacity-100 transform translate-y-0">
-                            <div class="flex items-center">
-                                <span class="flex-shrink-0 bg-accent-500/20 group-hover:bg-accent-500/30 p-2 rounded-md transition-all duration-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
-                                    </svg>
-                                </span>
-                                <span class="ml-3 text-sm font-medium text-gray-200 group-hover:text-white transition-colors duration-300">Multiple Departments</span>
+                        
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <!-- Paper Card 1 -->
+                            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group"
+                                 x-transition:enter="transition duration-500 delay-100" 
+                                 x-transition:enter-start="opacity-0 transform translate-y-4" 
+                                 x-transition:enter-end="opacity-100 transform translate-y-0">
+                                <div class="aspect-[4/3] bg-gradient-to-br from-purple-100 to-purple-200 relative overflow-hidden">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <svg class="w-12 h-12 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="absolute top-3 right-3 bg-white/90 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium">
+                                        2023
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors duration-300">Computer Science Final</h3>
+                                    <p class="text-sm text-gray-500 mb-4">Department of Computing • Level 300</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-lg">1,250 downloads</span>
+                                        <button class="text-primary-500 hover:text-primary-600 transition-colors duration-300">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="feature-badge px-4 py-3 bg-dark-800/80 backdrop-blur-sm rounded-xl border border-dark-600 transition-all duration-300 hover:border-accent-500/50 hover:bg-dark-700/80 group"
-                             x-show="isLoaded" 
-                             x-transition:enter="transition duration-500 delay-300" 
-                             x-transition:enter-start="opacity-0 transform translate-y-4" 
-                             x-transition:enter-end="opacity-100 transform translate-y-0">
-                            <div class="flex items-center">
-                                <span class="flex-shrink-0 bg-accent-500/20 group-hover:bg-accent-500/30 p-2 rounded-md transition-all duration-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
-                                    </svg>
-                                </span>
-                                <span class="ml-3 text-sm font-medium text-gray-200 group-hover:text-white transition-colors duration-300">Version Control</span>
+
+                            <!-- Paper Card 2 -->
+                            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group"
+                                 x-transition:enter="transition duration-500 delay-200" 
+                                 x-transition:enter-start="opacity-0 transform translate-y-4" 
+                                 x-transition:enter-end="opacity-100 transform translate-y-0">
+                                <div class="aspect-[4/3] bg-gradient-to-br from-green-100 to-green-200 relative overflow-hidden">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="absolute top-3 right-3 bg-white/90 text-green-700 px-2 py-1 rounded-lg text-xs font-medium">
+                                        2024
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors duration-300">Mathematics Exam</h3>
+                                    <p class="text-sm text-gray-500 mb-4">Department of Mathematics • Level 200</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-lg">890 downloads</span>
+                                        <button class="text-primary-500 hover:text-primary-600 transition-colors duration-300">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="feature-badge px-4 py-3 bg-dark-800/80 backdrop-blur-sm rounded-xl border border-dark-600 transition-all duration-300 hover:border-accent-500/50 hover:bg-dark-700/80 group"
-                             x-show="isLoaded" 
-                             x-transition:enter="transition duration-500 delay-400" 
-                             x-transition:enter-start="opacity-0 transform translate-y-4" 
-                             x-transition:enter-end="opacity-100 transform translate-y-0">
-                            <div class="flex items-center">
-                                <span class="flex-shrink-0 bg-accent-500/20 group-hover:bg-accent-500/30 p-2 rounded-md transition-all duration-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-                                    </svg>
-                                </span>
-                                <span class="ml-3 text-sm font-medium text-gray-200 group-hover:text-white transition-colors duration-300">PDF Preview</span>
+
+                            <!-- Paper Card 3 -->
+                            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group"
+                                 x-transition:enter="transition duration-500 delay-300" 
+                                 x-transition:enter-start="opacity-0 transform translate-y-4" 
+                                 x-transition:enter-end="opacity-100 transform translate-y-0">
+                                <div class="aspect-[4/3] bg-gradient-to-br from-blue-100 to-blue-200 relative overflow-hidden">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="absolute top-3 right-3 bg-white/90 text-blue-700 px-2 py-1 rounded-lg text-xs font-medium">
+                                        2023
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="font-semibold text-gray-800 mb-2 group-hover:text-primary-600 transition-colors duration-300">Engineering Mechanics</h3>
+                                    <p class="text-sm text-gray-500 mb-4">Department of Engineering • Level 400</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-lg">1,520 downloads</span>
+                                        <button class="text-primary-500 hover:text-primary-600 transition-colors duration-300">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -286,12 +370,15 @@
         </div>
         
         <!-- Loading animation -->
-        <div class="fixed inset-0 bg-dark-900 z-50 flex items-center justify-center transition-opacity duration-500"
+        <div class="fixed inset-0 bg-gray-50 z-50 flex items-center justify-center transition-opacity duration-500"
              :class="{ 'opacity-100': !isLoaded, 'opacity-0 pointer-events-none': isLoaded }">
-            <svg class="animate-spin h-12 w-12 text-accent-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            <div class="flex items-center space-x-2">
+                <svg class="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-primary-600 font-medium">Loading Q-Vault...</span>
+            </div>
         </div>
     </body>
 </html>
