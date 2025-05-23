@@ -72,11 +72,13 @@
                                     <p class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
                                         {{ $activeUsersToday }}
                                     </p>
+                                    
                                     <p class="text-xs text-neutral-500 dark:text-neutral-400 ml-2">
                                         Today / {{ $activeUsersThisWeek }} This Week
                                     </p>
                                 </div>
                             </div>
+                            
                             <div class="p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg">
                                 <svg class="w-6 h-6 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
@@ -85,7 +87,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Storage Used -->
                 <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
                     <div class="p-6">

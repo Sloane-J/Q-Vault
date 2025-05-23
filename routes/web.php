@@ -36,6 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware([EnsureUserRole::class . ':admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
         Route::get('/analytics', fn () => view('admin.analytics'))->name('analytics');
+        Route::get('/analytics-details', fn () => view('admin.analytics-details'))->name('analytics-details');
+        Route::get('/courses', fn () => view('admin.courses'));
         Route::get('/courses', fn () => view('admin.courses'))->name('courses');
         Route::get('/department', fn () => view('admin.department'))->name('department.view');
         Route::get('/departments', fn () => view('admin.department'))->name('departments');

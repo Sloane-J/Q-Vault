@@ -46,20 +46,30 @@ class DownloadStatistics extends Component
         
         // Load initial data
         $this->loadStatistics();
+
+        $this->totalDownloads = DownloadStatistic::sum('total_downloads');
     }
 
     public function loadFilterOptions()
     {
-        $this->departments = Department::orderBy('name')->get();
-        $this->studentTypes = StudentType::orderBy('name')->get();
-        $this->levels = Level::with('studentType')->orderBy('level_number')->get();
-        
-        // Get available exam years from the statistics
-        $this->examYears = DownloadStatistic::distinct()
-            ->whereNotNull('exam_year')
-            ->orderBy('exam_year', 'desc')
-            ->pluck('exam_year')
-            ->toArray();
+        try {
+            $this->departments = Department::orderBy('name')->get();
+            $this->studentTypes = StudentType::orderBy('name')->get();
+            $this->levels = Level::orderBy('level_number')->get();
+            
+            // Get available exam years from the statistics
+            $this->examYears = DownloadStatistic::distinct()
+                ->whereNotNull('exam_year')
+                ->orderBy('exam_year', 'desc')
+                ->pluck('exam_year')
+                ->toArray();
+        } catch (\Exception $e) {
+            // Fallback to empty arrays if models don't exist
+            $this->departments = collect();
+            $this->studentTypes = collect();
+            $this->levels = collect();
+            $this->examYears = [];
+        }
     }
 
     public function updatedStartDate()
@@ -287,6 +297,18 @@ class DownloadStatistics extends Component
 
     public function render()
     {
-        return view('livewire.admin.download-statistics');
+        // Ensure data is loaded
+        if (empty($this->departments)) {
+            $this->loadFilterOptions();
+        }
+        
+        return view('livewire.admin.analytics.download-statistics', [
+            'departments' => $this->departments,
+            'totalDownloads' => $this->totalDownloads,
+            'studentTypes' => $this->studentTypes,
+            'levels' => $this->levels,
+            'examTypes' => $this->examTypes,
+            'examYears' => $this->examYears,
+        ]);
     }
 }

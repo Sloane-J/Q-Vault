@@ -71,9 +71,9 @@
                         </flux:navlist.item>
                             {{-- For: download-statistics.blade.php, user-engagement.blade.php, content-analytics.blade.php and user download history--}}
                          <flux:navlist.item 
-                            :href="route('admin.papers.index')" 
+                            :href="route('admin.analytics-details')" 
                             icon="chart-bar"
-                            :current="request()->routeIs('admin.papers.index')"
+                            :current="request()->routeIs('admin.analytics.download-statistics')"
                         >
                             {{ __('Analytics Details') }}
                         </flux:navlist.item>
