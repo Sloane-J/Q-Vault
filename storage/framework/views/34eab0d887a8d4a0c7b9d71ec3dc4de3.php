@@ -2,7 +2,7 @@
     $isAdmin = auth()->user() && auth()->user()->isAdmin();
 ?>
 
-<?php if($isAdmin): ?>
+<!--[if BLOCK]><![endif]--><?php if($isAdmin): ?>
     <?php if (isset($component)) { $__componentOriginald275691d15a0a68ca98ac956f9920812 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald275691d15a0a68ca98ac956f9920812 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layouts.app.sidebar','data' => ['title' => $title ?? null]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -88,4 +88,4 @@
 <?php $component = $__componentOriginal1a71817979719de27eee27e59dc2a686; ?>
 <?php unset($__componentOriginal1a71817979719de27eee27e59dc2a686); ?>
 <?php endif; ?>
-<?php endif; ?><?php /**PATH /home/user/Q-Vault/resources/views/components/layouts/app.blade.php ENDPATH**/ ?>
+<?php endif; ?><!--[if ENDBLOCK]><![endif]--><?php /**PATH /home/user/Q-Vault/resources/views/components/layouts/app.blade.php ENDPATH**/ ?>

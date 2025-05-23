@@ -1,111 +1,123 @@
-@extends('layouts.admin')
-
-@section('content')
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Analytics Dashboard</h1>
-    
-    <div class="card mb-4">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">System Overview</h5>
-                <button wire:click="refreshData" class="btn btn-sm btn-outline-primary">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                </button>
+<div class="dark:bg-neutral-900">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-semibold text-xl text-neutral-800 dark:text-neutral-200 leading-tight">
+                        Main Analytics
+                    </h2>
+                    <button wire:click="refreshData" class="inline-flex items-center px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-sm text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="card-body">
+
             <!-- KPI Cards -->
-            <div class="row mb-4">
-                <!-- Papers Uploaded -->
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Total Papers Uploaded</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalPapersUploaded }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-file-alt fa-2x text-gray-300"></i>
-                                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Total Papers Uploaded -->
+                <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+                                    Total Papers Uploaded
+                                </p>
+                                <p class="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mt-2">
+                                    {{ number_format($totalPapersUploaded) }}
+                                </p>
+                            </div>
+                            <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Total Downloads -->
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-success shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        Total Downloads</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalDownloadsAllTime }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-download fa-2x text-gray-300"></i>
-                                </div>
+                <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wide">
+                                    Total Downloads
+                                </p>
+                                <p class="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mt-2">
+                                    {{ number_format($totalDownloadsAllTime) }}
+                                </p>
+                            </div>
+                            <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Active Users -->
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-info shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        Active Users</div>
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col-auto">
-                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $activeUsersToday }}</div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="text-xs text-muted">Today / {{ $activeUsersThisWeek }} This Week</div>
-                                        </div>
-                                    </div>
+                <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-cyan-600 dark:text-cyan-400 uppercase tracking-wide">
+                                    Active Users
+                                </p>
+                                <div class="flex items-center mt-2">
+                                    <p class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+                                        {{ $activeUsersToday }}
+                                    </p>
+                                    <p class="text-xs text-neutral-500 dark:text-neutral-400 ml-2">
+                                        Today / {{ $activeUsersThisWeek }} This Week
+                                    </p>
                                 </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-users fa-2x text-gray-300"></i>
-                                </div>
+                            </div>
+                            <div class="p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg">
+                                <svg class="w-6 h-6 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                </svg>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Storage Used -->
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-warning shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                        Storage Used</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $storageUsed }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-database fa-2x text-gray-300"></i>
-                                </div>
+                <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wide">
+                                    Storage Used
+                                </p>
+                                <p class="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mt-2">
+                                    {{ $storageUsed }}
+                                </p>
+                            </div>
+                            <div class="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                                <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                                </svg>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Charts Row -->
-            <div class="row">
+            <!-- Charts Row 1 -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
                 <!-- Papers by Department Pie Chart -->
-                <div class="col-xl-4 col-lg-6">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Papers by Department</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-pie pt-4 pb-2">
+                <div class="lg:col-span-4">
+                    <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+                        <div class="p-6">
+                            <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-4">
+                                Papers by Department
+                            </h3>
+                            <div class="relative h-80">
                                 <canvas id="papersByDepartmentChart"></canvas>
                             </div>
                         </div>
@@ -113,29 +125,36 @@
                 </div>
 
                 <!-- Download Trends Line Chart -->
-                <div class="col-xl-8 col-lg-6">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h6 class="m-0 font-weight-bold text-primary">Download Trends</h6>
-                            <div class="dropdown no-arrow">
-                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" 
-                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" 
-                                     aria-labelledby="dropdownMenuLink">
-                                    <div class="dropdown-header">Aggregation Period:</div>
-                                    <button class="dropdown-item" wire:click="updateDownloadTrendAggregation('daily')" 
-                                            :class="{ 'active': downloadTrendAggregation === 'daily' }">Daily</button>
-                                    <button class="dropdown-item" wire:click="updateDownloadTrendAggregation('weekly')" 
-                                            :class="{ 'active': downloadTrendAggregation === 'weekly' }">Weekly</button>
-                                    <button class="dropdown-item" wire:click="updateDownloadTrendAggregation('monthly')" 
-                                            :class="{ 'active': downloadTrendAggregation === 'monthly' }">Monthly</button>
+                <div class="lg:col-span-8">
+                    <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-100">
+                                    Download Trends
+                                </h3>
+                                <div class="relative">
+                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-sm text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onclick="toggleDropdown('downloadTrendDropdown')">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                        </svg>
+                                    </button>
+                                    <div id="downloadTrendDropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-neutral-800 ring-1 ring-black ring-opacity-5 z-10">
+                                        <div class="py-1">
+                                            <h6 class="px-4 py-2 text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase">Aggregation Period:</h6>
+                                            <button wire:click="updateDownloadTrendAggregation('daily')" class="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 @if($downloadTrendAggregation === 'daily') font-bold @endif">
+                                                Daily
+                                            </button>
+                                            <button wire:click="updateDownloadTrendAggregation('weekly')" class="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 @if($downloadTrendAggregation === 'weekly') font-bold @endif">
+                                                Weekly
+                                            </button>
+                                            <button wire:click="updateDownloadTrendAggregation('monthly')" class="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 @if($downloadTrendAggregation === 'monthly') font-bold @endif">
+                                                Monthly
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-area">
+                            <div class="relative h-80">
                                 <canvas id="downloadTrendsChart"></canvas>
                             </div>
                         </div>
@@ -143,406 +162,409 @@
                 </div>
             </div>
 
-            <!-- Second Charts Row -->
-            <div class="row">
+            <!-- Charts Row 2 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                 <!-- Active User Trend Area Chart -->
-                <div class="col-xl-6 col-lg-6">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Active User Trend (Last 30 Days)</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-area">
-                                <canvas id="activeUserTrendChart"></canvas>
-                            </div>
+                <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-4">
+                            Active User Trend (Last 30 Days)
+                        </h3>
+                        <div class="relative h-80">
+                            <canvas id="activeUserTrendChart"></canvas>
                         </div>
                     </div>
                 </div>
 
                 <!-- System Activity Trend Line Chart -->
-                <div class="col-xl-6 col-lg-6">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">System Activity Trend (Last 30 Days)</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-area">
-                                <canvas id="systemActivityTrendChart"></canvas>
-                            </div>
+                <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-4">
+                            System Activity Trend (Last 30 Days)
+                        </h3>
+                        <div class="relative h-80">
+                            <canvas id="systemActivityTrendChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Quick Lists Row -->
-            <div class="row">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Recently Added Papers -->
-                <div class="col-lg-6 mb-4">
-                    <div class="card shadow">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Recently Added Papers</h6>
-                        </div>
-                        <div class="card-body">
-                            @if($recentlyAddedPapers && count($recentlyAddedPapers) > 0)
-                                <div class="list-group">
-                                    @foreach($recentlyAddedPapers as $paper)
-                                        <a href="{{ route('admin.papers.show', $paper->id) }}" class="list-group-item list-group-item-action">
-                                            <div class="d-flex w-100 justify-content-between">
-                                                <h6 class="mb-1">{{ $paper->title }}</h6>
-                                                <small>{{ $paper->created_at->diffForHumans() }}</small>
-                                            </div>
-                                        </a>
-                                    @endforeach
-                                </div>
-                            @else
-                                <p class="text-muted">No recently added papers found.</p>
-                            @endif
-                        </div>
+                <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-4">
+                            Recently Added Papers
+                        </h3>
+                        @if($recentlyAddedPapers && count($recentlyAddedPapers) > 0)
+                            <div class="space-y-3">
+                                @foreach($recentlyAddedPapers as $paper)
+                                    <div class="flex justify-between items-start p-4 rounded-lg bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors">
+                                        <div class="flex-1 min-w-0">
+                                            <h6 class="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate">
+                                                {{ Str::limit($paper->title, 50) }}
+                                            </h6>
+                                        </div>
+                                        <span class="text-xs text-neutral-500 dark:text-neutral-400 ml-2 whitespace-nowrap">
+                                            {{ \Carbon\Carbon::parse($paper->created_at)->diffForHumans() }}
+                                        </span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-neutral-500 dark:text-neutral-400 text-sm">No recently added papers found.</p>
+                        @endif
                     </div>
                 </div>
 
                 <!-- Recent High Impact Audit Event -->
-                <div class="col-lg-6 mb-4">
-                    <div class="card shadow">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Recent High Impact Event</h6>
-                        </div>
-                        <div class="card-body">
-                            @if($recentHighImpactAuditEvent)
-                                <div class="alert alert-{{ $recentHighImpactAuditEvent->level === 'critical' ? 'danger' : 'warning' }}">
-                                    <div class="d-flex justify-content-between">
-                                        <strong>{{ $recentHighImpactAuditEvent->description }}</strong>
-                                        <small>{{ $recentHighImpactAuditEvent->created_at->diffForHumans() }}</small>
+                <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-4">
+                            Recent High Impact Event
+                        </h3>
+                        @if($recentHighImpactAuditEvent)
+                            @php
+                                $alertType = 'warning';
+                                if (isset($recentHighImpactAuditEvent->level)) {
+                                    $alertType = $recentHighImpactAuditEvent->level === 'critical' ? 'danger' : 'warning';
+                                }
+                                $alertColors = [
+                                    'danger' => 'bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
+                                    'warning' => 'bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300'
+                                ];
+                            @endphp
+                            <div class="rounded-lg border p-4 {{ $alertColors[$alertType] ?? $alertColors['warning'] }}">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <strong class="text-sm font-medium">
+                                            {{ $recentHighImpactAuditEvent->description ?? 'No description available' }}
+                                        </strong>
+                                        @if(isset($recentHighImpactAuditEvent->user_id) && $recentHighImpactAuditEvent->user_id)
+                                            <div class="mt-2">
+                                                <small class="text-xs opacity-75">User ID: {{ $recentHighImpactAuditEvent->user_id }}</small>
+                                            </div>
+                                        @endif
                                     </div>
-                                    @if($recentHighImpactAuditEvent->user_id)
-                                        <div class="mt-2">
-                                            <small>User ID: {{ $recentHighImpactAuditEvent->user_id }}</small>
-                                        </div>
-                                    @endif
+                                    <span class="text-xs opacity-75 ml-2 whitespace-nowrap">
+                                        {{ \Carbon\Carbon::parse($recentHighImpactAuditEvent->created_at)->diffForHumans() }}
+                                    </span>
                                 </div>
-                            @else
-                                <p class="text-muted">No high impact audit events found.</p>
-                            @endif
-                        </div>
+                            </div>
+                        @else
+                            <p class="text-neutral-500 dark:text-neutral-400 text-sm">No high impact audit events found.</p>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-@endsection
 
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    document.addEventListener('livewire:load', function() {
-        // Papers by Department Pie Chart
-        const papersByDepartmentCtx = document.getElementById('papersByDepartmentChart').getContext('2d');
-        const papersByDepartmentChart = new Chart(papersByDepartmentCtx, {
-            type: 'pie',
-            data: {
-                labels: Object.keys(@json($papersByDepartmentData)),
-                datasets: [{
-                    data: Object.values(@json($papersByDepartmentData)),
-                    backgroundColor: [
-                        '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
-                        '#5a5c69', '#858796', '#3a3b45', '#2e59d9', '#17a673'
-                    ],
-                    hoverBackgroundColor: [
-                        '#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#be2617',
-                        '#42444e', '#6b6d7d', '#2a2b32', '#2449b3', '#11865e'
-                    ],
-                    hoverBorderColor: "rgba(234, 236, 244, 1)",
-                }],
-            },
-            options: {
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'right',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.raw || 0;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = Math.round((value / total) * 100);
-                                return `${label}: ${value} (${percentage}%)`;
-                            }
-                        }
-                    }
-                },
-            }
+    <!-- Chart.js Script -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script>
+        // Global chart variables
+        let charts = {};
+        
+        // Theme colors for dark/light mode
+        const isDark = document.documentElement.classList.contains('dark') || 
+                      window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        const colors = {
+            text: isDark ? '#f5f5f5' : '#404040',
+            grid: isDark ? '#525252' : '#e5e5e5',
+            background: isDark ? '#262626' : '#ffffff'
+        };
+
+        // Dropdown toggle function
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdowns = document.querySelectorAll('[id$="Dropdown"]');
+            dropdowns.forEach(dropdown => {
+                const button = dropdown.previousElementSibling;
+                if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
         });
 
-        // Download Trends Line Chart
-        const downloadTrendsCtx = document.getElementById('downloadTrendsChart').getContext('2d');
-        const downloadTrendsChart = new Chart(downloadTrendsCtx, {
-            type: 'line',
-            data: {
-                labels: @json($downloadTrendsData['labels']),
-                datasets: [{
-                    label: "Downloads",
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(78, 115, 223, 0.05)",
-                    borderColor: "rgba(78, 115, 223, 1)",
-                    pointRadius: 3,
-                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointBorderColor: "rgba(78, 115, 223, 1)",
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                    pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                    data: @json($downloadTrendsData['values']),
-                }],
-            },
-            options: {
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 7
-                        }
-                    },
-                    y: {
-                        ticks: {
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            padding: 10,
-                        },
-                        grid: {
-                            color: "rgb(234, 236, 244)",
-                            zeroLineColor: "rgb(234, 236, 244)",
-                            drawBorder: false,
-                            borderDash: [2],
-                            zeroLineBorderDash: [2]
-                        }
-                    },
+        // Helper function to safely initialize charts
+        function initializeChart(canvasId, config) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) {
+                console.warn(`Canvas element with id '${canvasId}' not found`);
+                return null;
+            }
+            
+            try {
+                const ctx = canvas.getContext('2d');
+                return new Chart(ctx, config);
+            } catch (error) {
+                console.error(`Error initializing chart '${canvasId}':`, error);
+                return null;
+            }
+        }
+
+        // Initialize charts when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Papers by Department Pie Chart
+            const papersByDepartmentData = @json($papersByDepartmentData ?? []);
+            charts.papersByDepartment = initializeChart('papersByDepartmentChart', {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(papersByDepartmentData),
+                    datasets: [{
+                        data: Object.values(papersByDepartmentData),
+                        backgroundColor: [
+                            '#3B82F6', '#10B981', '#06B6D4', '#F59E0B', '#EF4444',
+                            '#8B5CF6', '#EC4899', '#84CC16', '#F97316', '#6366F1'
+                        ],
+                        borderWidth: 2,
+                        borderColor: colors.background,
+                    }],
                 },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: "rgb(255,255,255)",
-                        bodyColor: "#858796",
-                        titleMarginBottom: 10,
-                        titleColor: '#6e707e',
-                        titleFontSize: 14,
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        displayColors: false,
-                        intersect: false,
-                        mode: 'index',
-                        caretPadding: 10,
-                        callbacks: {
-                            label: function(context) {
-                                return 'Downloads: ' + context.parsed.y;
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: colors.text,
+                                usePointStyle: true,
+                                padding: 20
                             }
+                        },
+                        tooltip: {
+                            backgroundColor: colors.background,
+                            titleColor: colors.text,
+                            bodyColor: colors.text,
+                            borderColor: colors.grid,
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                }
+            });
+
+            // Download Trends Line Chart
+            const downloadTrendsData = @json($downloadTrendsData ?? ['labels' => [], 'values' => []]);
+            charts.downloadTrends = initializeChart('downloadTrendsChart', {
+                type: 'line',
+                data: {
+                    labels: downloadTrendsData.labels || [],
+                    datasets: [{
+                        label: "Downloads",
+                        data: downloadTrendsData.values || [],
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#3B82F6',
+                        pointBorderColor: colors.background,
+                        pointBorderWidth: 2,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: {
+                                color: colors.grid,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: colors.text,
+                                maxTicksLimit: 10
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: colors.grid,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: colors.text,
+                                callback: function(value) {
+                                    return Number.isInteger(value) ? value : '';
+                                }
+                            }
+                        },
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: colors.background,
+                            titleColor: colors.text,
+                            bodyColor: colors.text,
+                            borderColor: colors.grid,
+                            borderWidth: 1,
                         }
                     }
                 }
-            }
-        });
+            });
 
-        // Active User Trend Area Chart
-        const activeUserTrendCtx = document.getElementById('activeUserTrendChart').getContext('2d');
-        const activeUserTrendChart = new Chart(activeUserTrendCtx, {
-            type: 'line',
-            data: {
-                labels: @json($activeUserTrendData['labels']),
-                datasets: [{
-                    label: "Active Users",
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(28, 200, 138, 0.2)",
-                    borderColor: "rgba(28, 200, 138, 1)",
-                    pointRadius: 3,
-                    pointBackgroundColor: "rgba(28, 200, 138, 1)",
-                    pointBorderColor: "rgba(28, 200, 138, 1)",
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "rgba(28, 200, 138, 1)",
-                    pointHoverBorderColor: "rgba(28, 200, 138, 1)",
-                    pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                    fill: 'origin',
-                    data: @json($activeUserTrendData['values']),
-                }],
-            },
-            options: {
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 7
-                        }
-                    },
-                    y: {
-                        ticks: {
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            padding: 10,
-                        },
-                        grid: {
-                            color: "rgb(234, 236, 244)",
-                            zeroLineColor: "rgb(234, 236, 244)",
-                            drawBorder: false,
-                            borderDash: [2],
-                            zeroLineBorderDash: [2]
-                        }
-                    },
+            // Active User Trend Area Chart
+            const activeUserTrendData = @json($activeUserTrendData ?? ['labels' => [], 'values' => []]);
+            charts.activeUserTrend = initializeChart('activeUserTrendChart', {
+                type: 'line',
+                data: {
+                    labels: activeUserTrendData.labels || [],
+                    datasets: [{
+                        label: "Active Users",
+                        data: activeUserTrendData.values || [],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: '#10B981',
+                        pointBorderColor: colors.background,
+                        pointBorderWidth: 2,
+                    }],
                 },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: "rgb(255,255,255)",
-                        bodyColor: "#858796",
-                        titleMarginBottom: 10,
-                        titleColor: '#6e707e',
-                        titleFontSize: 14,
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        displayColors: false,
-                        intersect: false,
-                        mode: 'index',
-                        caretPadding: 10,
-                        callbacks: {
-                            label: function(context) {
-                                return 'Active Users: ' + context.parsed.y;
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: {
+                                color: colors.grid,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: colors.text,
+                                maxTicksLimit: 10
                             }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: colors.grid,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: colors.text,
+                                callback: function(value) {
+                                    return Number.isInteger(value) ? value : '';
+                                }
+                            }
+                        },
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: colors.background,
+                            titleColor: colors.text,
+                            bodyColor: colors.text,
+                            borderColor: colors.grid,
+                            borderWidth: 1,
                         }
                     }
                 }
-            }
-        });
+            });
 
-        // System Activity Trend Line Chart
-        const systemActivityTrendCtx = document.getElementById('systemActivityTrendChart').getContext('2d');
-        const systemActivityTrendChart = new Chart(systemActivityTrendCtx, {
-            type: 'line',
-            data: {
-                labels: @json($systemActivityTrendData['labels']),
-                datasets: @json($systemActivityTrendData['datasets']).map(dataset => ({
-                    ...dataset,
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(54, 185, 204, 0.2)",
-                    borderColor: "rgba(54, 185, 204, 1)",
-                    pointRadius: 3,
-                    pointBackgroundColor: "rgba(54, 185, 204, 1)",
-                    pointBorderColor: "rgba(54, 185, 204, 1)",
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "rgba(54, 185, 204, 1)",
-                    pointHoverBorderColor: "rgba(54, 185, 204, 1)",
-                    pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                    fill: 'origin',
-                })),
-            },
-            options: {
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 7
-                        }
-                    },
-                    y: {
-                        ticks: {
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            padding: 10,
-                        },
-                        grid: {
-                            color: "rgb(234, 236, 244)",
-                            zeroLineColor: "rgb(234, 236, 244)",
-                            drawBorder: false,
-                            borderDash: [2],
-                            zeroLineBorderDash: [2]
-                        }
-                    },
+            // System Activity Trend Line Chart
+            const systemActivityTrendData = @json($systemActivityTrendData ?? ['labels' => [], 'datasets' => []]);
+            const systemActivityDatasets = systemActivityTrendData.datasets || [];
+            charts.systemActivityTrend = initializeChart('systemActivityTrendChart', {
+                type: 'line',
+                data: {
+                    labels: systemActivityTrendData.labels || [],
+                    datasets: systemActivityDatasets.map(dataset => ({
+                        label: dataset.label || 'Daily Activity',
+                        data: dataset.data || [],
+                        borderColor: '#06B6D4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: '#06B6D4',
+                        pointBorderColor: colors.background,
+                        pointBorderWidth: 2,
+                    })),
                 },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: "rgb(255,255,255)",
-                        bodyColor: "#858796",
-                        titleMarginBottom: 10,
-                        titleColor: '#6e707e',
-                        titleFontSize: 14,
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        displayColors: false,
-                        intersect: false,
-                        mode: 'index',
-                        caretPadding: 10,
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + context.parsed.y;
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: {
+                                color: colors.grid,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: colors.text,
+                                maxTicksLimit: 10
                             }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: colors.grid,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: colors.text,
+                                callback: function(value) {
+                                    return Number.isInteger(value) ? value : '';
+                                }
+                            }
+                        },
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: colors.background,
+                            titleColor: colors.text,
+                            bodyColor: colors.text,
+                            borderColor: colors.grid,
+                            borderWidth: 1,
                         }
                     }
                 }
-            }
+            });
         });
 
         // Livewire event listeners for chart updates
-        Livewire.on('download-trends-updated', (data) => {
-            downloadTrendsChart.data.labels = data.labels;
-            downloadTrendsChart.data.datasets[0].data = data.values;
-            downloadTrendsChart.update();
-        });
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('download-trends-updated', (event) => {
+                if (charts.downloadTrends && event.data) {
+                    charts.downloadTrends.data.labels = event.data.labels || [];
+                    charts.downloadTrends.data.datasets[0].data = event.data.values || [];
+                    charts.downloadTrends.update();
+                }
+            });
 
-        Livewire.on('dashboard-refreshed', () => {
-            // Update all charts when dashboard is refreshed
-            papersByDepartmentChart.data.datasets[0].data = Object.values(@json($papersByDepartmentData));
-            papersByDepartmentChart.update();
-            
-            downloadTrendsChart.data.datasets[0].data = @json($downloadTrendsData['values']);
-            downloadTrendsChart.update();
-            
-            activeUserTrendChart.data.datasets[0].data = @json($activeUserTrendData['values']);
-            activeUserTrendChart.update();
-            
-            systemActivityTrendChart.data.datasets = @json($systemActivityTrendData['datasets']).map(dataset => ({
-                ...dataset,
-                lineTension: 0.3,
-                backgroundColor: "rgba(54, 185, 204, 0.2)",
-                borderColor: "rgba(54, 185, 204, 1)",
-                pointRadius: 3,
-                pointBackgroundColor: "rgba(54, 185, 204, 1)",
-                pointBorderColor: "rgba(54, 185, 204, 1)",
-                pointHoverRadius: 3,
-                pointHoverBackgroundColor: "rgba(54, 185, 204, 1)",
-                pointHoverBorderColor: "rgba(54, 185, 204, 1)",
-                pointHitRadius: 10,
-                pointBorderWidth: 2,
-                fill: 'origin',
-            }));
-            systemActivityTrendChart.update();
+            Livewire.on('dashboard-refreshed', () => {
+                console.log('Dashboard refreshed - charts will update when new data is emitted');
+            });
         });
-    });
-</script>
-@endpush
+    </script>
+</div>
