@@ -32,5 +32,9 @@ class DatabaseSeeder extends Seeder
         User::factory(5)->create([
             'role' => 'student'
         ]);
+
+        $this->call([
+            StudentTypeSeeder::class,
+        ]);
     }
 }
