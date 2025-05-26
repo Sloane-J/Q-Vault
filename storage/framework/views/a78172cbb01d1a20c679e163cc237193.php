@@ -49,7 +49,7 @@ if ($sticky) {
 ?>
 
 <header <?php echo e($attributes->class($classes)); ?> data-flux-header>
-    <!--[if BLOCK]><![endif]--><?php if($container): ?>
+    <?php if($container): ?>
         <div class="mx-auto w-full h-full [:where(&)]:max-w-7xl px-6 lg:px-8 flex items-center">
             <?php echo e($slot); ?>
 
@@ -57,6 +57,6 @@ if ($sticky) {
     <?php else: ?>
         <?php echo e($slot); ?>
 
-    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+    <?php endif; ?>
 </header>
 <?php /**PATH /home/user/Q-Vault/vendor/livewire/flux/src/../stubs/resources/views/flux/header.blade.php ENDPATH**/ ?>

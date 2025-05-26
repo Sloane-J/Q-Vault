@@ -59,7 +59,7 @@ if ($stashable) {
 }
 ?>
 
-<!--[if BLOCK]><![endif]--><?php if($stashable): ?>
+<?php if($stashable): ?>
     <?php if (isset($component)) { $__componentOriginalb789a575a15f5f184ee0fb1f2cfab391 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalb789a575a15f5f184ee0fb1f2cfab391 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::sidebar.backdrop','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -80,7 +80,7 @@ if ($stashable) {
 <?php $component = $__componentOriginalb789a575a15f5f184ee0fb1f2cfab391; ?>
 <?php unset($__componentOriginalb789a575a15f5f184ee0fb1f2cfab391); ?>
 <?php endif; ?>
-<?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+<?php endif; ?>
 
 <div <?php echo e($attributes->class($classes)); ?> x-data="{ screenLg: window.innerWidth >= 1024 }" data-mobile-cloak data-flux-sidebar>
     <?php echo e($slot); ?>

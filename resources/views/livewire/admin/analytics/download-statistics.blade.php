@@ -1,375 +1,252 @@
-<div>
-    <!-- Page Header -->
-    <div class="mb-8">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Download Statistics</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-400">Monitor and analyze paper download patterns</p>
-            </div>
-            <div class="flex space-x-3">
-                <button wire:click="exportData" 
-                        class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition duration-150">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    Export Data
-                </button>
-                <button wire:click="resetFilters" 
-                        class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition duration-150">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
-                    Reset Filters
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filters Section -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Filters</h3>
+<x-layouts.app-layout>
+    <div class="p-4 sm:p-6 bg-white rounded-lg shadow-md"
+         x-data="downloadStats()"
+         x-init="initCharts()"
+         @stats-updated.window="updateAllCharts">
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
-            <!-- Date Range -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
-                <input type="date" wire:model.live="startDate" 
-                       class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-            </div>
+        <!-- Header and Date Filter -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <h2 class="text-2xl font-bold text-gray-800">Download Statistics</h2>
             
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Date</label>
-                <input type="date" wire:model.live="endDate" 
-                       class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-            </div>
-
-            <!-- Department Filter -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Department</label>
-                <select wire:model.live="selectedDepartment" 
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                    <option value="">All Departments</option>
-                    @if(isset($departments) && $departments->count() > 0)
-                        @foreach($departments as $department)
-                            <option value="{{ $department->id }}">{{ $department->name }}</option>
-                        @endforeach
-                    @endif
+            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                <select wire:model="filterPeriod" class="block w-full md:w-48 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="7_days">Last 7 Days</option>
+                    <option value="30_days">Last 30 Days</option>
+                    <option value="90_days">Last 90 Days</option>
+                    <option value="all_time">All Time</option>
                 </select>
-            </div>
-
-            <!-- Student Type Filter -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Student Type</label>
-                <select wire:model.live="selectedStudentType" 
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                    <option value="">All Types</option>
-                    @if(isset($studentTypes) && $studentTypes->count() > 0)
-                        @foreach($studentTypes as $type)
-                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-
-            <!-- Level Filter -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Level</label>
-                <select wire:model.live="selectedLevel" 
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                    <option value="">All Levels</option>
-                    @if(isset($levels) && $levels->count() > 0)
-                        @foreach($levels as $level)
-                            <option value="{{ $level->id }}">{{ $level->name }}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-
-            <!-- Exam Type Filter -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Exam Type</label>
-                <select wire:model.live="selectedExamType" 
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                    <option value="">All Types</option>
-                    @if(isset($examTypes) && is_array($examTypes))
-                        @foreach($examTypes as $type)
-                            <option value="{{ $type }}">{{ $type }}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-
-            <!-- Exam Year Filter -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Exam Year</label>
-                <select wire:model.live="selectedExamYear" 
-                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                    <option value="">All Years</option>
-                    @if(isset($examYears) && is_array($examYears))
-                        @foreach($examYears as $year)
-                            <option value="{{ $year }}">{{ $year }}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <div class="flex items-center">
-                <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Downloads</p>
-                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ number_format($this->totalDownloads) }}</p>
-                </div>
+                
+                @if($startDate)
+                    <div class="text-sm text-gray-600 flex items-center">
+                        {{ \Carbon\Carbon::parse($startDate)->format('M d, Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('M d, Y') }}
+                    </div>
+                @endif
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <div class="flex items-center">
-                <div class="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                    </svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Unique Users</p>
-                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ number_format($uniqueUsers) }}</p>
-                </div>
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-blue-50 p-4 rounded-lg shadow">
+                <h3 class="text-lg font-medium text-blue-800">Downloads in Selected Period</h3>
+                <p class="text-3xl font-bold text-blue-600">
+                    @isset($totalDownloadsPeriod)
+                        {{ number_format($totalDownloadsPeriod) }}
+                    @else
+                        Loading...
+                    @endisset
+                </p>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg shadow">
+                <h3 class="text-lg font-medium text-green-800">Total Downloads (All Time)</h3>
+                <p class="text-3xl font-bold text-green-600">
+                    @isset($totalDownloadsAllTime)
+                        {{ number_format($totalDownloadsAllTime) }}
+                    @else
+                        Loading...
+                    @endisset
+                </p>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <div class="flex items-center">
-                <div class="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
-                    <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Average per Day</p>
-                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">
-                        {{ $totalDownloads > 0 ? number_format($totalDownloads / max(1, \Carbon\Carbon::parse($startDate)->diffInDays(\Carbon\Carbon::parse($endDate)) + 1), 1) : '0' }}
-                    </p>
+        <!-- Charts Section -->
+        <div class="space-y-8">
+            <!-- Top Papers Chart -->
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-medium mb-4">Top Papers by Downloads</h3>
+                <div class="h-80">
+                    <canvas x-ref="topPapersChart" 
+                            x-effect="renderChart('topPapersChart', 'bar', 
+                                    $wire.downloadsPerPaper.map(p => p.paper_title), 
+                                    $wire.downloadsPerPaper.map(p => p.downloads),
+                                    {paper_ids: $wire.downloadsPerPaper.map(p => p.paper_id)})"></canvas>
                 </div>
             </div>
-        </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <div class="flex items-center">
-                <div class="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                    </svg>
+            <!-- Downloads by Department Chart -->
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-medium mb-4">Downloads by Department</h3>
+                <div class="h-80">
+                    <canvas x-ref="departmentChart"
+                            x-effect="renderChart('departmentChart', 'doughnut',
+                                    $wire.downloadsByDepartment.map(d => d.department_name),
+                                    $wire.downloadsByDepartment.map(d => d.downloads))"></canvas>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Downloads per User</p>
-                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">
-                        {{ $uniqueUsers > 0 ? number_format($totalDownloads / $uniqueUsers, 1) : '0' }}
-                    </p>
+            </div>
+
+            <!-- Other Charts in Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Downloads by Exam Type -->
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="text-lg font-medium mb-4">Downloads by Exam Type</h3>
+                    <div class="h-64">
+                        <canvas x-ref="examTypeChart"
+                                x-effect="renderChart('examTypeChart', 'pie',
+                                        $wire.downloadsByExamType.map(e => e.exam_type),
+                                        $wire.downloadsByExamType.map(e => e.downloads))"></canvas>
+                    </div>
+                </div>
+
+                <!-- Downloads by Student Type -->
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="text-lg font-medium mb-4">Downloads by Student Type</h3>
+                    <div class="h-64">
+                        <canvas x-ref="studentTypeChart"
+                                x-effect="renderChart('studentTypeChart', 'polarArea',
+                                        $wire.downloadsByStudentType.map(s => s.student_type_name),
+                                        $wire.downloadsByStudentType.map(s => s.downloads))"></canvas>
+                    </div>
+                </div>
+
+                <!-- Downloads by Level -->
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="text-lg font-medium mb-4">Downloads by Level</h3>
+                    <div class="h-64">
+                        <canvas x-ref="levelChart"
+                                x-effect="renderChart('levelChart', 'bar',
+                                        $wire.downloadsByLevel.map(l => l.level_name),
+                                        $wire.downloadsByLevel.map(l => l.downloads))"></canvas>
+                    </div>
+                </div>
+
+                <!-- Yearly Comparison -->
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="text-lg font-medium mb-4">Yearly Downloads Comparison</h3>
+                    <div class="h-64">
+                        <canvas x-ref="yearlyComparisonChart"
+                                x-effect="renderChart('yearlyComparisonChart', 'line',
+                                        $wire.yearlyComparison.map(y => y.year),
+                                        $wire.yearlyComparison.map(y => y.downloads))"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- View Mode Selector -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
-        <div class="flex flex-wrap gap-2">
-            <button wire:click="$set('viewMode', 'overview')" 
-                    class="px-4 py-2 rounded-lg font-medium transition duration-150 {{ $viewMode === 'overview' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600' }}">
-                Overview
-            </button>
-            <button wire:click="$set('viewMode', 'department')" 
-                    class="px-4 py-2 rounded-lg font-medium transition duration-150 {{ $viewMode === 'department' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600' }}">
-                By Department
-            </button>
-            <button wire:click="$set('viewMode', 'student_type')" 
-                    class="px-4 py-2 rounded-lg font-medium transition duration-150 {{ $viewMode === 'student_type' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600' }}">
-                By Student Type
-            </button>
-            <button wire:click="$set('viewMode', 'level')" 
-                    class="px-4 py-2 rounded-lg font-medium transition duration-150 {{ $viewMode === 'level' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600' }}">
-                By Level
-            </button>
-            <button wire:click="$set('viewMode', 'exam_type')" 
-                    class="px-4 py-2 rounded-lg font-medium transition duration-150 {{ $viewMode === 'exam_type' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600' }}">
-                By Exam Type
-            </button>
-            <button wire:click="$set('viewMode', 'year')" 
-                    class="px-4 py-2 rounded-lg font-medium transition duration-150 {{ $viewMode === 'year' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600' }}">
-                By Year
-            </button>
-        </div>
-    </div>
-
-    <!-- Chart Section -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            @switch($viewMode)
-                @case('department')
-                    Downloads by Department
-                    @break
-                @case('student_type')
-                    Downloads by Student Type
-                    @break
-                @case('level')
-                    Downloads by Level
-                    @break
-                @case('exam_type')
-                    Downloads by Exam Type
-                    @break
-                @case('year')
-                    Downloads by Year
-                    @break
-                @default
-                    Download Trends Over Time
-            @endswitch
-        </h3>
-        
-        <div class="relative" style="height: 400px;">
-            <canvas id="statisticsChart" width="400" height="200"></canvas>
-        </div>
-        
-        @if(empty($chartData))
-            <div class="text-center py-8">
-                <div class="text-gray-500 dark:text-gray-400">
-                    <svg class="mx-auto h-12 w-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
-                    <p class="text-lg font-medium">No data available</p>
-                    <p class="text-sm">Try adjusting your filters to see statistics</p>
-                </div>
-            </div>
-        @endif
-    </div>
-</div>
-
-<!-- Chart.js Script -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-
-<script>
-    let chart = null;
-
-    function updateChart() {
-        const ctx = document.getElementById('statisticsChart').getContext('2d');
-        const chartData = @json($chartData);
-        const viewMode = @this.viewMode;
-
-        // Destroy existing chart if it exists
-        if (chart) {
-            chart.destroy();
-        }
-
-        if (!chartData || chartData.length === 0) {
-            return;
-        }
-
-        // Determine chart type based on view mode
-        let chartType = 'line';
-        if (['department', 'student_type', 'level', 'exam_type', 'year'].includes(viewMode)) {
-            chartType = 'doughnut';
-        }
-
-        let chartConfig = {
-            type: chartType,
-            data: {
-                labels: chartData.map(item => item.label),
-                datasets: [{
-                    label: 'Downloads',
-                    data: chartData.map(item => item.value),
-                    borderWidth: 2,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: chartType === 'doughnut',
-                        position: 'right',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20,
-                            color: document.documentElement.classList.contains('dark') ? '#e5e7eb' : '#374151'
-                        }
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            function downloadStats() {
+                return {
+                    charts: {},
+                    initCharts() {
+                        // Initialize all charts when component loads
+                        this.$watch('$wire.downloadsPerPaper', () => this.updateAllCharts());
                     },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        borderColor: '#374151',
-                        borderWidth: 1
-                    }
-                },
-                scales: chartType === 'line' ? {
-                    x: {
-                        grid: {
-                            color: document.documentElement.classList.contains('dark') ? '#374151' : '#e5e7eb'
-                        },
-                        ticks: {
-                            color: document.documentElement.classList.contains('dark') ? '#e5e7eb' : '#374151'
+                    renderChart(ref, type, labels, data, extra = {}) {
+                        if (!labels.length || !data.length) return;
+                        
+                        const ctx = this.$refs[ref].getContext('2d');
+                        
+                        // Destroy previous chart if exists
+                        if (this.charts[ref]) {
+                            this.charts[ref].destroy();
                         }
+                        
+                        // Common chart config
+                        const config = {
+                            type: type,
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Downloads',
+                                    data: data,
+                                    backgroundColor: this.getChartColors(type, labels.length),
+                                    borderColor: 'rgba(79, 70, 229, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: this.getChartOptions(type, ref, extra)
+                        };
+                        
+                        // Special dataset config for polarArea
+                        if (type === 'polarArea') {
+                            config.data.datasets[0].borderWidth = 0;
+                        }
+                        
+                        // Special dataset config for line
+                        if (type === 'line') {
+                            config.data.datasets[0].fill = true;
+                            config.data.datasets[0].tension = 0.1;
+                            config.data.datasets[0].backgroundColor = 'rgba(79, 70, 229, 0.2)';
+                        }
+                        
+                        this.charts[ref] = new Chart(ctx, config);
                     },
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: document.documentElement.classList.contains('dark') ? '#374151' : '#e5e7eb'
-                        },
-                        ticks: {
-                            color: document.documentElement.classList.contains('dark') ? '#e5e7eb' : '#374151'
+                    getChartColors(type, count) {
+                        const baseColors = [
+                            'rgba(79, 70, 229, 0.7)',
+                            'rgba(99, 102, 241, 0.7)',
+                            'rgba(129, 140, 248, 0.7)',
+                            'rgba(167, 139, 250, 0.7)',
+                            'rgba(196, 181, 253, 0.7)',
+                        ];
+                        
+                        if (type === 'bar') return baseColors[0];
+                        if (type === 'line') return 'rgba(79, 70, 229, 0.2)';
+                        
+                        // For charts that need multiple colors
+                        return Array.from({length: count}, (_, i) => baseColors[i % baseColors.length]);
+                    },
+                    getChartOptions(type, ref, extra) {
+                        const commonOptions = {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        };
+                        
+                        if (ref === 'topPapersChart') {
+                            commonOptions.plugins = {
+                                tooltip: {
+                                    callbacks: {
+                                        afterLabel: (context) => {
+                                            return 'Paper ID: ' + extra.paper_ids[context.dataIndex];
+                                        }
+                                    }
+                                }
+                            };
                         }
+                        
+                        if (type === 'doughnut' || type === 'pie') {
+                            commonOptions.plugins = {
+                                legend: { position: 'right' }
+                            };
+                        }
+                        
+                        return commonOptions;
+                    },
+                    updateAllCharts() {
+                        if (!this.$wire.downloadsPerPaper) return;
+                        
+                        // Update all charts when data changes
+                        this.renderChart('topPapersChart', 'bar', 
+                            this.$wire.downloadsPerPaper.map(p => p.paper_title), 
+                            this.$wire.downloadsPerPaper.map(p => p.downloads),
+                            {paper_ids: this.$wire.downloadsPerPaper.map(p => p.paper_id)});
+                            
+                        this.renderChart('departmentChart', 'doughnut',
+                            this.$wire.downloadsByDepartment.map(d => d.department_name),
+                            this.$wire.downloadsByDepartment.map(d => d.downloads));
+                            
+                        this.renderChart('examTypeChart', 'pie',
+                            this.$wire.downloadsByExamType.map(e => e.exam_type),
+                            this.$wire.downloadsByExamType.map(e => e.downloads));
+                            
+                        this.renderChart('studentTypeChart', 'polarArea',
+                            this.$wire.downloadsByStudentType.map(s => s.student_type_name),
+                            this.$wire.downloadsByStudentType.map(s => s.downloads));
+                            
+                        this.renderChart('levelChart', 'bar',
+                            this.$wire.downloadsByLevel.map(l => l.level_name),
+                            this.$wire.downloadsByLevel.map(l => l.downloads));
+                            
+                        this.renderChart('yearlyComparisonChart', 'line',
+                            this.$wire.yearlyComparison.map(y => y.year),
+                            this.$wire.yearlyComparison.map(y => y.downloads));
                     }
-                } : {}
+                };
             }
-        };
-
-        // Customize colors and styling based on chart type
-        if (chartType === 'doughnut') {
-            chartConfig.data.datasets[0].backgroundColor = chartData.map(item => item.color || '#3B82F6');
-            chartConfig.data.datasets[0].borderColor = '#fff';
-            chartConfig.data.datasets[0].borderWidth = 2;
-        } else {
-            chartConfig.data.datasets[0].borderColor = '#3B82F6';
-            chartConfig.data.datasets[0].backgroundColor = 'rgba(59, 130, 246, 0.1)';
-            chartConfig.data.datasets[0].fill = true;
-        }
-
-        chart = new Chart(ctx, chartConfig);
-    }
-
-    // Initialize chart on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        updateChart();
-    });
-
-    // Update chart when Livewire updates
-    Livewire.on('chartDataUpdated', () => {
-        updateChart();
-    });
-
-    // Update chart when component updates
-    document.addEventListener('livewire:updated', function() {
-        updateChart();
-    });
-
-    // Handle dark mode changes
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.attributeName === 'class') {
-                setTimeout(updateChart, 100);
-            }
-        });
-    });
-
-    observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-</script>
+        </script>
+    @endpush
+</x-layouts.app-layout>

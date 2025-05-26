@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Analytics;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\AuditLog;
 use Carbon\Carbon;

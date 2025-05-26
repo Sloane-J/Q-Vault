@@ -19,16 +19,19 @@ class DownloadStatistics extends Component
     public $selectedLevel = '';
     public $selectedExamType = '';
     public $selectedExamYear = '';
-    
-    // View mode
-    public $viewMode = 'overview'; // overview, department, student_type, level, exam_type, year
-    
-    // Chart data
-    public $chartData = [];
+
+    // Data for cards
     public $totalDownloads = 0;
+    public $totalDownloadsAllTime = 0;
     public $uniqueUsers = 0;
-    
-    // Available options for filters
+    public $downloadsByPaper = [];
+    public $downloadsByDepartment = [];
+    public $downloadsByExamType = [];
+    public $downloadsByStudentType = [];
+    public $downloadsByLevel = [];
+    public $yearlyComparison = [];
+
+    // Available filter options
     public $departments = [];
     public $studentTypes = [];
     public $levels = [];
@@ -37,278 +40,244 @@ class DownloadStatistics extends Component
 
     public function mount()
     {
-        // Set default date range (last 30 days)
         $this->endDate = Carbon::now()->format('Y-m-d');
         $this->startDate = Carbon::now()->subDays(30)->format('Y-m-d');
-        
-        // Load filter options
         $this->loadFilterOptions();
-        
-        // Load initial data
-        $this->loadStatistics();
-
-        $this->totalDownloads = DownloadStatistic::sum('total_downloads');
+        $this->loadAllStatistics();
     }
 
     public function loadFilterOptions()
     {
-        try {
-            $this->departments = Department::orderBy('name')->get();
-            $this->studentTypes = StudentType::orderBy('name')->get();
-            $this->levels = Level::orderBy('level_number')->get();
-            
-            // Get available exam years from the statistics
-            $this->examYears = DownloadStatistic::distinct()
-                ->whereNotNull('exam_year')
-                ->orderBy('exam_year', 'desc')
-                ->pluck('exam_year')
-                ->toArray();
-        } catch (\Exception $e) {
-            // Fallback to empty arrays if models don't exist
-            $this->departments = collect();
-            $this->studentTypes = collect();
-            $this->levels = collect();
-            $this->examYears = [];
-        }
-    }
-
-    public function updatedStartDate()
-    {
-        $this->loadStatistics();
-    }
-
-    public function updatedEndDate()
-    {
-        $this->loadStatistics();
-    }
-
-    public function updatedSelectedDepartment()
-    {
-        $this->loadStatistics();
-    }
-
-    public function updatedSelectedStudentType()
-    {
-        $this->loadStatistics();
-    }
-
-    public function updatedSelectedLevel()
-    {
-        $this->loadStatistics();
-    }
-
-    public function updatedSelectedExamType()
-    {
-        $this->loadStatistics();
-    }
-
-    public function updatedSelectedExamYear()
-    {
-        $this->loadStatistics();
-    }
-
-    public function updatedViewMode()
-    {
-        $this->loadStatistics();
-    }
-
-    public function loadStatistics()
-    {
-        // Build the query with filters
-        $query = DownloadStatistic::withinDateRange($this->startDate, $this->endDate);
+        $this->departments = Department::orderBy('name')->get();
+        $this->studentTypes = StudentType::orderBy('name')->get();
+        $this->levels = Level::orderBy('level_number')->get();
         
+        $this->examYears = DownloadStatistic::distinct()
+            ->whereNotNull('exam_year')
+            ->orderBy('exam_year', 'desc')
+            ->pluck('exam_year')
+            ->toArray();
+    }
+
+    public function updated()
+    {
+        $this->loadAllStatistics();
+    }
+
+    public function loadAllStatistics()
+    {
+        $baseQuery = DownloadStatistic::query()
+            ->withinDateRange($this->startDate, $this->endDate);
+
+        // Apply filters if selected
         if ($this->selectedDepartment) {
-            $query->byDepartment($this->selectedDepartment);
+            $baseQuery->byDepartment($this->selectedDepartment);
         }
-        
         if ($this->selectedStudentType) {
-            $query->byStudentType($this->selectedStudentType);
+            $baseQuery->byStudentType($this->selectedStudentType);
         }
-        
         if ($this->selectedLevel) {
-            $query->byLevel($this->selectedLevel);
+            $baseQuery->byLevel($this->selectedLevel);
         }
-        
         if ($this->selectedExamType) {
-            $query->byExamType($this->selectedExamType);
+            $baseQuery->byExamType($this->selectedExamType);
         }
-        
         if ($this->selectedExamYear) {
-            $query->byExamYear($this->selectedExamYear);
+            $baseQuery->byExamYear($this->selectedExamYear);
         }
 
-        // Calculate totals
-        $this->totalDownloads = $query->sum('total_downloads');
-        $this->uniqueUsers = $query->sum('unique_users');
+        // Load all statistics
+        $this->totalDownloads = $baseQuery->sum('total_downloads');
+        $this->totalDownloadsAllTime = DownloadStatistic::sum('total_downloads');
+        $this->uniqueUsers = $baseQuery->distinct('user_id')->count('user_id');
 
-        // Load chart data based on view mode
-        $this->loadChartData();
-    }
-
-    public function loadChartData()
-    {
-        switch ($this->viewMode) {
-            case 'department':
-                $this->chartData = $this->getDepartmentData();
-                break;
-            case 'student_type':
-                $this->chartData = $this->getStudentTypeData();
-                break;
-            case 'level':
-                $this->chartData = $this->getLevelData();
-                break;
-            case 'exam_type':
-                $this->chartData = $this->getExamTypeData();
-                break;
-            case 'year':
-                $this->chartData = $this->getYearData();
-                break;
-            default:
-                $this->chartData = $this->getOverviewData();
-        }
-    }
-
-    private function getDepartmentData()
-    {
-        $data = DownloadStatistic::getDownloadsByDepartment($this->startDate, $this->endDate);
+        // Load data for individual cards
+        $this->loadDownloadsByPaper();
+        $this->loadDownloadsByDepartment();
+        $this->loadDownloadsByExamType();
+        $this->loadDownloadsByStudentType();
+        $this->loadDownloadsByLevel();
         
-        return $data->map(function ($item) {
-            return [
-                'label' => $item->department->name ?? 'Unknown',
-                'value' => $item->downloads,
-                'color' => $this->generateColor($item->department_id)
-            ];
-        })->toArray();
+        $this->loadYearlyComparison();
     }
 
-    private function getStudentTypeData()
+    protected function loadDownloadsByPaper()
     {
-        $data = DownloadStatistic::getDownloadsByStudentType($this->startDate, $this->endDate);
-        
-        return $data->map(function ($item) {
-            return [
-                'label' => $item->studentType->name ?? 'Unknown',
-                'value' => $item->downloads,
-                'color' => $this->generateColor($item->student_type_id)
-            ];
-        })->toArray();
+        $this->downloadsByPaper = DownloadStatistic::query()
+            ->with('paper')
+            ->selectRaw('paper_id, SUM(total_downloads) as downloads')
+            ->groupBy('paper_id')
+            ->orderByDesc('downloads')
+            ->limit(10)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'paper' => $item->paper->title ?? 'Unknown',
+                    'downloads' => $item->downloads
+                ];
+            })->toArray();
     }
 
-    private function getLevelData()
+    protected function loadDownloadsByDepartment()
     {
-        $data = DownloadStatistic::getDownloadsByLevel($this->startDate, $this->endDate);
-        
-        return $data->map(function ($item) {
-            return [
-                'label' => $item->level->name ?? 'Unknown',
-                'value' => $item->downloads,
-                'color' => $this->generateColor($item->level_id)
-            ];
-        })->toArray();
+        $this->downloadsByDepartment = DownloadStatistic::query()
+            ->with('department')
+            ->selectRaw('department_id, SUM(total_downloads) as downloads')
+            ->groupBy('department_id')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'department' => $item->department->name ?? 'Unknown',
+                    'downloads' => $item->downloads
+                ];
+            })->toArray();
     }
 
-    private function getExamTypeData()
+    protected function loadDownloadsByExamType()
     {
-        $data = DownloadStatistic::getDownloadsByExamType($this->startDate, $this->endDate);
-        
-        return $data->map(function ($item) {
-            return [
-                'label' => $item->exam_type,
-                'value' => $item->downloads,
-                'color' => $this->generateColor(crc32($item->exam_type))
-            ];
-        })->toArray();
+        $this->downloadsByExamType = DownloadStatistic::query()
+            ->selectRaw('exam_type, SUM(total_downloads) as downloads')
+            ->groupBy('exam_type')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'exam_type' => $item->exam_type ?? 'Unknown',
+                    'downloads' => $item->downloads
+                ];
+            })->toArray();
     }
 
-    private function getYearData()
+    protected function loadDownloadsByStudentType()
     {
-        $data = DownloadStatistic::getDownloadsByExamYear($this->startDate, $this->endDate);
-        
-        return $data->map(function ($item) {
-            return [
-                'label' => (string) $item->exam_year,
-                'value' => $item->downloads,
-                'color' => $this->generateColor($item->exam_year)
-            ];
-        })->toArray();
+        $this->downloadsByStudentType = DownloadStatistic::query()
+            ->with('studentType')
+            ->selectRaw('student_type_id, SUM(total_downloads) as downloads')
+            ->groupBy('student_type_id')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'student_type' => $item->studentType->name ?? 'Unknown',
+                    'downloads' => $item->downloads
+                ];
+            })->toArray();
     }
 
-    private function getOverviewData()
+    protected function loadDownloadsByLevel()
     {
-        // Get daily downloads for the date range
-        $query = DownloadStatistic::withinDateRange($this->startDate, $this->endDate);
-        
-        // Apply filters
-        if ($this->selectedDepartment) {
-            $query->byDepartment($this->selectedDepartment);
-        }
-        
-        $data = $query->selectRaw('date, SUM(total_downloads) as downloads')
-            ->groupBy('date')
-            ->orderBy('date')
-            ->get();
-
-        return $data->map(function ($item) {
-            return [
-                'label' => Carbon::parse($item->date)->format('M d'),
-                'value' => $item->downloads,
-                'date' => $item->date
-            ];
-        })->toArray();
+        $this->downloadsByLevel = DownloadStatistic::query()
+            ->with('level')
+            ->selectRaw('level_id, SUM(total_downloads) as downloads')
+            ->groupBy('level_id')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'level' => $item->level->name ?? 'Unknown',
+                    'downloads' => $item->downloads
+                ];
+            })->toArray();
     }
 
-    private function generateColor($seed)
+    protected function loadYearlyComparison()
     {
-        $colors = [
-            '#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6',
-            '#06B6D4', '#84CC16', '#F97316', '#EC4899', '#6366F1'
-        ];
-        
-        return $colors[abs($seed) % count($colors)];
-    }
-
-    public function resetFilters()
-    {
-        $this->selectedDepartment = '';
-        $this->selectedStudentType = '';
-        $this->selectedLevel = '';
-        $this->selectedExamType = '';
-        $this->selectedExamYear = '';
-        
-        $this->loadStatistics();
-    }
-
-    public function exportData()
-    {
-        // This method would handle exporting the current data to CSV/Excel
-        // Implementation depends on your export requirements
-        $this->dispatch('export-requested', [
-            'filters' => [
-                'start_date' => $this->startDate,
-                'end_date' => $this->endDate,
-                'department' => $this->selectedDepartment,
-                'student_type' => $this->selectedStudentType,
-                'level' => $this->selectedLevel,
-                'exam_type' => $this->selectedExamType,
-                'exam_year' => $this->selectedExamYear,
-            ]
-        ]);
+        $this->yearlyComparison = DownloadStatistic::query()
+            ->selectRaw('YEAR(date) as year, SUM(total_downloads) as downloads')
+            ->groupBy('year')
+            ->orderBy('year')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'year' => $item->year,
+                    'downloads' => $item->downloads
+                ];
+            })->toArray();
     }
 
     public function render()
     {
-        // Ensure data is loaded
-        if (empty($this->departments)) {
-            $this->loadFilterOptions();
-        }
-        
         return view('livewire.admin.analytics.download-statistics', [
-            'departments' => $this->departments,
-            'totalDownloads' => $this->totalDownloads,
-            'studentTypes' => $this->studentTypes,
-            'levels' => $this->levels,
-            'examTypes' => $this->examTypes,
-            'examYears' => $this->examYears,
+            'totalDownloadsChartData' => $this->getTotalDownloadsChartData(),
+            'departmentChartData' => $this->getDepartmentChartData(),
+            'examTypeChartData' => $this->getExamTypeChartData(),
+            'studentTypeChartData' => $this->getStudentTypeChartData(),
+            'levelChartData' => $this->getLevelChartData(),
+            'yearlyChartData' => $this->getYearlyChartData(),
+        ]);
+    }
+
+    // Chart data preparation methods
+    protected function getTotalDownloadsChartData()
+    {
+        $dailyData = DownloadStatistic::query()
+            ->selectRaw('date, SUM(total_downloads) as downloads')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return json_encode([
+            'labels' => $dailyData->pluck('date')->map(fn($date) => Carbon::parse($date)->format('M d')),
+            'datasets' => [[
+                'label' => 'Daily Downloads',
+                'data' => $dailyData->pluck('downloads'),
+                'borderColor' => '#3B82F6',
+                'fill' => false
+            ]]
+        ]);
+    }
+
+    protected function getDepartmentChartData()
+    {
+        return json_encode([
+            'labels' => collect($this->downloadsByDepartment)->pluck('department'),
+            'datasets' => [[
+                'data' => collect($this->downloadsByDepartment)->pluck('downloads'),
+                'backgroundColor' => ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6']
+            ]]
+        ]);
+    }
+
+    protected function getExamTypeChartData()
+    {
+        return json_encode([
+            'labels' => collect($this->downloadsByExamType)->pluck('exam_type'),
+            'datasets' => [[
+                'data' => collect($this->downloadsByExamType)->pluck('downloads'),
+                'backgroundColor' => ['#3B82F6', '#EF4444', '#10B981', '#F59E0B']
+            ]]
+        ]);
+    }
+
+    protected function getStudentTypeChartData()
+    {
+        return json_encode([
+            'labels' => collect($this->downloadsByStudentType)->pluck('student_type'),
+            'datasets' => [[
+                'data' => collect($this->downloadsByStudentType)->pluck('downloads'),
+                'backgroundColor' => ['#3B82F6', '#EF4444', '#10B981']
+            ]]
+        ]);
+    }
+
+    protected function getLevelChartData()
+    {
+        return json_encode([
+            'labels' => collect($this->downloadsByLevel)->pluck('level'),
+            'datasets' => [[
+                'data' => collect($this->downloadsByLevel)->pluck('downloads'),
+                'backgroundColor' => ['#3B82F6', '#EF4444', '#10B981', '#F59E0B']
+            ]]
+        ]);
+    }
+
+    protected function getYearlyChartData()
+    {
+        return json_encode([
+            'labels' => collect($this->yearlyComparison)->pluck('year'),
+            'datasets' => [[
+                'label' => 'Downloads by Year',
+                'data' => collect($this->yearlyComparison)->pluck('downloads'),
+                'borderColor' => '#3B82F6',
+                'fill' => false
+            ]]
         ]);
     }
 }
