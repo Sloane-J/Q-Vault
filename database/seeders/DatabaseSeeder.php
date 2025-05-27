@@ -29,12 +29,12 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Admin User',
                 'role' => 'admin',
-                'password' => Hash::make('AdminPassword123!'), // Change this to a secure password
+                'password' => Hash::make('AdminPassword123!'),
             ]
         );
 
         // Create additional test students (only if they don't exist)
-        if (User::where('role', 'student')->count() < 7) { // 1 test user + 5 additional = 6, so if less than 7
+        if (User::where('role', 'student')->count() < 7) {
             User::factory(5)->create([
                 'role' => 'student'
             ]);
@@ -43,6 +43,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             StudentTypeSeeder::class,
             LevelSeeder::class,
+            ExamTypeSeeder::class,
         ]);
     }
 }

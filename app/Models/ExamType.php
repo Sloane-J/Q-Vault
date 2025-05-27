@@ -14,15 +14,19 @@ class ExamType extends Model
         'description',
     ];
 
-    // Note: We don't have an exam_types table in migrations,
-    // This is more of a helper model for validation/selection
-    // You could replace this with an enum or config array
-    
-    public static function getTypes(): array
+    /**
+     * Get all exam types for dropdowns/selects
+     */
+    public static function getAllTypes()
     {
-        return [
-            'final' => 'Final Exam',
-            'resit' => 'Resit Exam'
-        ];
+        return self::orderBy('name')->get();
+    }
+
+    /**
+     * Get exam type options as key-value pairs
+     */
+    public static function getTypeOptions()
+    {
+        return self::pluck('name', 'id')->toArray();
     }
 }
