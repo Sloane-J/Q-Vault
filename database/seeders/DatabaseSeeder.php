@@ -13,28 +13,36 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test user
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'role' => 'student'
-        ]);
+        // Create test user (only if doesn't exist)
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'role' => 'student',
+                'password' => Hash::make('password'),
+            ]
+        );
 
-        // Create admin user
-        User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'role' => 'admin',
-            'password' => Hash::make('AdminPassword123!') // Change this to a secure password
-        ]);
+        // Create admin user (only if doesn't exist)
+        User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin User',
+                'role' => 'admin',
+                'password' => Hash::make('AdminPassword123!'), // Change this to a secure password
+            ]
+        );
 
-        // Create additional test students (optional)
-        User::factory(5)->create([
-            'role' => 'student'
-        ]);
+        // Create additional test students (only if they don't exist)
+        if (User::where('role', 'student')->count() < 7) { // 1 test user + 5 additional = 6, so if less than 7
+            User::factory(5)->create([
+                'role' => 'student'
+            ]);
+        }
 
         $this->call([
             StudentTypeSeeder::class,
+            LevelSeeder::class,
         ]);
     }
 }
