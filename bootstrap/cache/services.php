@@ -37,10 +37,11 @@
     33 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     34 => 'Termwind\\Laravel\\TermwindServiceProvider',
     35 => 'PowerComponents\\LivewirePowerGrid\\Providers\\PowerGridServiceProvider',
-    36 => 'WireUi\\Heroicons\\HeroiconsServiceProvider',
-    37 => 'WireUi\\ServiceProvider',
-    38 => 'App\\Providers\\AppServiceProvider',
-    39 => 'App\\Providers\\VoltServiceProvider',
+    36 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
+    37 => 'WireUi\\Heroicons\\HeroiconsServiceProvider',
+    38 => 'WireUi\\ServiceProvider',
+    39 => 'App\\Providers\\AppServiceProvider',
+    40 => 'App\\Providers\\VoltServiceProvider',
   ),
   'eager' => 
   array (
@@ -65,10 +66,11 @@
     18 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     19 => 'Termwind\\Laravel\\TermwindServiceProvider',
     20 => 'PowerComponents\\LivewirePowerGrid\\Providers\\PowerGridServiceProvider',
-    21 => 'WireUi\\Heroicons\\HeroiconsServiceProvider',
-    22 => 'WireUi\\ServiceProvider',
-    23 => 'App\\Providers\\AppServiceProvider',
-    24 => 'App\\Providers\\VoltServiceProvider',
+    21 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
+    22 => 'WireUi\\Heroicons\\HeroiconsServiceProvider',
+    23 => 'WireUi\\ServiceProvider',
+    24 => 'App\\Providers\\AppServiceProvider',
+    25 => 'App\\Providers\\VoltServiceProvider',
   ),
   'deferred' => 
   array (

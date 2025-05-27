@@ -45,17 +45,3 @@ Storage growth trends
 Storage usage by department
 File size distributions
 
-Modals
-
- AdminActivity
-  contentanalysis
-  download analytics
-   storage analytic
-   system event
-   user activity 
-
-   area chart for increase and decrease in the number (total students, total papers, total departments and total courses)
-   paper piechart according to department
-   courses according to department piechart
-   department piechart according to the courses
-   users over the week, column chart with datatables
