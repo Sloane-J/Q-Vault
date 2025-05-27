@@ -17,7 +17,7 @@ class PaperManager extends Component
 
     // Form Properties
     public $paperId, $title, $description, $file, $existingFilePath;
-    public $department_id, $semester, $exam_type, $course_name;
+    public $department_id = '', $course_id = '', $semester, $exam_type;
     public $exam_year, $student_type, $level, $visibility = 'public';
     public $showForm = false;
 
@@ -37,6 +37,7 @@ class PaperManager extends Component
     // Dropdown Data
     public $departments = [];
     public $courses = [];
+    public $filteredCourses = [];
     public $studentTypes = ['HND', 'B-Tech', 'Top-up'];
     public $levels = ['100', '200', '300', '400'];
     public $examTypes = ['End of Semester', 'Resit'];
@@ -45,10 +46,10 @@ class PaperManager extends Component
     protected $rules = [
         'title' => 'required|string|max:255',
         'description' => 'nullable|string|max:1000',
-        'department_id' => 'required|exists:departments,id',
+        'department_id' => 'required',
+        'course_id' => 'required',
         'semester' => 'required|in:1,2',
         'exam_type' => 'required|string|max:50',
-        'course_name' => 'required|string|max:255',
         'exam_year' => 'required|integer|min:1900|max:2100',
         'student_type' => 'required|string|max:50',
         'level' => 'required|string|max:10',
@@ -58,7 +59,7 @@ class PaperManager extends Component
 
     protected $validationAttributes = [
         'department_id' => 'department',
-        'course_name' => 'course name',
+        'course_id' => 'course',
         'exam_type' => 'exam type',
         'exam_year' => 'exam year',
         'student_type' => 'student type',
@@ -66,37 +67,112 @@ class PaperManager extends Component
 
     public function mount()
     {
-        // Explicitly initialize properties
+        // Initialize properties
         $this->showForm = false;
         $this->confirmingDeletion = false;
         $this->visibility = 'public';
+        $this->department_id = '';
+        $this->course_id = '';
+        $this->filteredCourses = collect();
         
         // Load dropdown data
         $this->loadDropdownData();
+        
+        // Debug: Log initial data
+        \Log::info('PaperManager mounted', [
+            'departments_count' => $this->departments->count(),
+            'courses_count' => $this->courses->count()
+        ]);
+    }
+
+    public function updatedDepartmentId($value)
+    {
+        // Debug logging
+        \Log::info('Department changed', ['department_id' => $value]);
+        
+        // Reset course selection
+        $this->course_id = '';
+        $this->resetValidation(['course_id']);
+        
+        if ($value) {
+            // Filter courses by department
+            if ($this->courses->isNotEmpty()) {
+                $this->filteredCourses = $this->courses->where('department_id', (int)$value);
+            } else {
+                // Fallback: Try to load from database
+                try {
+                    $this->filteredCourses = Course::where('department_id', $value)
+                        ->orderBy('name')
+                        ->get();
+                } catch (\Exception $e) {
+                    // If Course model doesn't exist, use dummy data
+                    $this->filteredCourses = collect([
+                        (object)['id' => 1, 'name' => 'Data Structures', 'department_id' => 1],
+                        (object)['id' => 2, 'name' => 'Algorithms', 'department_id' => 1],
+                        (object)['id' => 3, 'name' => 'Circuit Analysis', 'department_id' => 2],
+                        (object)['id' => 4, 'name' => 'Digital Electronics', 'department_id' => 2],
+                    ])->where('department_id', (int)$value);
+                }
+            }
+        } else {
+            $this->filteredCourses = collect();
+        }
+        
+        // Debug logging
+        \Log::info('Filtered courses', [
+            'count' => $this->filteredCourses->count(),
+            'courses' => $this->filteredCourses->pluck('name')->toArray()
+        ]);
+    }
+
+    public function updatedCourseId($value)
+    {
+        \Log::info('Course changed', ['course_id' => $value]);
+        
+        // If a course is selected and no department is selected,
+        // automatically select the department of that course
+        if ($value && !$this->department_id) {
+            $course = $this->courses->firstWhere('id', (int)$value);
+            if ($course && isset($course->department_id)) {
+                $this->department_id = $course->department_id;
+                $this->updatedDepartmentId($course->department_id);
+            }
+        }
     }
 
     protected function loadDropdownData()
     {
-        // Ideally, fetch from DB
-        $this->departments = Department::all();
-        $this->courses = Course::all();
-
-        // Fallback static data (if needed)
-        if ($this->departments->isEmpty()) {
+        try {
+            // Try to load from database
+            $this->departments = Department::orderBy('name')->get();
+            $this->courses = Course::orderBy('name')->get();
+        } catch (\Exception $e) {
+            // Fallback to dummy data for development
+            \Log::info('Using dummy data for dropdowns');
+            
             $this->departments = collect([
                 (object)['id' => 1, 'name' => 'Computer Science'],
                 (object)['id' => 2, 'name' => 'Electrical Engineering'],
+                (object)['id' => 3, 'name' => 'Mechanical Engineering'],
             ]);
-        }
 
-        if ($this->courses->isEmpty()) {
             $this->courses = collect([
-                (object)['id' => 1, 'name' => 'Data Structures'],
-                (object)['id' => 2, 'name' => 'Circuit Analysis'],
+                (object)['id' => 1, 'name' => 'Data Structures', 'department_id' => 1],
+                (object)['id' => 2, 'name' => 'Algorithms', 'department_id' => 1],
+                (object)['id' => 3, 'name' => 'Circuit Analysis', 'department_id' => 2],
+                (object)['id' => 4, 'name' => 'Digital Electronics', 'department_id' => 2],
+                (object)['id' => 5, 'name' => 'Thermodynamics', 'department_id' => 3],
+                (object)['id' => 6, 'name' => 'Fluid Mechanics', 'department_id' => 3],
             ]);
         }
 
+        // Generate years range
         $this->years = range(date('Y'), 2000);
+        
+        \Log::info('Dropdown data loaded', [
+            'departments' => $this->departments->count(),
+            'courses' => $this->courses->count()
+        ]);
     }
 
     public function toggleForm()
@@ -123,6 +199,10 @@ class PaperManager extends Component
             return;
         }
 
+        // Get course name for storage
+        $course = $this->courses->firstWhere('id', (int)$this->course_id);
+        $courseName = $course ? $course->name : '';
+
         if ($this->paperId) {
             $paper = Paper::find($this->paperId);
             if ($paper) {
@@ -131,9 +211,10 @@ class PaperManager extends Component
                     'description' => $this->description,
                     'file_path' => $filePath,
                     'department_id' => $this->department_id,
+                    'course_id' => $this->course_id,
+                    'course_name' => $courseName,
                     'semester' => $this->semester,
                     'exam_type' => $this->exam_type,
-                    'course_name' => $this->course_name,
                     'exam_year' => $this->exam_year,
                     'student_type' => $this->student_type,
                     'level' => $this->level,
@@ -144,15 +225,16 @@ class PaperManager extends Component
                 session()->flash('error', 'Paper not found.');
             }
         } else {
-            // Add user_id to new papers
+            // Create new paper
             Paper::create([
                 'title' => $this->title,
                 'description' => $this->description,
                 'file_path' => $filePath,
                 'department_id' => $this->department_id,
+                'course_id' => $this->course_id,
+                'course_name' => $courseName,
                 'semester' => $this->semester,
                 'exam_type' => $this->exam_type,
-                'course_name' => $this->course_name,
                 'exam_year' => $this->exam_year,
                 'student_type' => $this->student_type,
                 'level' => $this->level,
@@ -174,15 +256,19 @@ class PaperManager extends Component
         $this->description = $paper->description;
         $this->existingFilePath = $paper->file_path;
         $this->department_id = $paper->department_id;
+        $this->course_id = $paper->course_id ?? null;
         $this->semester = $paper->semester;
         $this->exam_type = $paper->exam_type;
-        $this->course_name = $paper->course_name;
         $this->exam_year = $paper->exam_year;
         $this->student_type = $paper->student_type;
         $this->level = $paper->level;
         $this->visibility = $paper->visibility;
         
-        // Ensure this is set to true to show the form
+        // Load filtered courses for the selected department
+        if ($this->department_id) {
+            $this->updatedDepartmentId($this->department_id);
+        }
+        
         $this->showForm = true;
     }
 
@@ -190,14 +276,12 @@ class PaperManager extends Component
     {
         $this->reset([
             'paperId', 'title', 'description', 'file', 'existingFilePath',
-            'department_id', 'semester', 'exam_type', 'course_name',
+            'department_id', 'course_id', 'semester', 'exam_type',
             'exam_year', 'student_type', 'level'
         ]);
         
-        // Don't reset showForm here, as it controls UI state
-        // Default values
+        $this->filteredCourses = collect();
         $this->visibility = 'public';
-        
         $this->resetValidation();
     }
 
@@ -216,7 +300,6 @@ class PaperManager extends Component
                     Storage::delete($paper->file_path);
                 }
                 $paper->delete();
-
                 session()->flash('message', 'Paper deleted successfully.');
             }
             $this->confirmingDeletion = false;
@@ -235,14 +318,13 @@ class PaperManager extends Component
 
     public function render()
     {
-        // For development, use dummy data
-        // In production, replace with actual DB queries
         $papers = $this->getPapers();
 
         return view('livewire.admin.paper-manager', [
             'papers' => $papers,
             'departments' => $this->departments,
             'courses' => $this->courses,
+            'filteredCourses' => $this->filteredCourses,
             'studentTypes' => $this->studentTypes,
             'levels' => $this->levels,
             'examTypes' => $this->examTypes,
@@ -252,22 +334,31 @@ class PaperManager extends Component
 
     protected function getPapers()
     {
-        // In production, replace with actual DB query
-        // For now, using dummy data for development
+        // Dummy data for development
         $dummyPapers = collect([
             (object)[
                 'id' => 1, 'title' => 'Intro to Algorithms', 'description' => 'Fundamentals',
-                'file_path' => 'papers/dummy-algo.pdf', 'department_id' => 1, 'semester' => 1,
-                'exam_type' => 'End of Semester', 'course_name' => 'Algorithms', 'exam_year' => 2023,
-                'student_type' => 'B-Tech', 'level' => '300', 'visibility' => 'public',
-                'department' => (object)['name' => 'Computer Science'], 'course' => (object)['name' => 'Algorithms'],
+                'file_path' => 'papers/dummy-algo.pdf', 'department_id' => 1, 'course_id' => 2,
+                'semester' => 1, 'exam_type' => 'End of Semester', 'course_name' => 'Algorithms', 
+                'exam_year' => 2023, 'student_type' => 'B-Tech', 'level' => '300', 'visibility' => 'public',
+                'department' => (object)['name' => 'Computer Science'], 
+                'course' => (object)['name' => 'Algorithms'],
             ],
             (object)[
                 'id' => 2, 'title' => 'Digital Electronics', 'description' => 'Logic gates',
-                'file_path' => 'papers/dummy-digital.pdf', 'department_id' => 2, 'semester' => 2,
-                'exam_type' => 'Mid-Term', 'course_name' => 'Digital Systems', 'exam_year' => 2022,
-                'student_type' => 'HND', 'level' => '200', 'visibility' => 'restricted',
-                'department' => (object)['name' => 'Electrical Engineering'], 'course' => (object)['name' => 'Digital Systems'],
+                'file_path' => 'papers/dummy-digital.pdf', 'department_id' => 2, 'course_id' => 4,
+                'semester' => 2, 'exam_type' => 'Resit', 'course_name' => 'Digital Electronics', 
+                'exam_year' => 2022, 'student_type' => 'HND', 'level' => '200', 'visibility' => 'restricted',
+                'department' => (object)['name' => 'Electrical Engineering'], 
+                'course' => (object)['name' => 'Digital Electronics'],
+            ],
+            (object)[
+                'id' => 3, 'title' => 'Data Structures Final', 'description' => 'Trees and Graphs',
+                'file_path' => 'papers/dummy-ds.pdf', 'department_id' => 1, 'course_id' => 1,
+                'semester' => 1, 'exam_type' => 'End of Semester', 'course_name' => 'Data Structures', 
+                'exam_year' => 2023, 'student_type' => 'B-Tech', 'level' => '200', 'visibility' => 'public',
+                'department' => (object)['name' => 'Computer Science'], 
+                'course' => (object)['name' => 'Data Structures'],
             ]
         ]);
 
@@ -288,14 +379,12 @@ class PaperManager extends Component
         $page = $this->page ?? 1;
         $paged = $filtered->slice(($page - 1) * $perPage, $perPage)->values();
 
-        $papers = new LengthAwarePaginator(
+        return new LengthAwarePaginator(
             $paged,
             $filtered->count(),
             $perPage,
             $page,
             ['path' => request()->url(), 'query' => request()->query()]
         );
-
-        return $papers;
     }
 }

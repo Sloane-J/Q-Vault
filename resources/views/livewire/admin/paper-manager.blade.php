@@ -21,68 +21,77 @@
                     
                     <form wire:submit.prevent="savePaper">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
-                                <input
-    type="text"
-    id="title"
-    wire:model="title"
-    class="mt-1 block w-full rounded-md
-           border border-neutral-300 dark:border-neutral-700 /* Refined border color */
-           bg-white dark:bg-neutral-800
-           text-neutral-800 dark:text-neutral-200 /* Added text color for dark/light mode */
-           shadow-sm
-           focus:border-blue-500 focus:ring-blue-500 focus:ring-1 /* Thin focus ring */
-           transition ease-in-out duration-150 /* Smooth transitions */
-           py-2 px-3 /* Added padding for better spacing */
-           sm:text-sm
-           placeholder-neutral-400 dark:placeholder-neutral-500 /* Placeholder styling */"
->
-                                @error('title') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            
-                            <div>
-                                <label for="department_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Department</label>
-                               <select
-                                    id="department_id"
-                                    wire:model="department_id"
-                                    class="block w-full rounded-md
-                                        border border-neutral-300 dark:border-neutral-700
-                                        bg-white dark:bg-neutral-800
-                                        text-neutral-800 dark:text-neutral-200
-                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
-                                        transition ease-in-out duration-150
-                                        py-2 px-3 sm:text-sm"
-                                >
-                                    <option value="">Select Department</option>
-                                    @foreach($departments as $department)
-                                        <option value="{{ $department->id }}">{{ $department->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('department_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            
-                            <div>
-                            <label for="course_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Course Name</label>
-                            <select 
-                                id="course_name" 
-                                wire:model="course_name" 
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
+                            <input
+                                type="text"
+                                id="title"
+                                wire:model="title"
                                 class="mt-1 block w-full rounded-md
-                                        border border-neutral-300 dark:border-neutral-700
-                                        bg-white dark:bg-neutral-800
-                                        text-neutral-800 dark:text-neutral-200
-                                        shadow-sm
-                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
-                                        transition ease-in-out duration-150
-                                        py-2 px-3
-                                        sm:text-sm">
-                                <option value="">Select a course</option>
-                                @foreach($courses as $course)
-                                    <option value="{{ $course->id }}">{{ $course->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('course_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
+                                    border border-neutral-300 dark:border-neutral-700
+                                    bg-white dark:bg-neutral-800
+                                    text-neutral-800 dark:text-neutral-200
+                                    shadow-sm
+                                    focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                    transition ease-in-out duration-150
+                                    py-2 px-3
+                                    sm:text-sm
+                                    placeholder-neutral-400 dark:placeholder-neutral-500"
+                                placeholder="Enter paper title"
+                            >
+                            @error('title') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                        <!-- Department Dropdown -->
+                                <div>
+                                    <label for="department_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Department</label>
+                                    <select
+                                        id="department_id"
+                                        wire:model.live="department_id"
+                                        class="block w-full rounded-md
+                                            border border-neutral-300 dark:border-neutral-700
+                                            bg-white dark:bg-neutral-800
+                                            text-neutral-800 dark:text-neutral-200
+                                            focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                            transition ease-in-out duration-150
+                                            py-2 px-3 sm:text-sm"
+                                    >
+                                        <option value="">Select Department</option>
+                                        @foreach($departments as $department)
+                                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('department_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                </div>
+
+                                <!-- Course Dropdown -->
+                                <div>
+                                    <label for="course_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Course Name</label>
+                                    <select 
+                                        id="course_id" 
+                                        wire:model.live="course_id" 
+                                        class="mt-1 block w-full rounded-md
+                                                border border-neutral-300 dark:border-neutral-700
+                                                bg-white dark:bg-neutral-800
+                                                text-neutral-800 dark:text-neutral-200
+                                                shadow-sm
+                                                focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                                transition ease-in-out duration-150
+                                                py-2 px-3
+                                                sm:text-sm
+                                                {{ !$department_id ? 'opacity-50 cursor-not-allowed' : '' }}"
+                                        {{ !$department_id ? 'disabled' : '' }}
+                                    >
+                                        <option value="">
+                                            {{ $department_id ? 'Select a course' : 'Select department first' }}
+                                        </option>
+                                        @if($department_id && count($filteredCourses) > 0)
+                                            @foreach($filteredCourses as $course)
+                                                <option value="{{ $course->id }}">{{ $course->name }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    @error('course_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                </div>
                             
                             <div>
                                 <label for="exam_year" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Year</label>
