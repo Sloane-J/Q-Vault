@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,10 +7,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Paper extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'department_id',
@@ -36,6 +37,69 @@ class Paper extends Model
         'download_count' => 'integer',
         'view_count' => 'integer',
     ];
+
+    // Activity Log Configuration
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'title', 
+                'department.name', 
+                'semester', 
+                'exam_type',
+                'course.name', 
+                'exam_year'
+            ])
+            ->logOnlyDirty()
+            ->dontLogIfAttributesChangedOnly(['view_count', 'download_count', 'updated_at'])
+            ->setDescriptionForEvent(fn(string $eventName) => match($eventName) {
+                'created' => 'Paper uploaded',
+                'updated' => 'Paper updated',
+                'deleted' => 'Paper deleted',
+                default => "Paper {$eventName}"
+            });
+    }
+
+    // Custom logging methods for specific events
+    public function logDownload($user = null)
+    {
+        $user = $user ?? auth()->user();
+        
+        activity()
+            ->performedOn($this)
+            ->causedBy($user)
+            ->withProperties([
+                'paper_title' => $this->title,
+                'department' => $this->department->name ?? 'Unknown',
+                'course' => $this->course->name ?? 'Unknown',
+                'exam_type' => $this->exam_type,
+                'exam_year' => $this->exam_year,
+                'semester' => $this->semester,
+                'user_name' => $user->name ?? 'Guest',
+                'user_email' => $user->email ?? 'N/A',
+                'download_time' => now()->toDateTimeString()
+            ])
+            ->log('Paper downloaded');
+    }
+
+    public function logFileReplaced($oldFilePath, $newFilePath, $user = null)
+    {
+        $user = $user ?? auth()->user();
+        
+        activity()
+            ->performedOn($this)
+            ->causedBy($user)
+            ->withProperties([
+                'paper_title' => $this->title,
+                'old_file_path' => $oldFilePath,
+                'new_file_path' => $newFilePath,
+                'department' => $this->department->name ?? 'Unknown',
+                'course' => $this->course->name ?? 'Unknown',
+                'replaced_by' => $user->name ?? 'System',
+                'replacement_time' => now()->toDateTimeString()
+            ])
+            ->log('File replaced/updated');
+    }
 
     // Relationships
     public function department(): BelongsTo

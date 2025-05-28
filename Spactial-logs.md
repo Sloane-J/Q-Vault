@@ -17,7 +17,7 @@ Paper_Version (new versions, updates)
 Optional Models (depending on your needs):
 
 Download (if you want to track changes to download records)
-Search_History (if you modify/delete search records)
+Downloadlog
 
 Priority Order:
 
@@ -48,73 +48,59 @@ Next immediate step. Start by adding the trait to your most important model (pro
 
 ## Analytics Components (app/Livewire/Admin/Analytics/)
 
-### Download Statistics
-- **DownloadTotals.php** - Total downloads (all-time and period-specific)
-- **DownloadsByPaper.php** - Downloads per paper
-- **DownloadsByDepartment.php** - Downloads by department/course
-- **DownloadsByExamType.php** - Downloads by exam type (final, resit)
-- **DownloadsByStudentType.php** - Downloads by student type (HND, B-Tech, Top-up)
-- **DownloadsByLevel.php** - Downloads by level (100-400)
-- **YearOverYearDownloads.php** - Year-over-year comparison charts
+### DownloadStatistics.php
+- Total downloads (all-time and period-specific)
+- Downloads per paper
+- Downloads by department/course
+- Downloads by exam type (final, resit)
+- Downloads by student type (HND, B-Tech, Top-up)
+- Downloads by level (100-400)
+- Year-over-year comparison charts
 
-### User Engagement
-- **ActiveUsers.php** - Active users per day/week/month
-- **SessionDuration.php** - Average session duration
-- **ReturnVisits.php** - Return visit frequency
 
 ### Content Analytics
 #### Paper Popularity
-- **TopDownloadedPapers.php** - Top downloaded papers by department
-- **PopularCourses.php** - Most popular courses based on paper downloads
-- **TrendingPapers.php** - Trending papers (sudden increase in downloads)
-- **LeastAccessedPapers.php** - Least accessed papers
-- **PopularityByExamType.php** - Popularity by exam type
+-  - Top downloaded papers by department
+- - Most popular courses based on paper downloads
+- Trending papers (sudden increase in downloads)
+- Least accessed papers
+- Popularity by exam type
 
 #### Content Growth
-- **PapersAddedStats.php** - Papers added per month/year
-- **GrowthByDepartment.php** - Growth by department/course
-- **VersionUpdates.php** - Version updates frequency
-- **ContentFreshness.php** - Content freshness indicators
+- Papers added per month/year
+- Growth by department/course
+
+
+#### Paper Management Analytics
+- Paper uploads (new papers added)
+- Paper updates/modifications
+- Paper deletions or archiving
 
 ### Storage Analytics
-- **StorageUsage.php** - Total storage used
-- **StorageGrowth.php** - Storage growth trends
-- **StorageByDepartment.php** - Storage usage by department
-- **FileSizeDistribution.php** - File size distributions
+- Total storage used
+- Storage growth trends
+- Storage usage by department
+- File size distributions
 
-## Audit Components (app/Livewire/Admin/Audits/)
+## Audit Components (app/Livewire/Admin/Audit/)
 
 ### Core Audit Components
 
 #### Admin Activity Logs
-- **AdminActions.php** - User creation/modification actions
-- **PermissionChanges.php** - Permission changes
-- **SystemSettings.php** - System setting modifications
-- **AdminLogins.php** - Login/logout events for admin users
-
-#### Paper Management Audit Trail
-- **PaperUploads.php** - Paper uploads (new papers added)
-- **PaperUpdates.php** - Paper updates/modifications
-- **PaperDeletions.php** - Paper deletions or archiving
-- **VersionControl.php** - Version control actions (new versions uploaded)
-- **VisibilityChanges.php** - Visibility setting changes (public/restricted)
+- Admin Activities - Login/logout and other events for admin users
 
 #### User Activity Monitoring
-- **UserLogins.php** - Login/logout events
-- **PasswordChanges.php** - Password changes
-- **ProfileUpdates.php** - Profile updates
-- **AccountCreation.php** - Account creation events
+- Login/logout events
+- Password changes
+- Account creation events
 
 #### System Events
-- **SystemMaintenance.php** - System maintenance events
 - **ErrorLogs.php** - Error logs (critical errors)
-- **StorageWarnings.php** - Storage threshold warnings
 
 ### Audit Page Features
 
 #### Filtering Capabilities
-- **AuditFilters.php** - Combined filter component
-  - By date range
+- Combined filter component
   - By action type
   - By user (who performed the action)
   - By object (what was affected)
@@ -134,15 +120,13 @@ Each audit entry contains:
 - Previous state (for updates)
 - New state (after the action)
 - IP address
-- Additional context (when relevant)
 
 ## Implementation Notes
 
 ### Technology Stack
 - **Laravel Livewire** for all components
 - **Apex charts** for data visualization
-- **Alpine.js** for enhanced interactivity
-- **Tailwind CSS** for styling
+- **Alpine.js** for enhanced interactivity (only when needed)
 - **Spatie Laravel Activitylog** for data source
 
 ### Component Organization
@@ -153,7 +137,7 @@ app/Livewire/Admin/
 │   ├── Users/
 │   ├── Content/
 │   └── Storage/
-└── Audits/
+└── Audit/
     ├── Admin/
     ├── Papers/
     ├── Users/
