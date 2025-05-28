@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
+use App\Models\User;
 
 new #[Layout('components.layouts.auth')] class extends Component {
     #[Validate('required|string|email')]
@@ -25,7 +26,19 @@ new #[Layout('components.layouts.auth')] class extends Component {
         $this->validate();
         $this->ensureIsNotRateLimited();
 
+        // Check if user exists first
+        $user = User::where('email', $this->email)->first();
+
         if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+            // Log failed attempt
+            if ($user) {
+                // User exists but wrong password
+                $user->logFailedLogin($this->email);
+            } else {
+                // User doesn't exist
+                User::logFailedLoginAttempt($this->email);
+            }
+
             \Log::warning('Failed login attempt', [
                 'email' => $this->email,
                 'ip' => request()->ip(),
@@ -41,21 +54,24 @@ new #[Layout('components.layouts.auth')] class extends Component {
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-        $user = Auth::user();
-        $user->update([
+        $authenticatedUser = Auth::user();
+        $authenticatedUser->update([
             'last_login_at' => now(),
             'last_login_ip' => request()->ip()
         ]);
 
+        // Log successful login using our custom method
+        $authenticatedUser->logSuccessfulLogin();
+
         \Log::info('User logged in', [
-            'user_id' => $user->id,
-            'email' => $user->email,
+            'user_id' => $authenticatedUser->id,
+            'email' => $authenticatedUser->email,
             'ip' => request()->ip(),
-            'role' => $user->role
+            'role' => $authenticatedUser->role
         ]);
 
         // Simplified role-based redirection
-        $redirectTo = match($user->role) {
+        $redirectTo = match($authenticatedUser->role) {
             'admin' => route('admin.dashboard'),
             'student' => route('student.dashboard'),
             default => route('dashboard')
@@ -72,6 +88,17 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
         event(new Lockout(request()));
         $seconds = RateLimiter::availableIn($this->throttleKey());
+
+        // Log rate limiting event
+        activity()
+            ->withProperties([
+                'email' => $this->email,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'lockout_time' => now()->toDateTimeString(),
+                'seconds_remaining' => $seconds
+            ])
+            ->log('Login rate limited - too many attempts');
 
         throw ValidationException::withMessages([
             'email' => __('auth.throttle', [
