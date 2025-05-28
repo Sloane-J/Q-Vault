@@ -8,10 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany; // <-- ADDED: For the sessions relationship
 use Illuminate\Database\Eloquent\Relations\BelongsTo; // <-- ADDED: For the department relationship (assuming Department model exists)
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable // <-- REMOVED: implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -47,6 +49,100 @@ class User extends Authenticatable // <-- REMOVED: implements MustVerifyEmail
             'email_verified_at' => 'datetime', // Still good to have the column, even if not enforcing verification
             'password' => 'hashed',
         ];
+    }
+
+    // Activity Log Configuration
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'email'])
+            ->logOnlyDirty()
+            ->dontLogIfAttributesChangedOnly(['updated_at', 'remember_token', 'last_login_at'])
+            ->setDescriptionForEvent(fn(string $eventName) => match($eventName) {
+                'created' => 'User account created',
+                'updated' => 'User profile updated',
+                'deleted' => 'User account deleted',
+                default => "User {$eventName}"
+            });
+    }
+
+    // Custom logging methods for login attempts
+    public function logSuccessfulLogin()
+    {
+        activity()
+            ->performedOn($this)
+            ->causedBy($this)
+            ->withProperties([
+                'user_name' => $this->name,
+                'user_email' => $this->email,
+                'user_role' => $this->role,
+                'department' => $this->department->name ?? 'Unknown',
+                'login_time' => now()->toDateTimeString(),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent()
+            ])
+            ->log('Successful login');
+    }
+
+    public function logFailedLogin($email = null)
+    {
+        $email = $email ?? $this->email ?? 'Unknown';
+        
+        activity()
+            ->performedOn($this)
+            ->withProperties([
+                'attempted_email' => $email,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'attempt_time' => now()->toDateTimeString(),
+                'failure_reason' => 'Invalid credentials'
+            ])
+            ->log('Failed login attempt');
+    }
+
+    public static function logFailedLoginAttempt($email)
+    {
+        activity()
+            ->withProperties([
+                'attempted_email' => $email,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'attempt_time' => now()->toDateTimeString(),
+                'failure_reason' => 'User not found'
+            ])
+            ->log('Failed login attempt - user not found');
+    }
+
+    public function logRoleChange($oldRole, $newRole, $changedBy = null)
+    {
+        $changedBy = $changedBy ?? auth()->user();
+        
+        activity()
+            ->performedOn($this)
+            ->causedBy($changedBy)
+            ->withProperties([
+                'user_name' => $this->name,
+                'user_email' => $this->email,
+                'old_role' => $oldRole,
+                'new_role' => $newRole,
+                'changed_by' => $changedBy->name ?? 'System',
+                'change_time' => now()->toDateTimeString()
+            ])
+            ->log('User role changed');
+    }
+
+    public function logPasswordChange()
+    {
+        activity()
+            ->performedOn($this)
+            ->causedBy($this)
+            ->withProperties([
+                'user_name' => $this->name,
+                'user_email' => $this->email,
+                'change_time' => now()->toDateTimeString(),
+                'ip_address' => request()->ip()
+            ])
+            ->log('Password changed');
     }
 
     /**

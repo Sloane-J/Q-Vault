@@ -16,8 +16,6 @@ Paper deleted
 Attributes to Track:
 
 name, email
-
-Custom Events to Log:
 Login attempts (successful/failed)
 
 3. Department Model (Admin Changes)
