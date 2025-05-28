@@ -18,29 +18,11 @@ Attributes to Track:
 name, email
 Login attempts (successful/failed)
 
-3. Department Model (Admin Changes)
-Attributes to Track:
-
-name, description
-
-Custom Events to Log:
-
-Department created
-Department updated
-Department deleted
-Papers reassigned between departments
-
-4. Student_Type Model (Configuration Changes)
-Attributes to Track:
-
-name (HND, B-Tech, Top-up)
-
-
 Optional Models (Lower Priority)
 Download Model
 Attributes to Track:
 
-user_id, paper_id, downloaded_at
+user_name(name), paper_id, downloaded_at
 
 
 Additional Logging Considerations
