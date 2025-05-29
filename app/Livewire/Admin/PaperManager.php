@@ -52,7 +52,6 @@ class PaperManager extends Component
         'exam_year' => 'required|integer|min:1900|max:2100',
         'student_type' => 'required|string|max:50',
         'level' => 'required|string|max:10',
-        'is_visible' => 'required|in:public,restricted',
         'file' => 'nullable|mimes:pdf|max:10240',
     ];
 
@@ -66,7 +65,7 @@ class PaperManager extends Component
 
     public function mount()
     {
-        // Initialize properties
+        // Initialize properties - all papers are public by default
         $this->showForm = false;
         $this->confirmingDeletion = false;
         $this->is_visible = 'public';
@@ -217,14 +216,14 @@ class PaperManager extends Component
                     'exam_year' => $this->exam_year,
                     'student_type' => $this->student_type,
                     'level' => $this->level,
-                    'is_visible' => $this->is_visible,
+                    'is_visible' => 'public', // Always set to public
                 ]);
                 session()->flash('message', 'Paper updated successfully.');
             } else {
                 session()->flash('error', 'Paper not found.');
             }
         } else {
-            // Create new paper
+            // Create new paper - always public
             Paper::create([
                 'title' => $this->title,
                 'description' => $this->description,
@@ -237,7 +236,7 @@ class PaperManager extends Component
                 'exam_year' => $this->exam_year,
                 'student_type' => $this->student_type,
                 'level' => $this->level,
-                'is_visible' => $this->is_visible,
+                'is_visible' => 'public', // Always set to public
                 'user_id' => auth()->id(),
                 'uploaded_by' => auth()->id(),
             ]);
@@ -262,7 +261,7 @@ class PaperManager extends Component
         $this->exam_year = $paper->exam_year;
         $this->student_type = $paper->student_type;
         $this->level = $paper->level;
-        $this->is_visible = $paper->is_visible;
+        $this->is_visible = 'public'; // Always set to public
         
         // Load filtered courses for the selected department
         if ($this->department_id) {
@@ -281,7 +280,7 @@ class PaperManager extends Component
         ]);
         
         $this->filteredCourses = collect();
-        $this->is_visible = 'public';
+        $this->is_visible = 'public'; // Always reset to public
         $this->resetValidation();
     }
 

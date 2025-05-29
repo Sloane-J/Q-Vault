@@ -14,6 +14,7 @@
     # pkgs.nodejs_20
     # pkgs.nodePackages.nodemon
     pkgs.sudo
+    pkgs.sqlite.bin
   ];
 
   # Sets environment variables in the workspace

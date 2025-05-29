@@ -177,21 +177,6 @@
                                 @error('level') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             
-                            <div>
-                                <label for="is_visible" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Visibilty</label>
-                                <select id="is_visible" wire:model="is_visible" class="block w-full rounded-md
-                                        border border-neutral-300 dark:border-neutral-700
-                                        bg-white dark:bg-neutral-800
-                                        text-neutral-800 dark:text-neutral-200
-                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
-                                        transition ease-in-out duration-150
-                                        py-2 px-3 sm:text-sm">
-                                    <option value="public">Public</option>
-                                    <option value="restricted">Restricted</option>
-                                </select>
-                                @error('is_visible') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            
                             <div class="md:col-span-2">
                                 <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                                 <textarea id="description" wire:model="description" rows="3" class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
