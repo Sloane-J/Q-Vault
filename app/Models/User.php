@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-// Remove: use Illuminate\Contracts\Auth\MustVerifyEmail;
+//use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany; // <-- ADDED: For the sessions relationship
-use Illuminate\Database\Eloquent\Relations\BelongsTo; // <-- ADDED: For the department relationship (assuming Department model exists)
+use Illuminate\Database\Eloquent\Relations\HasMany; 
+use Illuminate\Database\Eloquent\Relations\BelongsTo; 
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-class User extends Authenticatable // <-- REMOVED: implements MustVerifyEmail
+class User extends Authenticatable // <-- REMOVED: implements MustVerifyEmai
 {
     use HasFactory, Notifiable, LogsActivity;
 
@@ -24,7 +24,7 @@ class User extends Authenticatable // <-- REMOVED: implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'department_id', // Assuming you have a departments table and Department model
+        'department_id',
         'role',
     ];
 
@@ -46,7 +46,7 @@ class User extends Authenticatable // <-- REMOVED: implements MustVerifyEmail
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime', // Still good to have the column, even if not enforcing verification
+            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

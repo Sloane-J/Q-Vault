@@ -178,8 +178,8 @@
                             </div>
                             
                             <div>
-                                <label for="visibility" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Visibility</label>
-                                <select id="visibility" wire:model="visibility" class="block w-full rounded-md
+                                <label for="is_visible" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Visibilty</label>
+                                <select id="is_visible" wire:model="is_visible" class="block w-full rounded-md
                                         border border-neutral-300 dark:border-neutral-700
                                         bg-white dark:bg-neutral-800
                                         text-neutral-800 dark:text-neutral-200
@@ -189,7 +189,7 @@
                                     <option value="public">Public</option>
                                     <option value="restricted">Restricted</option>
                                 </select>
-                                @error('visibility') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                @error('is_visible') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             
                             <div class="md:col-span-2">
@@ -359,7 +359,7 @@
                                     <div>Type: {{ $paper->student_type }}</div>
                                 </td>
                                 <td class="table-cell">
-                                    @if($paper->visibility === 'public')
+                                    @if($paper->is_visible === 'public')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             Public
                                         </span>

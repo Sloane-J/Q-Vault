@@ -38,3 +38,5 @@ Multiple failed login attempts
 Unauthorized access attempts
 Permission changes
 Data export activities
+
+promt: let's deal with logging. i have installed spatie activity log package.

@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Paper;
 use App\Models\Department;
 use App\Models\Course;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class PaperManager extends Component
 {
@@ -18,7 +17,7 @@ class PaperManager extends Component
     // Form Properties
     public $paperId, $title, $description, $file, $existingFilePath;
     public $department_id = '', $course_id = '', $semester, $exam_type;
-    public $exam_year, $student_type, $level, $visibility = 'public';
+    public $exam_year, $student_type, $level, $is_visible = 'public';
     public $showForm = false;
 
     // Filters
@@ -53,7 +52,7 @@ class PaperManager extends Component
         'exam_year' => 'required|integer|min:1900|max:2100',
         'student_type' => 'required|string|max:50',
         'level' => 'required|string|max:10',
-        'visibility' => 'required|in:public,restricted',
+        'is_visible' => 'required|in:public,restricted',
         'file' => 'nullable|mimes:pdf|max:10240',
     ];
 
@@ -70,7 +69,7 @@ class PaperManager extends Component
         // Initialize properties
         $this->showForm = false;
         $this->confirmingDeletion = false;
-        $this->visibility = 'public';
+        $this->is_visible = 'public';
         $this->department_id = '';
         $this->course_id = '';
         $this->filteredCourses = collect();
@@ -218,7 +217,7 @@ class PaperManager extends Component
                     'exam_year' => $this->exam_year,
                     'student_type' => $this->student_type,
                     'level' => $this->level,
-                    'visibility' => $this->visibility,
+                    'is_visible' => $this->is_visible,
                 ]);
                 session()->flash('message', 'Paper updated successfully.');
             } else {
@@ -238,8 +237,9 @@ class PaperManager extends Component
                 'exam_year' => $this->exam_year,
                 'student_type' => $this->student_type,
                 'level' => $this->level,
-                'visibility' => $this->visibility,
+                'is_visible' => $this->is_visible,
                 'user_id' => auth()->id(),
+                'uploaded_by' => auth()->id(),
             ]);
             session()->flash('message', 'Paper uploaded successfully.');
         }
@@ -262,7 +262,7 @@ class PaperManager extends Component
         $this->exam_year = $paper->exam_year;
         $this->student_type = $paper->student_type;
         $this->level = $paper->level;
-        $this->visibility = $paper->visibility;
+        $this->is_visible = $paper->is_visible;
         
         // Load filtered courses for the selected department
         if ($this->department_id) {
@@ -281,7 +281,7 @@ class PaperManager extends Component
         ]);
         
         $this->filteredCourses = collect();
-        $this->visibility = 'public';
+        $this->is_visible = 'public';
         $this->resetValidation();
     }
 
@@ -334,57 +334,49 @@ class PaperManager extends Component
 
     protected function getPapers()
     {
-        // Dummy data for development
-        $dummyPapers = collect([
-            (object)[
-                'id' => 1, 'title' => 'Intro to Algorithms', 'description' => 'Fundamentals',
-                'file_path' => 'papers/dummy-algo.pdf', 'department_id' => 1, 'course_id' => 2,
-                'semester' => 1, 'exam_type' => 'End of Semester', 'course_name' => 'Algorithms', 
-                'exam_year' => 2023, 'student_type' => 'B-Tech', 'level' => '300', 'visibility' => 'public',
-                'department' => (object)['name' => 'Computer Science'], 
-                'course' => (object)['name' => 'Algorithms'],
-            ],
-            (object)[
-                'id' => 2, 'title' => 'Digital Electronics', 'description' => 'Logic gates',
-                'file_path' => 'papers/dummy-digital.pdf', 'department_id' => 2, 'course_id' => 4,
-                'semester' => 2, 'exam_type' => 'Resit', 'course_name' => 'Digital Electronics', 
-                'exam_year' => 2022, 'student_type' => 'HND', 'level' => '200', 'visibility' => 'restricted',
-                'department' => (object)['name' => 'Electrical Engineering'], 
-                'course' => (object)['name' => 'Digital Electronics'],
-            ],
-            (object)[
-                'id' => 3, 'title' => 'Data Structures Final', 'description' => 'Trees and Graphs',
-                'file_path' => 'papers/dummy-ds.pdf', 'department_id' => 1, 'course_id' => 1,
-                'semester' => 1, 'exam_type' => 'End of Semester', 'course_name' => 'Data Structures', 
-                'exam_year' => 2023, 'student_type' => 'B-Tech', 'level' => '200', 'visibility' => 'public',
-                'department' => (object)['name' => 'Computer Science'], 
-                'course' => (object)['name' => 'Data Structures'],
-            ]
-        ]);
+        $query = Paper::with(['department', 'course'])
+            ->orderBy('created_at', 'desc');
 
-        $filtered = $dummyPapers->filter(function ($paper) {
-            return (empty($this->search) ||
-                        stripos($paper->title, $this->search) !== false ||
-                        stripos($paper->description, $this->search) !== false ||
-                        stripos($paper->course_name, $this->search) !== false) &&
-                   (empty($this->departmentFilter) || $paper->department_id == $this->departmentFilter) &&
-                   (empty($this->yearFilter) || $paper->exam_year == $this->yearFilter) &&
-                   (empty($this->levelFilter) || $paper->level == $this->levelFilter) &&
-                   (empty($this->examTypeFilter) || $paper->exam_type == $this->examTypeFilter) &&
-                   (empty($this->studentTypeFilter) || $paper->student_type == $this->studentTypeFilter) &&
-                   (empty($this->semesterFilter) || $paper->semester == $this->semesterFilter);
-        });
+        // Apply search filter
+        if (!empty($this->search)) {
+            $query->where(function ($q) {
+                $q->where('title', 'like', '%' . $this->search . '%')
+                  ->orWhere('description', 'like', '%' . $this->search . '%')
+                  ->orWhere('course_name', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('course', function ($courseQuery) {
+                      $courseQuery->where('name', 'like', '%' . $this->search . '%');
+                  })
+                  ->orWhereHas('department', function ($departmentQuery) {
+                      $departmentQuery->where('name', 'like', '%' . $this->search . '%');
+                  });
+            });
+        }
 
-        $perPage = 10;
-        $page = $this->page ?? 1;
-        $paged = $filtered->slice(($page - 1) * $perPage, $perPage)->values();
+        // Apply filters
+        if (!empty($this->departmentFilter)) {
+            $query->where('department_id', $this->departmentFilter);
+        }
 
-        return new LengthAwarePaginator(
-            $paged,
-            $filtered->count(),
-            $perPage,
-            $page,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        if (!empty($this->yearFilter)) {
+            $query->where('exam_year', $this->yearFilter);
+        }
+
+        if (!empty($this->levelFilter)) {
+            $query->where('level', $this->levelFilter);
+        }
+
+        if (!empty($this->examTypeFilter)) {
+            $query->where('exam_type', $this->examTypeFilter);
+        }
+
+        if (!empty($this->studentTypeFilter)) {
+            $query->where('student_type', $this->studentTypeFilter);
+        }
+
+        if (!empty($this->semesterFilter)) {
+            $query->where('semester', $this->semesterFilter);
+        }
+
+        return $query->paginate(10);
     }
 }
