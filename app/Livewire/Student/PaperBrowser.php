@@ -79,7 +79,7 @@ class PaperBrowser extends Component
             'downloaded_at' => now(),
         ]);
 
-        return Storage::download(storage_path('app/public/' . $paper->file_path), $paper->title . '.pdf');
+        return Storage::disk('public')->download($paper->file_path, $paper->title . '.pdf');
     }
 
     public function render()

@@ -90,7 +90,7 @@
         <flux:navlist variant="outline">
             <flux:navlist.group :heading="__('Student Portal')">
                 <flux:navlist.item icon="layout-grid" :href="route('student.dashboard')"
-                    :current="request()->routeIs('student.dashboard')" wire:navigate>
+                    :current="request()->routeIs('student.dashboard')">
                     {{ __('Dashboard') }}
                 </flux:navlist.item>
 
