@@ -25,52 +25,62 @@ Route::middleware(['auth', 'verified'])->group(function () {
         };
     })->name('dashboard');
 
-    Route::prefix('settings')->name('settings.')->group(function () {
-        Route::redirect('/', 'profile');
-        Volt::route('/profile', 'settings.profile')->name('profile');
-        Volt::route('/password', 'settings.password')->name('password');
-        Volt::route('/appearance', 'settings.appearance')->name('appearance');
-    });
+    Route::prefix('settings')
+        ->name('settings.')
+        ->group(function () {
+            Route::redirect('/', 'profile');
+            Volt::route('/profile', 'settings.profile')->name('profile');
+            Volt::route('/password', 'settings.password')->name('password');
+            Volt::route('/appearance', 'settings.appearance')->name('appearance');
+        });
 
     // Admin Routes
-    Route::middleware([EnsureUserRole::class . ':admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
-        Route::get('/analytics', fn () => view('admin.analytics'))->name('analytics');
-        Route::get('/analytics-details', fn () => view('admin.analytics-details'))->name('analytics-details');
-        Route::get('/courses', fn () => view('admin.courses'));
-        Route::get('/courses', fn () => view('admin.courses'))->name('courses');
-        Route::get('/department', fn () => view('admin.department'))->name('department.view');
-        Route::get('/departments', fn () => view('admin.department'))->name('departments');
-        Route::get('/logs', fn () => view('admin.logs'))->name('logs');
+    Route::middleware([EnsureUserRole::class . ':admin'])
+        ->prefix('admin')
+        ->name('admin.')
+        ->group(function () {
+            Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
+            Route::get('/analytics', fn() => view('admin.analytics'))->name('analytics');
+            Route::get('/analytics-details', fn() => view('admin.analytics-details'))->name('analytics-details');
+            Route::get('/courses', fn() => view('admin.courses'));
+            Route::get('/courses', fn() => view('admin.courses'))->name('courses');
+            Route::get('/department', fn() => view('admin.department'))->name('department.view');
+            Route::get('/departments', fn() => view('admin.department'))->name('departments');
+            Route::get('/logs', fn() => view('admin.logs'))->name('logs');
 
-        // Paper Management
-        Route::prefix('papers')->name('papers.')->group(function () {
-            Route::get('/', PaperManager::class)->name('index');
-            Route::get('/paper-manager', PaperManager::class)->name('paper-manager');
-            Route::get('/{paper}/versions', PaperVersions::class)->name('paper.versions');
-
-         });
-    });
+            // Paper Management
+            Route::prefix('papers')
+                ->name('papers.')
+                ->group(function () {
+                    Route::get('/', PaperManager::class)->name('index');
+                    Route::get('/paper-manager', PaperManager::class)->name('paper-manager');
+                    Route::get('/{paper}/versions', PaperVersions::class)->name('paper.versions');
+                });
+        });
 
     // Student Routes
-    Route::middleware([EnsureUserRole::class . ':student'])->prefix('student')->name('student.')->group(function () {
-        Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
-        Route::get('/download-history', DownloadHistory::class)->name('download.history');
-        Route::get('/profile', fn () => view('student.profile'))->name('profile');
+    Route::middleware([EnsureUserRole::class . ':student'])
+        ->prefix('student')
+        ->name('student.')
+        ->group(function () {
+            Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
+            Route::get('/download-history', DownloadHistory::class)->name('download.history');
 
-        Route::prefix('papers')->name('papers.')->group(function () {
-            Route::get('/', fn () => view('student.papers.index'))->name('index');
-            Route::get('/browse', fn () => view('student.papers.browse'))->name('browse');
-            Route::get('/download', fn () => view('student.papers.download'))->name('download');
-            Route::get('/search', fn () => view('student.papers.search'))->name('search');
+            Route::prefix('papers')
+                ->name('papers.')
+                ->group(function () {
+                    Route::get('/browse', fn() => view('student.browse-papers'))->name('browse-papers');
+                    Route::get('/browse', fn() => view('student.browse-papers'))->name('browse.view');
+                    Route::get('/download/{paper}', fn($paper) => view('student.papers.download', compact('paper')))->name('download');
+                    Route::get('/search', fn() => view('student.papers.search'))->name('search');
+                });
         });
-    });
+});
 
-    // Test upload route
-    Route::get('/test-upload', function () {
-        Storage::disk('public')->put('papers/test.txt', 'Hello World!');
-        return "File uploaded to public storage!";
-    });
+// Test upload route
+Route::get('/test-upload', function () {
+    Storage::disk('public')->put('papers/test.txt', 'Hello World!');
+    return 'File uploaded to public storage!';
 });
 
 Route::fallback(function () {
@@ -85,4 +95,4 @@ Route::fallback(function () {
     return redirect()->route('dashboard')->with('error', 'Unauthorized access');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

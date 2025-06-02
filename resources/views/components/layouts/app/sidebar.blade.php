@@ -17,7 +17,7 @@
                         icon="home"
                         :href="route('dashboard')"
                         :current="request()->routeIs('dashboard')"
-                        wire:navigate
+                        
                     >
                         {{ __('Dashboard') }}
                     </flux:navlist.item>
@@ -26,6 +26,7 @@
                         icon="academic-cap"
                         :href="route('admin.department.view')"
                         :current="request()->routeIs('admin.department.*')"
+                        wire:navigate
                     >
                         {{ __('Departments') }}
                     </flux:navlist.item>
@@ -36,6 +37,7 @@
                             :href="route('admin.papers.index')" 
                             icon="server-stack"
                             :current="request()->routeIs('admin.papers.index')"
+                            wire:navigate
                         >
                             {{ __('Paper Manager') }}
                         </flux:navlist.item>
@@ -44,6 +46,7 @@
                             :href="route('admin.papers.index')" 
                             icon="folder-open"
                             :current="request()->routeIs('admin.papers.paper.versions')"
+                            wire:navigate
                         >
                             {{ __('Version Management') }}
                         </flux:navlist.item>
@@ -53,6 +56,7 @@
                         icon="book-open"
                         :href="route('admin.courses')"
                         :current="request()->routeIs('admin.courses.*')"
+                        wire:navigate
                     >
                         {{ __('Course Management') }}
                     </flux:navlist.item>
@@ -66,6 +70,7 @@
                             :href="route('admin.analytics')" 
                             icon="home-modern"
                             :current="request()->routeIs('admin.analytics.dashboard')"
+                            
                         >
                             {{ __('Dashboard') }}
                         </flux:navlist.item>
@@ -74,6 +79,7 @@
                             :href="route('admin.analytics-details')" 
                             icon="chart-bar"
                             :current="request()->routeIs('admin.analytics.download-statistics')"
+                            wire:navigate
                         >
                             {{ __('Analytics Details') }}
                         </flux:navlist.item>
@@ -83,6 +89,7 @@
                             :href="route('admin.papers.index')" 
                             icon="wrench-screwdriver"
                             :current="request()->routeIs('admin.papers.index')"
+                            wire:navigate
                         >
                             {{ __('Systems Analytics') }}
                     </flux:navlist.item>
