@@ -21,7 +21,7 @@
             </flux:navbar.item>
 
             <flux:navbar.item icon="inbox-arrow-down" :href="route('student.browse-papers')"
-                :current="request()->routeIs('student.papers.browse')" wire:navigate>
+                :current="request()->routeIs('student.papers.paper-browser')" wire:navigate>
                 {{ __('Browse Papers') }}
             </flux:navbar.item>
 
@@ -102,7 +102,7 @@
                 </flux:navlist.item>
 
                 <flux:navlist.item icon="inbox-arrow-down" :href="route('student.browse-papers')"
-                    :current="request()->routeIs('student.papers.browse')" wire:navigate>
+                    :current="request()->routeIs('student.papers.paper-browser')" wire:navigate>
                     {{ __('Browse Papers') }}
                 </flux:navlist.item>
 

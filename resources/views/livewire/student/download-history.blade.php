@@ -63,7 +63,7 @@
                         <h3 class="mt-2 text-sm font-medium text-gray-900">No downloads yet</h3>
                         <p class="mt-1 text-sm text-gray-500">Start by browsing and downloading exam papers.</p>
                         <div class="mt-6">
-                            <a href="{{ route('student.papers.browse') }}" class="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <a href="{{ route('student.papers.paper-browser') }}" class="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                 Browse Papers
                             </a>
                         </div>
