@@ -14,31 +14,24 @@
             <x-app-logo />
         </a>
 
-        <flux:navbar class="-mb-px max-lg:hidden">
-            <flux:navbar.item icon="layout-grid" :href="route('student.dashboard')"
-                :current="request()->routeIs('student.dashboard')" wire:navigate>
-                {{ __('Dashboard') }}
-            </flux:navbar.item>
+       <flux:navbar class="-mb-px max-lg:hidden">
+    <flux:navbar.item icon="layout-grid" :href="route('student.dashboard')"
+        :current="request()->routeIs('student.dashboard')" wire:navigate>
+        {{ __('Dashboard') }}
+    </flux:navbar.item>
 
-            <flux:navbar.item icon="inbox-arrow-down" :href="route('student.browse-papers')"
-                :current="request()->routeIs('student.papers.paper-browser')" wire:navigate>
-                {{ __('Browse Papers') }}
-            </flux:navbar.item>
+    <flux:navbar.item icon="inbox-arrow-down" :href="route('student.paper-browser')"
+        :current="request()->routeIs('student.paper-browser')" wire:navigate>
+        {{ __('Browse Papers') }}
+    </flux:navbar.item>
 
-            <flux:navbar.item icon="clock" :href="route('student.download.history')"
-                :current="request()->routeIs('student.download.history')" wire:navigate>
-                {{ __('Download History') }}
-            </flux:navbar.item>
-        </flux:navbar>
+    <flux:navbar.item icon="clock" :href="route('student.download.history')"
+        :current="request()->routeIs('student.download.history')" wire:navigate>
+        {{ __('Download History') }}
+    </flux:navbar.item>
+</flux:navbar>
 
         <flux:spacer />
-
-        <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
-            <flux:tooltip :content="__('Search')" position="bottom">
-                <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass"
-                    :href="route('student.papers.search')" :label="__('Search')" />
-            </flux:tooltip>
-        </flux:navbar>
 
         <!-- Desktop User Menu -->
         <flux:dropdown position="top" align="end">
@@ -66,7 +59,7 @@
                 <flux:menu.separator />
 
                 <flux:menu.radio.group>
-                    <flux:menu.item :href="route('student.profile')" icon="user" wire:navigate>{{ __('Profile') }}
+                    <flux:menu.item :href="route('settings.profile')" icon="user" wire:navigate>{{ __('Profile') }}
                     </flux:menu.item>
                     <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}
                     </flux:menu.item>
@@ -101,10 +94,10 @@
                     {{ __('Dashboard') }}
                 </flux:navlist.item>
 
-                <flux:navlist.item icon="inbox-arrow-down" :href="route('student.browse-papers')"
-                    :current="request()->routeIs('student.papers.paper-browser')" wire:navigate>
-                    {{ __('Browse Papers') }}
-                </flux:navlist.item>
+               <flux:navlist.item icon="inbox-arrow-down" :href="route('student.paper-browser')"
+    :current="request()->routeIs('student.paper-browser')" wire:navigate>
+    {{ __('Browse Papers') }}
+</flux:navlist.item>
 
                 <flux:navlist.item icon="clock" :href="route('student.download.history')"
                     :current="request()->routeIs('student.download.history')" wire:navigate>

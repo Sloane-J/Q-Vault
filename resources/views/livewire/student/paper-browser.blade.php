@@ -1,0 +1,223 @@
+<div class="min-h-screen bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Browse Exam Papers</h1>
+            <p class="text-gray-600">Find and download past exam papers for your courses</p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm border p-6 mb-8">
+            <div class="mb-6">
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input 
+                        type="text" 
+                        wire:model.live.debounce.300ms="search"
+                        placeholder="Search by course name, title, or description..."
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                    <select wire:model.live="selectedDepartment" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">All Departments</option>
+                        @if(isset($departments) && $departments->count() > 0)
+                            @foreach($departments as $department)
+                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Level</label>
+                    <select wire:model.live="selectedLevel" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">All Levels</option>
+                        @if(isset($levels) && $levels->count() > 0)
+                            @foreach($levels as $level)
+                                <option value="{{ $level->id }}">Level {{ $level->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Course</label>
+                    <select wire:model.live="selectedCourse" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">All Courses</option>
+                        @if(isset($availableCourses) && $availableCourses->count() > 0)
+                            @foreach($availableCourses as $course)
+                                <option value="{{ $course }}">{{ $course }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                    <select wire:model.live="selectedYear" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">All Years</option>
+                        @if(isset($availableYears) && $availableYears->count() > 0)
+                            @foreach($availableYears as $year)
+                                <option value="{{ $year }}">{{ $year }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <button 
+                        wire:click="clearFilters" 
+                        class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    >
+                        Clear Filters
+                    </button>
+                    <span class="text-sm text-gray-500">
+                        {{ isset($papers) ? $papers->total() : 0 }} papers found
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        @if(isset($papers) && $papers->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+                @foreach($papers as $paper)
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 group">
+                        <div class="relative p-6 pb-4">
+                            <div class="absolute top-4 right-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r 
+                                    {{ 
+                                        $paper->exam_year >= 2024 ? 'from-green-100 to-green-200 text-green-800' : 
+                                        ($paper->exam_year >= 2022 ? 'from-blue-100 to-blue-200 text-blue-800' : 
+                                        'from-purple-100 to-purple-200 text-purple-800') 
+                                    }}">
+                                    {{ $paper->exam_year }}
+                                </span>
+                            </div>
+
+                            <div class="w-12 h-12 rounded-lg mb-4 flex items-center justify-center
+                                {{ 
+                                    $paper->exam_year >= 2024 ? 'bg-green-100' : 
+                                    ($paper->exam_year >= 2022 ? 'bg-blue-100' : 'bg-purple-100') 
+                                }}">
+                                <svg class="w-6 h-6 
+                                    {{ 
+                                        $paper->exam_year >= 2024 ? 'text-green-600' : 
+                                        ($paper->exam_year >= 2022 ? 'text-blue-600' : 'text-purple-600') 
+                                    }}" 
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="px-6 pb-6">
+                            <h3 class="font-bold text-gray-900 text-lg mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                {{ $paper->course_name }}
+                            </h3>
+
+                            <p class="text-gray-600 text-sm mb-3">
+                                {{ $paper->department->name ?? 'Unknown Department' }}
+                            </p>
+
+                            <div class="space-y-2 mb-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-500">Level</span>
+                                    <span class="text-sm font-medium text-gray-700">
+                                        {{ $paper->level->name ?? 'N/A' }}
+                                    </span>
+                                </div>
+
+                                @if($paper->title && $paper->title !== $paper->course_name)
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-500">Title</span>
+                                    <span class="text-sm font-medium text-gray-700 truncate ml-2">
+                                        {{ $paper->title }}
+                                    </span>
+                                </div>
+                                @endif
+
+                                @if($paper->description)
+                                <div class="pt-2">
+                                    <span class="text-xs text-gray-500">Description</span>
+                                    <p class="text-sm text-gray-600 mt-1 line-clamp-2">
+                                        {{ $paper->description }}
+                                    </p>
+                                </div>
+                                @endif
+                            </div>
+
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    {{ $paper->downloads_count ?? 0 }} downloads
+                                </div>
+
+                                <button 
+                                    wire:click="downloadPaper({{ $paper->id }})"
+                                    class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors group-hover:bg-blue-700"
+                                >
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            @if(isset($papers) && $papers->hasPages())
+                <div class="flex justify-center">
+                    {{ $papers->links() }}
+                </div>
+            @endif
+        @else
+            <div class="text-center py-12">
+                <div class="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">No papers found</h3>
+                <p class="text-gray-600 mb-6">Try adjusting your search criteria or filters to find exam papers.</p>
+                <button 
+                    wire:click="clearFilters"
+                    class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                >
+                    Clear All Filters
+                </button>
+            </div>
+        @endif
+    </div>
+
+    <div wire:loading class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 flex items-center space-x-4">
+            <svg class="animate-spin h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-gray-700 font-medium">Loading papers...</span>
+        </div>
+    </div>
+</div>
+
+@push('styles')
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+@endpush

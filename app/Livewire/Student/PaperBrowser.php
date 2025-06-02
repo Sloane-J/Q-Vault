@@ -6,10 +6,11 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Paper;
 use App\Models\Department;
-use App\Models\StudentType;
 use App\Models\Level;
+use App\Models\Course;
 use App\Models\Download;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PaperBrowser extends Component
 {
@@ -17,21 +18,15 @@ class PaperBrowser extends Component
 
     public $search = '';
     public $selectedDepartment = '';
-    public $selectedStudentType = '';
     public $selectedLevel = '';
-    public $selectedSemester = '';
-    public $selectedExamType = '';
+    public $selectedCourse = '';
     public $selectedYear = '';
-    public $sortBy = 'created_at';
-    public $sortDirection = 'desc';
 
     protected $queryString = [
         'search' => ['except' => ''],
         'selectedDepartment' => ['except' => ''],
-        'selectedStudentType' => ['except' => ''],
         'selectedLevel' => ['except' => ''],
-        'selectedSemester' => ['except' => ''],
-        'selectedExamType' => ['except' => ''],
+        'selectedCourse' => ['except' => ''],
         'selectedYear' => ['except' => ''],
     ];
 
@@ -43,13 +38,23 @@ class PaperBrowser extends Component
     public function updatingSelectedDepartment()
     {
         $this->resetPage();
-        $this->selectedLevel = ''; // Reset level when department changes
+        $this->selectedLevel = '';
+        $this->selectedCourse = '';
     }
 
-    public function updatingSelectedStudentType()
+    public function updatingSelectedLevel()
     {
         $this->resetPage();
-        $this->selectedLevel = ''; // Reset level when student type changes
+    }
+
+    public function updatingSelectedCourse()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingSelectedYear()
+    {
+        $this->resetPage();
     }
 
     public function clearFilters()
@@ -57,23 +62,10 @@ class PaperBrowser extends Component
         $this->reset([
             'search',
             'selectedDepartment',
-            'selectedStudentType',
             'selectedLevel',
-            'selectedSemester',
-            'selectedExamType',
+            'selectedCourse',
             'selectedYear'
         ]);
-        $this->resetPage();
-    }
-
-    public function sortBy($field)
-    {
-        if ($this->sortBy === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortBy = $field;
-            $this->sortDirection = 'asc';
-        }
         $this->resetPage();
     }
 
@@ -81,68 +73,80 @@ class PaperBrowser extends Component
     {
         $paper = Paper::findOrFail($paperId);
         
-        // Record download
         Download::create([
             'user_id' => Auth::id(),
             'paper_id' => $paperId,
             'downloaded_at' => now(),
         ]);
 
-        // Return download response
-        return response()->download(storage_path('app/' . $paper->file_path));
+        return Storage::download(storage_path('app/public/' . $paper->file_path), $paper->title . '.pdf');
     }
 
     public function render()
     {
         $papers = Paper::query()
-            ->where('visibility', true) // Only visible papers
+            ->where('is_visible', 'public')
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('title', 'like', '%' . $this->search . '%')
-                      ->orWhere('course_name', 'like', '%' . $this->search . '%')
-                      ->orWhere('description', 'like', '%' . $this->search . '%');
+                      ->orWhere('description', 'like', '%' . $this->search . '%')
+                      ->orWhereHas('course', function ($courseQuery) {
+                          $courseQuery->where('name', 'like', '%' . $this->search . '%');
+                      });
                 });
             })
             ->when($this->selectedDepartment, function ($query) {
                 $query->where('department_id', $this->selectedDepartment);
             })
-            ->when($this->selectedStudentType, function ($query) {
-                $query->where('student_type_id', $this->selectedStudentType);
-            })
             ->when($this->selectedLevel, function ($query) {
                 $query->where('level_id', $this->selectedLevel);
             })
-            ->when($this->selectedSemester, function ($query) {
-                $query->where('semester', $this->selectedSemester);
-            })
-            ->when($this->selectedExamType, function ($query) {
-                $query->where('exam_type', $this->selectedExamType);
+            ->when($this->selectedCourse, function ($query) {
+                $query->where('course_id', $this->selectedCourse);
             })
             ->when($this->selectedYear, function ($query) {
                 $query->where('exam_year', $this->selectedYear);
             })
-            ->with(['department', 'studentType', 'level', 'user'])
-            ->orderBy($this->sortBy, $this->sortDirection)
+            ->with(['department', 'level', 'user', 'course'])
             ->paginate(12);
 
         $departments = Department::all();
-        $studentTypes = StudentType::all();
-        $levels = Level::when($this->selectedStudentType, function ($query) {
-            $query->where('student_type_id', $this->selectedStudentType);
+        
+        $levels = Level::when($this->selectedDepartment, function ($query) {
+            $query->whereHas('papers', function ($q) {
+                $q->where('department_id', $this->selectedDepartment);
+            });
         })->get();
 
-        $availableYears = Paper::distinct()->pluck('exam_year')->filter()->sort()->values();
-        $semesters = ['First Semester', 'Second Semester'];
-        $examTypes = ['Mid-Semester', 'End-of-Semester', 'Resit', 'Supplementary'];
+        $courses = Course::when($this->selectedDepartment, function ($query) {
+            $query->where('department_id', $this->selectedDepartment);
+        })
+        ->when($this->selectedLevel, function ($query) {
+            $query->whereHas('papers', function ($q) {
+                $q->where('level_id', $this->selectedLevel);
+            });
+        })->get();
 
-        return view('livewire.student.papers.paper-browser', compact(
+        $availableYears = Paper::when($this->selectedDepartment, function ($query) {
+            $query->where('department_id', $this->selectedDepartment);
+        })
+        ->when($this->selectedLevel, function ($query) {
+            $query->where('level_id', $this->selectedLevel);
+        })
+        ->when($this->selectedCourse, function ($query) {
+            $query->where('course_id', $this->selectedCourse);
+        })
+        ->distinct()
+        ->pluck('exam_year')
+        ->filter()
+        ->values();
+
+        return view('livewire.student.paper-browser', compact(
             'papers',
             'departments',
-            'studentTypes',
             'levels',
-            'availableYears',
-            'semesters',
-            'examTypes'
+            'courses',
+            'availableYears'
         ));
     }
 }

@@ -33,9 +33,6 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
-            'serve' => true,
-            'throw' => false,
-            'report' => false,
         ],
 
         'public' => [
@@ -43,15 +40,14 @@ return [
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
-            'throw' => false,
-            'report' => false,
+
         ],
 
         'papers' => [
         'driver' => 'local',
-        'root' => storage_path('app/papers'),
+        'root' => storage_path('app/public/papers'),
         'url' => env('APP_URL').'/storage/papers',
-        'visibility' => 'private',
+        'visibility' => 'public',
         ],
 
         's3' => [

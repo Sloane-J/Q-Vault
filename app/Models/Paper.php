@@ -17,22 +17,21 @@ class Paper extends Model
     protected $fillable = [
         'department_id',
         'course_id',
+        'level_id',
+        'student_type_id',
+        'user_id',
         'title',
         'file_path',
         'exam_type',
         'exam_year',
         'semester',
-        'student_type',
-        'level',
         'description',
         'is_visible',
-        'uploaded_by',
         'current_version_id',
     ];
 
     protected $casts = [
         'exam_year' => 'integer',
-        'level' => 'integer',
         'is_visible' => 'boolean',
         'download_count' => 'integer',
         'view_count' => 'integer',
@@ -112,9 +111,25 @@ class Paper extends Model
         return $this->belongsTo(Course::class);
     }
 
+    public function level(): BelongsTo
+    {
+        return $this->belongsTo(Level::class);
+    }
+
+    public function studentType(): BelongsTo
+    {
+        return $this->belongsTo(StudentType::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Alias for backward compatibility
     public function uploader(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'uploaded_by');
+        return $this->user();
     }
 
     public function versions(): HasMany
@@ -168,13 +183,13 @@ class Paper extends Model
         return $query->where('exam_year', $year);
     }
 
-    public function scopeByStudentType($query, $studentType)
+    public function scopeByStudentType($query, $studentTypeId)
     {
-        return $query->where('student_type', $studentType);
+        return $query->where('student_type_id', $studentTypeId);
     }
 
-    public function scopeByLevel($query, $level)
+    public function scopeByLevel($query, $levelId)
     {
-        return $query->where('level', $level);
+        return $query->where('level_id', $levelId);
     }
 }
