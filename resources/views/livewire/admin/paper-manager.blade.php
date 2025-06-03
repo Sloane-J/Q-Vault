@@ -152,8 +152,8 @@
                                         transition ease-in-out duration-150
                                         py-2 px-3 sm:text-sm">
                                         <option value="">Select Semester</option>
-                                        <option value="1">Semester 1</option>
-                                        <option value="2">Semester 2</option>
+                                        <option value="1">First Semester</option>
+                                        <option value="2">Second Semester</option>
                                     </select>
                                     @error('semester')
                                         <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -183,22 +183,22 @@
                                 </div>
 
                                 <div>
-                                    <label for="level"
+                                    <label for="level_id"
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Level</label>
-                                    <select id="level" wire:model="level"
+                                    <select id="level_id" wire:model="level_id"
                                         class="block w-full rounded-md
-                                        border border-neutral-300 dark:border-neutral-700
-                                        bg-white dark:bg-neutral-800
-                                        text-neutral-800 dark:text-neutral-200
-                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
-                                        transition ease-in-out duration-150
-                                        py-2 px-3 sm:text-sm">
+        border border-neutral-300 dark:border-neutral-700
+        bg-white dark:bg-neutral-800
+        text-neutral-800 dark:text-neutral-200
+        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+        transition ease-in-out duration-150
+        py-2 px-3 sm:text-sm">
                                         <option value="">Select Level</option>
-                                        @foreach ($levels as $lvl)
-                                            <option value="{{ $lvl }}">{{ $lvl }}</option>
+                                        @foreach ($levels as $level)
+                                            <option value="{{ $level->id }}">{{ $level->name }}</option>
                                         @endforeach
                                     </select>
-                                    @error('level')
+                                    @error('level_id')
                                         <span class="text-red-500 text-xs">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -217,7 +217,7 @@
                                     <label for="file"
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">PDF
                                         File</label>
-                                        
+
                                     <input type="file" id="file" wire:model="file" accept=".pdf"
                                         class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
                                     file:mr-4 file:py-2 file:px-4
@@ -230,7 +230,7 @@
                                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Current file:
                                             {{ basename($existingFilePath) }}</p>
                                     @endif
-                                    <div wire:loading wire:target="file" class="mt-1 text-xs text-blue-600">Uploading...
+                                    <div wire:loading.flex wire:target="file" class="mt-1 text-xs text-blue-600">Uploading...
                                     </div>
                                     @error('file')
                                         <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -336,8 +336,8 @@
                             <select wire:model="levelFilter"
                                 class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 text-base appearance-none">
                                 <option value="">All Levels</option>
-                                @foreach ($levels as $lvl)
-                                    <option value="{{ $lvl }}">{{ $lvl }}</option>
+                                @foreach ($levels as $level)
+                                    <option value="{{ $level->id }}">{{ $level->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -387,8 +387,8 @@
                             <select wire:model="semesterFilter"
                                 class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 text-base appearance-none">
                                 <option value="">All Semesters</option>
-                                <option value="1">Semester 1</option>
-                                <option value="2">Semester 2</option>
+                                <option value="1">First Semester</option>
+                                <option value="2">Second Semester</option>
                             </select>
                         </div>
                     </div>
@@ -448,7 +448,8 @@
 
                                             <div>{{ $paper->exam_type }} • {{ $paper->exam_year }}</div>
 
-                                            <div>Level: {{ $paper->level }}, Semester: {{ $paper->semester }}</div>
+                                            <div>Level: {{ $paper->level->name }}, Semester: {{ $paper->semester }}
+                                            </div>
 
                                             <div>Type: {{ $paper->student_type }}</div>
 

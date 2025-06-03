@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Paper;
 use App\Models\Department;
 use App\Models\Course;
+use App\Models\Level;
+use App\Models\StudentType;
 
 class PaperManager extends Component
 {
@@ -17,7 +19,7 @@ class PaperManager extends Component
     // Form Properties
     public $paperId, $title, $description, $file, $existingFilePath;
     public $department_id = '', $course_id = '', $semester, $exam_type;
-    public $exam_year, $student_type, $level, $is_visible = 'public';
+    public $exam_year, $student_type, $level_id, $is_visible = 'public';
     public $showForm = false;
 
     // Filters
@@ -38,7 +40,7 @@ class PaperManager extends Component
     public $courses = [];
     public $filteredCourses = [];
     public $studentTypes = ['HND', 'B-Tech', 'Top-up'];
-    public $levels = ['100', '200', '300', '400'];
+    public $levels = [];
     public $examTypes = ['End of Semester', 'Resit'];
     public $years = [];
 
@@ -51,7 +53,7 @@ class PaperManager extends Component
         'exam_type' => 'required|string|max:50',
         'exam_year' => 'required|integer|min:1900|max:2100',
         'student_type' => 'required|string|max:50',
-        'level' => 'required|string|max:10',
+        'level_id' => 'required|string|max:10',
         'file' => 'nullable|mimes:pdf|max:10240',
     ];
 
@@ -61,6 +63,7 @@ class PaperManager extends Component
         'exam_type' => 'exam type',
         'exam_year' => 'exam year',
         'student_type' => 'student type',
+        'level_id' => 'level',
     ];
 
     public function mount()
@@ -79,7 +82,8 @@ class PaperManager extends Component
         // Debug: Log initial data
         \Log::info('PaperManager mounted', [
             'departments_count' => $this->departments->count(),
-            'courses_count' => $this->courses->count()
+            'courses_count' => $this->courses->count(),
+            'levels_count' => $this->levels->count(),
         ]);
     }
 
@@ -144,6 +148,7 @@ class PaperManager extends Component
             // Try to load from database
             $this->departments = Department::orderBy('name')->get();
             $this->courses = Course::orderBy('name')->get();
+            $this->levels = Level::orderBy('name')->get();
         } catch (\Exception $e) {
             // Fallback to dummy data for development
             \Log::info('Using dummy data for dropdowns');
@@ -165,11 +170,12 @@ class PaperManager extends Component
         }
 
         // Generate years range
-        $this->years = range(date('Y'), 2000);
+        $this->years = range(date('Y'), 2010);
         
         \Log::info('Dropdown data loaded', [
             'departments' => $this->departments->count(),
-            'courses' => $this->courses->count()
+            'courses' => $this->courses->count(),
+            'levels' => $this->levels->count(),
         ]);
     }
 
@@ -215,7 +221,7 @@ class PaperManager extends Component
                     'exam_type' => $this->exam_type,
                     'exam_year' => $this->exam_year,
                     'student_type' => $this->student_type,
-                    'level' => $this->level,
+                    'level_id' => $this->level,
                     'is_visible' => 'public', // Always set to public
                 ]);
                 session()->flash('message', 'Paper updated successfully.');
@@ -235,9 +241,9 @@ class PaperManager extends Component
                 'exam_type' => $this->exam_type,
                 'exam_year' => $this->exam_year,
                 'student_type' => $this->student_type,
-                'level' => $this->level,
+                'level_id' => $this->level_id,
                 'is_visible' => 'public', // Always set to public
-                'user_id' => auth()->id(),
+               // 'user_id' => auth()->id(),
                 'uploaded_by' => auth()->id(),
             ]);
             session()->flash('message', 'Paper uploaded successfully.');
@@ -260,7 +266,7 @@ class PaperManager extends Component
         $this->exam_type = $paper->exam_type;
         $this->exam_year = $paper->exam_year;
         $this->student_type = $paper->student_type;
-        $this->level = $paper->level;
+        $this->level_id = $paper->level_id;
         $this->is_visible = 'public'; // Always set to public
         
         // Load filtered courses for the selected department
@@ -276,7 +282,7 @@ class PaperManager extends Component
         $this->reset([
             'paperId', 'title', 'description', 'file', 'existingFilePath',
             'department_id', 'course_id', 'semester', 'exam_type',
-            'exam_year', 'student_type', 'level'
+            'exam_year', 'student_type', 'level_id'
         ]);
         
         $this->filteredCourses = collect();
@@ -333,7 +339,7 @@ class PaperManager extends Component
 
     protected function getPapers()
     {
-        $query = Paper::with(['department', 'course'])
+        $query = Paper::with(['department', 'course', 'level'])
             ->orderBy('created_at', 'desc');
 
         // Apply search filter
@@ -361,7 +367,7 @@ class PaperManager extends Component
         }
 
         if (!empty($this->levelFilter)) {
-            $query->where('level', $this->levelFilter);
+            $query->where('level_id', $this->levelFilter);
         }
 
         if (!empty($this->examTypeFilter)) {

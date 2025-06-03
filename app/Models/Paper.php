@@ -15,49 +15,34 @@ class Paper extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
-    protected $fillable = [
-        'department_id',
-        'course_id',
-        'level_id',
-        'student_type_id',
-        'user_id',
-        'title',
-        'file_path',
-        'exam_type',
-        'exam_year',
-        'semester',
-        'description',
-        'is_visible',
-        'current_version_id',
-    ];
+    protected $fillable = ['department_id', 'course_id', 'level_id', 'student_type_id', 'user_id', 'title', 'file_path', 'exam_type', 'exam_year', 'semester', 'description', 'is_visible', 'current_version_id', 'uploaded_by'];
 
     protected $casts = [
         'exam_year' => 'integer',
         'is_visible' => 'boolean',
-        'download_count' => 'integer', // Assuming these are database columns
-        'view_count' => 'integer',     // Assuming these are database columns
+        'download_count' => 'integer',
+        'view_count' => 'integer',
+        'department_id' => 'integer',
+        'course_id' => 'integer',
+        'level_id' => 'integer', // Add this
+        'student_type_id' => 'integer', // Add this if not already there
     ];
 
     // Activity Log Configuration
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly([
-                'title',
-                'department.name',
-                'semester',
-                'exam_type',
-                'course.name',
-                'exam_year'
-            ])
+            ->logOnly(['title', 'department.name', 'semester', 'exam_type', 'course.name', 'exam_year'])
             ->logOnlyDirty()
             ->dontLogIfAttributesChangedOnly(['view_count', 'download_count', 'updated_at'])
-            ->setDescriptionForEvent(fn(string $eventName) => match($eventName) {
-                'created' => 'Paper uploaded',
-                'updated' => 'Paper updated',
-                'deleted' => 'Paper deleted',
-                default => "Paper {$eventName}"
-            });
+            ->setDescriptionForEvent(
+                fn(string $eventName) => match ($eventName) {
+                    'created' => 'Paper uploaded',
+                    'updated' => 'Paper updated',
+                    'deleted' => 'Paper deleted',
+                    default => "Paper {$eventName}",
+                },
+            );
     }
 
     // Accessor for formatted semester
@@ -66,12 +51,13 @@ class Paper extends Model
      *
      * @return string
      */
-    public function getFormattedSemesterAttribute(): string // Corrected from Attributes to Attribute
+    public function getFormattedSemesterAttribute(): string
     {
+        // Corrected from Attributes to Attribute
         return match ($this->semester) {
-            "1" => 'First Semester',
-            "2" => 'Second Semester',
-            default => 'N/A' // Fallback for unexpected values or null
+            '1' => 'First Semester',
+            '2' => 'Second Semester',
+            default => 'N/A', // Fallback for unexpected values or null
         };
     }
 
@@ -93,7 +79,7 @@ class Paper extends Model
                 'formatted_semester' => $this->formatted_semester, // Log the formatted value too for easier reading in logs
                 'user_name' => $user->name ?? 'Guest',
                 'user_email' => $user->email ?? 'N/A',
-                'download_time' => now()->toDateTimeString()
+                'download_time' => now()->toDateTimeString(),
             ])
             ->log('Paper downloaded');
     }
@@ -112,7 +98,7 @@ class Paper extends Model
                 'department' => $this->department->name ?? 'Unknown',
                 'course' => $this->course->name ?? 'Unknown',
                 'replaced_by' => $user->name ?? 'System',
-                'replacement_time' => now()->toDateTimeString()
+                'replacement_time' => now()->toDateTimeString(),
             ])
             ->log('File replaced/updated');
     }
@@ -140,7 +126,7 @@ class Paper extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'uploaded_by');
     }
 
     // Alias for backward compatibility

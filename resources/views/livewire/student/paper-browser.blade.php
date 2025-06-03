@@ -87,19 +87,7 @@
                     </select>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Student Type</label>
-                    <select wire:model.live="selectedStudentType"
-                        class="w-full border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
-                        <option value="" class="dark:bg-neutral-800 dark:text-gray-100">All Types</option>
-                        @if (isset($studentTypes) && $studentTypes->count() > 0)
-                            @foreach ($studentTypes as $type)
-                                <option value="{{ $type->id }}" class="dark:bg-neutral-800 dark:text-gray-100">
-                                    {{ $type->name }}</option>
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
+
             </div>
 
             <div class="flex flex-wrap items-center justify-between gap-4">
@@ -136,11 +124,12 @@
                             <div
                                 class="w-20 h-20 bg-white/20 dark:bg-white/10 rounded-xl flex items-center justify-center">
                                 <svg class="w-10 h-10 text-purple-600 dark:text-purple-400" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12h6m-6 4h6m-2 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                    </path>
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                                 </svg>
+
                             </div>
                         </div>
 
@@ -153,21 +142,30 @@
                             </h3>
 
                             {{-- Department Name (Bold) --}}
-                            <p class="font-bold text-gray-900 dark:text-gray-100 text-sm mb-2">
+                            <p
+                                class="font-bold text-gray-800 dark:text-gray-100 text-sm mb-2 group-hover:text-primary-600 transition-colors duration-300">
                                 {{ $paper->department->name ?? 'Unknown Department' }}
                             </p>
 
                             {{-- Course ID and Level Info in one line separated by dots --}}
-                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                                {{ $paper->course->name ?? 'N/A' }} • Level {{ $paper->level ?? 'N/A' }}
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                <span
+                                    class="text-sm text-gray-400 dark:text-gray-300">{{ $paper->course->name ?? 'N/A' }}</span>
+                                <span class="font-bold text-gray-400 dark:text-gray-300">•</span>
+                                <span
+                                    class=" text-gray-400 dark:text-gray-300">{{ $paper->level->name ?? 'N/A' }}</span>
 
-                                • {{ $paper->formatted_semester }}
+                                <span class="font-bold text-gray-400 dark:text-gray-300">•</span>
+                                <span class=" text-gray-400 dark:text-gray-300">{{ $paper->formatted_semester }}</span>
 
                                 @if (isset($paper->exam_type))
-                                    • {{ ucfirst($paper->exam_type) }}
+                                    <span class="font-bold text-gray-400 dark:text-gray-300">•</span>
+                                    <span
+                                        class="text-gray-400 dark:text-gray-300">{{ ucfirst($paper->exam_type) }}</span>
                                 @endif
                                 @if (isset($paper->student_type))
-                                    • {{ $paper->student_type }}
+                                    <span class="font-bold text-gray-400 dark:text-gray-300">•</span>
+                                    <span class=" text-gray-400 dark:text-gray-300">{{ $paper->student_type }}</span>
                                 @endif
                             </p>
 
@@ -175,19 +173,18 @@
                             <div
                                 class="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-neutral-700">
                                 <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 10v6m0 0l-3-3m3 3l3-3"></path>
-                                    </svg>
+                                    
                                     {{ $paper->downloads_count ?? 0 }} downloads
                                 </div>
 
                                 <button wire:click="downloadPaper({{ $paper->id }})"
                                     class="w-10 h-10 bg-purple-600 dark:bg-purple-500 hover:bg-purple-700 dark:hover:bg-purple-600 text-white rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-105">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 10v6m0 0l-3-3m3 3l3-3"></path>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                     </svg>
+
                                 </button>
                             </div>
                         </div>
