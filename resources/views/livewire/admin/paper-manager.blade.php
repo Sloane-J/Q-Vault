@@ -230,7 +230,8 @@
                                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Current file:
                                             {{ basename($existingFilePath) }}</p>
                                     @endif
-                                    <div wire:loading.flex wire:target="file" class="mt-1 text-xs text-blue-600">Uploading...
+                                    <div wire:loading.flex wire:target="file" class="mt-1 text-xs text-blue-600">
+                                        Uploading...
                                     </div>
                                     @error('file')
                                         <span class="text-red-500 text-xs">{{ $message }}</span>

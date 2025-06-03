@@ -4,11 +4,12 @@ namespace App\Livewire\Admin\Analytics;
 
 use Livewire\Component;
 use App\Models\Paper;
-use App\Models\DownloadLog;
-use App\Models\User;
-use App\Models\AuditLog;
+use App\Models\Download;
+use App\Models\User; // Make sure User model is imported
+use App\Models\AuditLog; // Make sure AuditLog model is correctly configured for 'activity_log' table
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str; // Import Str facade for Str::title() in Blade
 
 class Dashboard extends Component
 {
@@ -32,7 +33,8 @@ class Dashboard extends Component
 
     // 3. Quick Lists for Recent Activity
     public $recentlyAddedPapers; // Collection of top 3
-    public $recentHighImpactAuditEvent; // Single event object or array
+    // Changed to plural, as it will now hold multiple events
+    public $recentSystemEvents; // Collection of recent audit log events
 
     protected $listeners = ['aggregationChanged' => 'updateDownloadTrendAggregation'];
 
@@ -56,14 +58,24 @@ class Dashboard extends Component
         $this->papersByDepartmentData = $this->getPapersByDepartment();
 
         // Total Downloads & Download Trends
-        $this->totalDownloadsAllTime = DownloadLog::count();
+        $this->totalDownloadsAllTime = Download::count();
         $this->updateDownloadTrends(); // Initial load based on default aggregation
 
-        // Active Users & Active User Trend
-        $this->activeUsersToday = User::whereDate('last_activity_at', Carbon::today())->distinct('id')->count();
-        $this->activeUsersThisWeek = User::whereBetween('last_activity_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->distinct('id')->count();
-        $this->activeUsersThisMonth = User::whereMonth('last_activity_at', Carbon::now()->month)->whereYear('last_activity_at', Carbon::now()->year)->distinct('id')->count();
-        $this->activeUserTrendData = $this->getActiveUserTrend();
+        // Active Users (based on downloads activity)
+        $this->activeUsersToday = Download::whereDate('created_at', Carbon::today())
+                                          ->distinct('user_id')
+                                          ->count('user_id');
+
+        $this->activeUsersThisWeek = Download::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+                                             ->distinct('user_id')
+                                             ->count('user_id');
+
+        $this->activeUsersThisMonth = Download::whereMonth('created_at', Carbon::now()->month)
+                                             ->whereYear('created_at', Carbon::now()->year)
+                                             ->distinct('user_id')
+                                             ->count('user_id');
+
+        $this->activeUserTrendData = $this->getActiveUserTrendFromDownloads();
 
         // Storage Used
         $totalSizeInBytes = Paper::sum('file_size_bytes');
@@ -103,20 +115,20 @@ class Dashboard extends Component
 
         switch ($this->downloadTrendAggregation) {
             case 'weekly':
-                $query = DownloadLog::selectRaw('YEAR(created_at) as year, WEEK(created_at, 1) as week, COUNT(*) as count')
+                $query = Download::selectRaw('YEAR(created_at) as year, WEEK(created_at, 1) as week, COUNT(*) as count')
                     ->groupBy('year', 'week')
                     ->orderBy('year', 'asc')
                     ->orderBy('week', 'asc');
                 break;
             case 'monthly':
-                $query = DownloadLog::selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, COUNT(*) as count')
+                $query = Download::selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, COUNT(*) as count')
                     ->groupBy('year', 'month')
                     ->orderBy('year', 'asc')
                     ->orderBy('month', 'asc');
                 break;
             case 'daily':
             default:
-                $query = DownloadLog::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+                $query = Download::selectRaw('DATE(created_at) as date, COUNT(*) as count')
                     ->groupBy('date')
                     ->orderBy('date', 'asc');
                 break;
@@ -187,22 +199,23 @@ class Dashboard extends Component
     }
 
     /**
-     * Fetch and format data for Active User Trend area chart.
-     * Shows daily active users for the last 30 days.
+     * Fetch and format data for Active User Trend area chart, based on downloads.
+     * Shows daily active users (who downloaded) for the last 30 days.
      */
-    private function getActiveUserTrend()
+    private function getActiveUserTrendFromDownloads()
     {
         $labels = [];
         $values = [];
-        $startDate = Carbon::now()->subDays(29); // Last 30 days including today
+        $startDate = Carbon::now()->subDays(29);
 
         for ($i = 0; $i < 30; $i++) {
             $date = $startDate->copy()->addDays($i);
             $labels[] = $date->format('M d');
-            
-            // Real query for unique active users on specific date
-            $activeUsers = User::whereDate('last_activity_at', $date)->distinct('id')->count();
-            $values[] = $activeUsers > 0 ? $activeUsers : rand(5, 50); // Fallback to random if no data
+
+            $activeUsers = Download::whereDate('created_at', $date)
+                                   ->distinct('user_id')
+                                   ->count('user_id');
+            $values[] = $activeUsers;
         }
 
         return [
@@ -213,27 +226,26 @@ class Dashboard extends Component
 
     /**
      * Load data for the Primary System Activity Trend chart.
-     * This chart shows daily activity for the last 30 days.
+     * This chart shows daily activity (downloads) for the last 30 days.
      */
     public function loadPrimarySystemActivityTrend()
     {
         $labels = [];
         $downloadValues = [];
-        $startDate = Carbon::now()->subDays(29); // Last 30 days
+        $startDate = Carbon::now()->subDays(29);
 
         for ($i = 0; $i < 30; $i++) {
             $currentDate = $startDate->copy()->addDays($i);
             $labels[] = $currentDate->format('M d');
 
-            // Daily Downloads
-            $downloadValues[] = DownloadLog::whereDate('created_at', $currentDate)->count();
+            $downloadValues[] = Download::whereDate('created_at', $currentDate)->count();
         }
 
         $this->systemActivityTrendData = [
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Daily Activity',
+                    'label' => 'Daily Activity (Downloads)',
                     'data' => $downloadValues,
                 ],
             ],
@@ -242,23 +254,22 @@ class Dashboard extends Component
 
     /**
      * Load data for Quick Lists.
+     * Now loads multiple recent system events with detailed information.
      */
     public function loadQuickLists()
     {
         // Recently Added Papers (Top 3)
         $this->recentlyAddedPapers = Paper::orderBy('created_at', 'desc')
-            ->take(3)
+            ->take(7)
             ->get(['title', 'created_at', 'id']);
 
-        // Recent High-Impact Audit Event (Top 1)
-        $this->recentHighImpactAuditEvent = AuditLog::where('level', 'critical')
+        // Recent System Events (e.g., top 5)
+        // Eager load the 'causer' relationship to get user details efficiently.
+        // Include all necessary columns: description, created_at, causer_id, causer_type, level, log_name
+        $this->recentSystemEvents = AuditLog::with('causer') // Eager load the causer (user) relationship
             ->orderBy('created_at', 'desc')
-            ->first(['description', 'created_at', 'user_id']);
-
-        if (!$this->recentHighImpactAuditEvent) {
-            $this->recentHighImpactAuditEvent = AuditLog::orderBy('created_at', 'desc')
-                ->first(['description', 'created_at', 'user_id']);
-        }
+            ->take(5) // Fetch the 5 most recent events
+            ->get(['description', 'created_at', 'causer_id', 'causer_type', 'level', 'log_name']);
     }
 
     /**
@@ -282,7 +293,7 @@ class Dashboard extends Component
         $this->loadKpiData();
         $this->loadPrimarySystemActivityTrend();
         $this->loadQuickLists();
-        
+
         $this->dispatch('dashboard-refreshed');
     }
 
