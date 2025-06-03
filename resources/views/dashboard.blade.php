@@ -436,187 +436,243 @@
                 });
             });
         </script>
-   @elseif(auth()->user()->isStudent())
-    <div class="student-dashboard-section">
-    <h2 class="text-2xl font-bold mb-4">Student Dashboard</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Total Papers Card -->
-        <div class="flex justify-between items-center p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
-            <div class="flex flex-col justify-center">
-                <h3 class="text-lg font-semibold mb-1 text-gray-700 dark:text-gray-300">Total Papers</h3>
-                <p class="text-3xl font-bold text-blue-600 dark:text-blue-400">
+    @elseif(auth()->user()->isStudent())
+        <div class="student-dashboard-section">
+            <h2 class="text-2xl font-bold mb-4">Student Dashboard</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Total Papers Card -->
+                <div
+                    class="flex justify-between items-center p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
+                    <div class="flex flex-col justify-center">
+                        <h3 class="text-lg font-semibold mb-1 text-gray-700 dark:text-gray-300">Total Papers</h3>
+                        <p class="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                            {{ \App\Models\Paper::where('is_visible', 'public')->count() }}
+                        </p>
+                        <p class="text-sm text-gray-500 mt-1">Papers available</p>
+                    </div>
+                    <div id="totalPapersChart" class="h-16 w-24"></div>
+                </div>
+
+                <!-- Total Courses Card -->
+                <div
+                    class="flex justify-between items-center p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
+                    <div class="flex flex-col justify-center">
+                        <h3 class="text-lg font-semibold mb-1 text-gray-700 dark:text-gray-300">Total Courses</h3>
+                        <p class="text-3xl font-bold text-orange-600 dark:text-orange-400">
+                            {{ \App\Models\Course::count() }}
+                        </p>
+                        <p class="text-sm text-gray-500 mt-1">All courses</p>
+                    </div>
+                    <div id="totalCoursesChart" class="h-16 w-24"></div>
+                </div>
+
+                <!-- New This Week Card -->
+                <div
+                    class="flex justify-between items-center p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
+                    <div class="flex flex-col justify-center">
+                        <h3 class="text-lg font-semibold mb-1 text-gray-700 dark:text-gray-300">New This Week</h3>
+                        <p class="text-3xl font-bold text-green-600 dark:text-green-400">
+                            {{ \App\Models\Paper::where('is_visible', 'public')->where('created_at', '>=', now()->startOfWeek())->count() }}
+                        </p>
+                        <p class="text-sm text-gray-500 mt-1">Papers added recently</p>
+                    </div>
+                    <div id="newPapersChart" class="h-16 w-24"></div>
+                </div>
+
+                <!-- Your Downloads Card -->
+                <div
+                    class="flex justify-between items-center p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
+                    <div class="flex flex-col justify-center">
+                        <h3 class="text-lg font-semibold mb-1 text-gray-700 dark:text-gray-300">Your Downloads</h3>
+                        <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                            {{ \App\Models\Download::where('user_id', auth()->id())->count() }}
+                        </p>
+                        <p class="text-sm text-gray-500 mt-1">
+                            {{ \App\Models\Download::where('user_id', auth()->id())->where('downloaded_at', '>=', now()->startOfMonth())->count() }}
+                            this month
+                        </p>
+                    </div>
+                    <div id="downloadsChart" class="h-16 w-24"></div>
+                </div>
+            </div>
+
+            <livewire:student.download-history />
+        </div>
+
+        <!-- ApexCharts Script -->
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Get actual data for charts - simplified for proper working
+                const totalPapersData = [12, 15, 18, 22, 19, 25,
                     {{ \App\Models\Paper::where('is_visible', 'public')->count() }}
-                </p>
-                <p class="text-sm text-gray-500 mt-1">Papers in database</p>
-            </div>
-            <div id="totalPapersChart" class="h-16 w-24"></div>
-        </div>
+                ];
 
-        <!-- New This Week Card -->
-        <div class="flex justify-between items-center p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
-            <div class="flex flex-col justify-center">
-                <h3 class="text-lg font-semibold mb-1 text-gray-700 dark:text-gray-300">New This Week</h3>
-                <p class="text-3xl font-bold text-green-600 dark:text-green-400">
-                    {{ \App\Models\Paper::where('is_visible', 'public')
-                        ->where('created_at', '>=', now()->startOfWeek())
-                        ->count() }}
-                </p>
-                <p class="text-sm text-gray-500 mt-1">Papers added recently</p>
-            </div>
-            <div id="newPapersChart" class="h-16 w-24"></div>
-        </div>
+                const newPapersData = [2, 4, 1, 6, 3, 8,
+                    {{ \App\Models\Paper::where('is_visible', 'public')->where('created_at', '>=', now()->startOfWeek())->count() }}
+                ];
 
-        <!-- Your Downloads Card -->
-        <div class="flex justify-between items-center p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
-            <div class="flex flex-col justify-center">
-                <h3 class="text-lg font-semibold mb-1 text-gray-700 dark:text-gray-300">Your Downloads</h3>
-                <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                    {{ \App\Models\Download::where('user_id', auth()->id())->count() }}
-                </p>
-                <p class="text-sm text-gray-500 mt-1">
-                    {{ \App\Models\Download::where('user_id', auth()->id())
-                        ->where('downloaded_at', '>=', now()->startOfMonth())
-                        ->count() }} this month
-                </p>
-            </div>
-            <div id="downloadsChart" class="h-16 w-24"></div>
-        </div>
-    </div>
-    
-    <livewire:student.download-history />
-</div>
+                const downloadsData = [5, 8, 12, 15, 10, 18,
+                    {{ \App\Models\Download::where('user_id', auth()->id())->where('downloaded_at', '>=', now()->startOfWeek())->count() }}
+                ];
 
-<!-- ApexCharts Script -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Total Papers Chart
-    const totalPapersOptions = {
-        series: [{
-            name: 'Papers',
-            data: [65, 70, 80, 85, 95, 105, 120] // Sample data - replace with actual
-        }],
-        chart: {
-            type: 'area',
-            height: 64,
-            width: 96,
-            sparkline: {
-                enabled: true
-            }
-        },
-        stroke: {
-            curve: 'smooth',
-            width: 2
-        },
-        fill: {
-            type: 'gradient',
-            gradient: {
-                shadeIntensity: 1,
-                opacityFrom: 0.4,
-                opacityTo: 0.1,
-                stops: [0, 100]
-            }
-        },
-        colors: ['#3B82F6'], // Blue color
-        tooltip: {
-            enabled: false
-        }
-    };
-    
-    const totalPapersChart = new ApexCharts(document.querySelector("#totalPapersChart"), totalPapersOptions);
-    totalPapersChart.render();
+                const coursesData = [45, 47, 48, 50, 52, 55, {{ \App\Models\Course::count() }}];
 
-    // New Papers Chart
-    const newPapersOptions = {
-        series: [{
-            name: 'New Papers',
-            data: [2, 4, 1, 6, 3, 8, 5] // Sample data - replace with actual
-        }],
-        chart: {
-            type: 'area',
-            height: 64,
-            width: 96,
-            sparkline: {
-                enabled: true
-            }
-        },
-        stroke: {
-            curve: 'smooth',
-            width: 2
-        },
-        fill: {
-            type: 'gradient',
-            gradient: {
-                shadeIntensity: 1,
-                opacityFrom: 0.4,
-                opacityTo: 0.1,
-                stops: [0, 100]
-            }
-        },
-        colors: ['#10B981'], // Green color
-        tooltip: {
-            enabled: false
-        }
-    };
-    
-    const newPapersChart = new ApexCharts(document.querySelector("#newPapersChart"), newPapersOptions);
-    newPapersChart.render();
+                // Ensure we have 7 days of data
+                function padData(data, defaultValue = 0) {
+                    const result = [];
+                    for (let i = 0; i < 7; i++) {
+                        result.push(data[i] || defaultValue);
+                    }
+                    return result;
+                }
 
-    // Downloads Chart
-    const downloadsOptions = {
-        series: [{
-            name: 'Downloads',
-            data: [12, 15, 10, 18, 22, 25, 30] // Sample data - replace with actual
-        }],
-        chart: {
-            type: 'area',
-            height: 64,
-            width: 96,
-            sparkline: {
-                enabled: true
-            }
-        },
-        stroke: {
-            curve: 'smooth',
-            width: 2
-        },
-        fill: {
-            type: 'gradient',
-            gradient: {
-                shadeIntensity: 1,
-                opacityFrom: 0.4,
-                opacityTo: 0.1,
-                stops: [0, 100]
-            }
-        },
-        colors: ['#8B5CF6'], // Purple color
-        tooltip: {
-            enabled: false
-        }
-    };
-    
-    const downloadsChart = new ApexCharts(document.querySelector("#downloadsChart"), downloadsOptions);
-    downloadsChart.render();
-});
+                // Total Papers Chart
+                const totalPapersOptions = {
+                    series: [{
+                        name: 'Papers',
+                        data: padData(totalPapersData)
+                    }],
+                    chart: {
+                        type: 'area',
+                        height: 64,
+                        width: 96,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 2
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.4,
+                            opacityTo: 0.1,
+                            stops: [0, 100]
+                        }
+                    },
+                    colors: ['#3B82F6'], // Blue color
+                    tooltip: {
+                        enabled: false
+                    }
+                };
 
-// Optional: Update charts with real data via Livewire
-window.updateCharts = function(totalPapersData, newPapersData, downloadsData) {
-    // Update chart data dynamically if needed
-    totalPapersChart.updateSeries([{
-        name: 'Papers',
-        data: totalPapersData
-    }]);
-    
-    newPapersChart.updateSeries([{
-        name: 'New Papers',
-        data: newPapersData
-    }]);
-    
-    downloadsChart.updateSeries([{
-        name: 'Downloads',
-        data: downloadsData
-    }]);
-};
-</script>
-@endif
+                const totalPapersChart = new ApexCharts(document.querySelector("#totalPapersChart"),
+                totalPapersOptions);
+                totalPapersChart.render();
+
+                // Total Courses Chart
+                const totalCoursesOptions = {
+                    series: [{
+                        name: 'Courses',
+                        data: padData(coursesData)
+                    }],
+                    chart: {
+                        type: 'area',
+                        height: 64,
+                        width: 96,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 2
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.4,
+                            opacityTo: 0.1,
+                            stops: [0, 100]
+                        }
+                    },
+                    colors: ['#F97316'], // Orange color
+                    tooltip: {
+                        enabled: false
+                    }
+                };
+
+                const totalCoursesChart = new ApexCharts(document.querySelector("#totalCoursesChart"),
+                    totalCoursesOptions);
+                totalCoursesChart.render();
+
+                // New Papers Chart
+                const newPapersOptions = {
+                    series: [{
+                        name: 'New Papers',
+                        data: padData(newPapersData)
+                    }],
+                    chart: {
+                        type: 'area',
+                        height: 64,
+                        width: 96,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 2
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.4,
+                            opacityTo: 0.1,
+                            stops: [0, 100]
+                        }
+                    },
+                    colors: ['#10B981'], // Green color
+                    tooltip: {
+                        enabled: false
+                    }
+                };
+
+                const newPapersChart = new ApexCharts(document.querySelector("#newPapersChart"), newPapersOptions);
+                newPapersChart.render();
+
+                // Downloads Chart
+                const downloadsOptions = {
+                    series: [{
+                        name: 'Downloads',
+                        data: padData(downloadsData)
+                    }],
+                    chart: {
+                        type: 'area',
+                        height: 64,
+                        width: 96,
+                        sparkline: {
+                            enabled: true
+                        }
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 2
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.4,
+                            opacityTo: 0.1,
+                            stops: [0, 100]
+                        }
+                    },
+                    colors: ['#8B5CF6'], // Purple color
+                    tooltip: {
+                        enabled: false
+                    }
+                };
+
+                const downloadsChart = new ApexCharts(document.querySelector("#downloadsChart"), downloadsOptions);
+                downloadsChart.render();
+            });
+        </script>
+    @endif
 </x-layouts.app>

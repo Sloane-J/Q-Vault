@@ -24,7 +24,7 @@
 
                     <flux:navlist.item
                         icon="academic-cap"
-                        :href="route('admin.department.view')"
+                        :href="route('admin.departments')"
                         :current="request()->routeIs('admin.department.*')"
                         wire:navigate
                     >

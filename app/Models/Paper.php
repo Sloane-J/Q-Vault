@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,8 +34,8 @@ class Paper extends Model
     protected $casts = [
         'exam_year' => 'integer',
         'is_visible' => 'boolean',
-        'download_count' => 'integer',
-        'view_count' => 'integer',
+        'download_count' => 'integer', // Assuming these are database columns
+        'view_count' => 'integer',     // Assuming these are database columns
     ];
 
     // Activity Log Configuration
@@ -42,11 +43,11 @@ class Paper extends Model
     {
         return LogOptions::defaults()
             ->logOnly([
-                'title', 
-                'department.name', 
-                'semester', 
+                'title',
+                'department.name',
+                'semester',
                 'exam_type',
-                'course.name', 
+                'course.name',
                 'exam_year'
             ])
             ->logOnlyDirty()
@@ -59,11 +60,26 @@ class Paper extends Model
             });
     }
 
+    // Accessor for formatted semester
+    /**
+     * Get the semester as a human-readable string.
+     *
+     * @return string
+     */
+    public function getFormattedSemesterAttribute(): string // Corrected from Attributes to Attribute
+    {
+        return match ($this->semester) {
+            "1" => 'First Semester',
+            "2" => 'Second Semester',
+            default => 'N/A' // Fallback for unexpected values or null
+        };
+    }
+
     // Custom logging methods for specific events
     public function logDownload($user = null)
     {
         $user = $user ?? auth()->user();
-        
+
         activity()
             ->performedOn($this)
             ->causedBy($user)
@@ -73,7 +89,8 @@ class Paper extends Model
                 'course' => $this->course->name ?? 'Unknown',
                 'exam_type' => $this->exam_type,
                 'exam_year' => $this->exam_year,
-                'semester' => $this->semester,
+                'semester' => $this->semester, // Log the raw semester value
+                'formatted_semester' => $this->formatted_semester, // Log the formatted value too for easier reading in logs
                 'user_name' => $user->name ?? 'Guest',
                 'user_email' => $user->email ?? 'N/A',
                 'download_time' => now()->toDateTimeString()
@@ -84,7 +101,7 @@ class Paper extends Model
     public function logFileReplaced($oldFilePath, $newFilePath, $user = null)
     {
         $user = $user ?? auth()->user();
-        
+
         activity()
             ->performedOn($this)
             ->causedBy($user)
