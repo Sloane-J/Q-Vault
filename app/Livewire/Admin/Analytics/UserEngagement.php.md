@@ -1,6 +1,6 @@
 <?php
-
-namespace App\Http\Livewire\Admin\Analytics;
+/*
+namespace App\Livewire\Admin\Analytics;
 
 use Livewire\Component;
 use App\Services\UserEngagementService;
