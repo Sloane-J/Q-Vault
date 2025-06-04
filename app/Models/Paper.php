@@ -145,9 +145,9 @@ class Paper extends Model
         return $this->belongsTo(PaperVersion::class, 'current_version_id');
     }
 
-    public function downloadLogs(): HasMany
+    public function downloads(): HasMany
     {
-        return $this->hasMany(DownloadLog::class);
+        return $this->hasMany(Download::class);
     }
 
     public function viewLogs(): HasMany

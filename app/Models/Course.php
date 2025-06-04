@@ -9,13 +9,7 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'code',
-        'description',
-        'department_id',
-        'active'
-    ];
+    protected $fillable = ['name', 'code', 'description', 'department_id', 'active'];
 
     public function department()
     {
@@ -35,5 +29,16 @@ class Course extends Model
     public function papers()
     {
         return $this->hasMany(Paper::class);
+    }
+    public function downloads()
+    {
+        return $this->hasManyThrough(
+            Download::class,
+            Paper::class,
+            'course_id', // Foreign key on papers table
+            'paper_id', // Foreign key on downloads table
+            'id', // Local key on courses table
+            'id', // Local key on papers table
+        );
     }
 }
