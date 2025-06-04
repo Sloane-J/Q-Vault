@@ -244,10 +244,13 @@
                                     <div
                                         class="flex justify-between items-start p-4 rounded-lg bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors">
                                         <div class="flex-1 min-w-0">
-                                            <h6
-                                                class="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate">
-                                                {{ Str::limit($paper->title, 50) }}
+
+                                            <h6 class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                                                {{ $paper->department->name ?? 'N/A Department' }}
                                             </h6>
+                                            <p class="text-xs text-neutral-600 dark:text-neutral-300">
+                                                {{ $paper->course->name ?? 'N/A Course' }}
+                                            </p>
                                         </div>
                                         <span
                                             class="text-xs text-neutral-500 dark:text-neutral-400 ml-2 whitespace-nowrap">

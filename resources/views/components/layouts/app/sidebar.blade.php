@@ -64,7 +64,7 @@
                 </flux:navlist.group>
 
                     {{-- Analytics Drop Down --}}
-                    <flux:navlist.group expandable heading="Analytics" icon="newspaper">
+                    <flux:navlist.group expandable heading="Analytics & Auditing" icon="newspaper">
                         {{-- For: dashboard.blade.php --}}
                         <flux:navlist.item 
                             :href="route('admin.analytics')" 
