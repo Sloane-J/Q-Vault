@@ -39,7 +39,7 @@ class PaperManager extends Component
     public $departments = [];
     public $courses = [];
     public $filteredCourses = [];
-    public $studentTypes = ['HND', 'B-Tech', 'Top-up'];
+    public $studentTypes = ['HND', 'B-Tech', 'Top-up', 'DBS', 'MTech'];
     public $levels = [];
     public $examTypes = ['End of Semester', 'Resit'];
     public $years = [];

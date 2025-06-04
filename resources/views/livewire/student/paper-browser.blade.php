@@ -103,9 +103,9 @@
             </div>
         </div>
 
-        {{-- Papers Grid --}}
+       {{-- Papers Grid --}}
         @if (isset($papers) && $papers->count() > 0)
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 mb-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 mb-8">
                 @foreach ($papers as $paper)
                     <div
                         class="bg-white dark:bg-neutral-900 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden hover:shadow-lg transition-all duration-300 group">

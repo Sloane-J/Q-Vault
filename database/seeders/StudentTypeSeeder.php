@@ -17,6 +17,10 @@ class StudentTypeSeeder extends Seeder
             ['name' => 'HND'],
             ['name' => 'B-Tech'],
             ['name' => 'Top-Up'],
+            ['name' => 'DBS'],
+            ['name' => 'MTech'],
+
+
         ];
 
         foreach ($studentTypes as $type) {

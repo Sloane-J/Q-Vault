@@ -24,7 +24,7 @@ class LevelSeeder extends Seeder
             ['name' => 'HND Level 200', 'student_type_id' => $hndId, 'level_number' => 200],
             ['name' => 'HND Level 300', 'student_type_id' => $hndId, 'level_number' => 300],
             
-            // B-Tech Levels (100-400)
+            // B-Tech Levels Regular (100-400)
             ['name' => 'B-Tech Level 100', 'student_type_id' => $btechId, 'level_number' => 100],
             ['name' => 'B-Tech Level 200', 'student_type_id' => $btechId, 'level_number' => 200],
             ['name' => 'B-Tech Level 300', 'student_type_id' => $btechId, 'level_number' => 300],
@@ -33,6 +33,14 @@ class LevelSeeder extends Seeder
             // Top-Up Levels (300-400)
             ['name' => 'Top-Up Level 300', 'student_type_id' => $topupId, 'level_number' => 300],
             ['name' => 'Top-Up Level 400', 'student_type_id' => $topupId, 'level_number' => 400],
+
+            //DBS Levels (100-200)
+            ['name' => 'DBS Level 100', 'student_type_id' => $hndId, 'level_number' => 100],
+            ['name' => 'DBS Level 200', 'student_type_id' => $hndId, 'level_number' => 200],
+
+            // MTech Levels (500-600)
+            ['name' => 'MTech Level 500', 'student_type_id' => $hndId, 'level_number' => 500],
+            ['name' => 'MTech Level 600', 'student_type_id' => $hndId, 'level_number' => 600],
         ];
 
         foreach ($levels as $level) {
