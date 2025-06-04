@@ -86,9 +86,9 @@
         
         <style>
             .hero-gradient {
-                background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+                background: linear-gradient(135deg, #062546 0%, #0c3366 50%, #01152c 100%);
             }
-            
+                
             .floating-card {
                 backdrop-filter: blur(10px);
                 background: rgba(255, 255, 255, 0.8);
@@ -118,7 +118,7 @@
                                     <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </div>
-                            <span class="ml-3 text-2xl font-bold font-display text-gray-800">Q-Vault</span>
+                            <span class="ml-3 text-2xl font-bold font-display text-gray-900">Q-Vault</span>
                         </div>
                         
                         <!-- Auth Navigation -->
@@ -161,11 +161,11 @@
                         <!-- Hero Content -->
                         <div class="text-center md:text-left space-y-8" x-show="isLoaded" x-transition:enter="transition duration-700" x-transition:enter-start="opacity-0 transform -translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0">
                             <div class="space-y-6">
-                                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-display leading-tight text-gray-800">
+                                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-display leading-tight text-gray-100">
                                     Papers that help you 
                                     <span class="text-primary-500">stay focused</span>
                                 </h1>
-                                <p class="text-lg md:text-xl text-gray-600 max-w-lg leading-relaxed">
+                                <p class="text-lg md:text-xl text-gray-500 max-w-lg leading-relaxed">
                                     Your comprehensive solution for accessing, managing, and studying past exam papers. Streamline your preparation and achieve better results.
                                 </p>
                             </div>
@@ -183,7 +183,7 @@
                                         Go to Dashboard
                                     </a>
                                 @else
-                                    <a href="{{ route('login') }}" 
+                                    <a href="{{ route('register') }}" 
                                        class="px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl whitespace-nowrap">
                                         Get Started
                                     </a>
@@ -272,8 +272,8 @@
                     <!-- Featured Papers Section -->
                     <div class="mt-20" x-show="isLoaded">
                         <div class="text-center mb-12">
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Featured Papers</h2>
-                            <p class="text-gray-600 max-w-2xl mx-auto">Discover the most popular and recently added exam papers across all departments</p>
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-100 mb-4">Featured Papers</h2>
+                            <p class="text-gray-400 max-w-2xl mx-auto">Discover the most popular and recently added exam papers across all departments</p>
                         </div>
                         
                         <div class="grid md:grid-cols-3 gap-6">

@@ -26,7 +26,7 @@
                     </svg>
                     <input type="text" wire:model.live.debounce.300ms="search"
                         placeholder="Search by course name, title, or description..."
-                        class="w-full pl-10 pr-4 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500">
+                        class="w-full pl-10 pr-4 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500">
                 </div>
             </div>
 
@@ -34,7 +34,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Department</label>
                     <select wire:model.live="selectedDepartment"
-                        class="w-full border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
+                        class="w-full border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
                         <option value="" class="dark:bg-neutral-800 dark:text-gray-100">All Departments</option>
                         @if (isset($departments) && $departments->count() > 0)
                             @foreach ($departments as $department)
@@ -48,7 +48,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Level</label>
                     <select wire:model.live="selectedLevel"
-                        class="w-full border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
+                        class="w-full border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
                         <option value="" class="dark:bg-neutral-800 dark:text-gray-100">All Levels</option>
                         @if (isset($levels) && $levels->count() > 0)
                             @foreach ($levels as $level)
@@ -62,7 +62,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Course</label>
                     <select wire:model.live="selectedCourse"
-                        class="w-full border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
+                        class="w-full border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
                         <option value="" class="dark:bg-neutral-800 dark:text-gray-100">All Courses</option>
                         @if (isset($availableCourses) && $availableCourses->count() > 0)
                             @foreach ($availableCourses as $course)
@@ -76,7 +76,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Year</label>
                     <select wire:model.live="selectedYear"
-                        class="w-full border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
+                        class="w-full border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
                         <option value="" class="dark:bg-neutral-800 dark:text-gray-100">All Years</option>
                         @if (isset($availableYears) && $availableYears->count() > 0)
                             @foreach ($availableYears as $year)
@@ -111,11 +111,11 @@
                         class="bg-white dark:bg-neutral-900 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden hover:shadow-lg transition-all duration-300 group">
                         {{-- Top Section with Icon and Year Badge --}}
                         <div
-                            class="relative bg-gradient-to-br from-red-100 to-red-200 dark:from-red-700/30 dark:to-red-600 p-4 h-32 flex items-center justify-center">
+                            class="relative bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-700/30 dark:to-blue-600 p-4 h-32 flex items-center justify-center">
                             {{-- Year Badge --}}
                             <div class="absolute top-2 right-2">
                                 <span
-                                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/90 dark:bg-neutral-800/90 text-red-700 dark:text-red-300 shadow-sm">
+                                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/90 dark:bg-neutral-800/90 text-blue-700 dark:text-blue-300 shadow-sm">
                                     {{ $paper->exam_year }}
                                 </span>
                             </div>
@@ -123,7 +123,7 @@
                             {{-- Document Icon --}}
                             <div
                                 class="w-12 h-12 bg-white/20 dark:bg-white/10 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none"
+                                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -136,7 +136,7 @@
                         <div class="p-4">
                             {{-- Course Name --}}
                             <h3
-                                class="font-bold text-gray-900 dark:text-gray-100 text-sm mb-2 line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                class="font-bold text-gray-900 dark:text-gray-100 text-sm mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                 {{ $paper->course_name }}
                             </h3>
 
@@ -176,7 +176,7 @@
                                 </div>
 
                                 <button wire:click="downloadPaper({{ $paper->id }})"
-                                    class="w-8 h-8 bg-red-600 dark:bg-red-500 hover:bg-red-700 dark:hover:bg-red-600 text-white rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-105">
+                                    class="w-8 h-8 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-105">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -210,7 +210,7 @@
                 <p class="text-gray-600 dark:text-gray-400 mb-6">Try adjusting your search criteria or filters to find
                     exam papers.</p>
                 <button wire:click="clearFilters"
-                    class="inline-flex items-center px-6 py-3 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white font-medium rounded-lg transition-colors">
+                    class="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
                     Clear All Filters
                 </button>
             </div>

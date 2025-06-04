@@ -15,7 +15,7 @@
         </a>
 
        <flux:navbar class="-mb-px max-lg:hidden">
-    <flux:navbar.item icon="layout-grid" :href="route('student.dashboard')"
+    <flux:navbar.item icon="cube-transparent" :href="route('student.dashboard')"
         :current="request()->routeIs('student.dashboard')">
         {{ __('Dashboard') }}
     </flux:navbar.item>
@@ -59,7 +59,7 @@
                 <flux:menu.separator />
 
                 <flux:menu.radio.group>
-                    <flux:menu.item :href="route('settings.profile')" icon="user" wire:navigate>{{ __('Profile') }}
+                    <flux:menu.item :href="route('settings.profile')" icon="user-circle" wire:navigate>{{ __('Profile') }}
                     </flux:menu.item>
                     <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}
                     </flux:menu.item>
@@ -83,7 +83,7 @@
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
         <a href="{{ route('student.dashboard') }}" class="ms-1 flex items-center space-x-2 rtl:space-x-reverse"
-            wire:navigate>
+            >
             <x-app-logo />
         </a>
 
