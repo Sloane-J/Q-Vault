@@ -10,16 +10,38 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Check if admin already exists to prevent duplicates
-        if (!User::where('email', 'admin@example.com')->exists()                                                                                                                               
-        ) {
-            User::create([
+        $admins = [
+            [
                 'name' => 'Admin User',
                 'email' => 'admin@example.com',
-                'email_verified_at' => now(),
-                'password' => Hash::make('AdminPassword123!'), // Change this to a secure password
+                'password' => Hash::make('AdminPassword123!'),
                 'role' => 'admin'
-            ]);
+            ],
+            [
+                'name' => 'Sloane Jnr',
+                'email' => 'sloane.jnr@qvault.com',
+                'password' => Hash::make('SloanePassword123!'),
+                'role' => 'admin'
+            ],
+            [
+                'name' => 'Super Admin',
+                'email' => 'superadmin@qvault.com',
+                'password' => Hash::make('SuperAdminPassword123!'),
+                'role' => 'admin'
+            ]
+        ];
+
+        foreach ($admins as $adminData) {
+            // Check if admin already exists to prevent duplicates
+            if (!User::where('email', $adminData['email'])->exists()) {
+                User::create([
+                    'name' => $adminData['name'],
+                    'email' => $adminData['email'],
+                    'email_verified_at' => now(),
+                    'password' => $adminData['password'],
+                    'role' => $adminData['role']
+                ]);
+            }
         }
     }
 }

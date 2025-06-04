@@ -68,7 +68,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">No downloads yet</h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Start by Browse and downloading exam papers to build your collection.</p>
 
-                        <a href="{{ route('student.browse-papers') }}" class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors shadow-sm">
+                        <a href="{{ route('student.paper-browser') }}" class="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors shadow-sm">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>

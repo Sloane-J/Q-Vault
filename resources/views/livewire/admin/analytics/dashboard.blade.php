@@ -267,116 +267,127 @@
                 </div>
 
                 <!-- Recent High Impact Audit Event -->
-                <div
-                    class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
-                    <div class="p-6">
-                        <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-4">
-                            Recent System Events
-                        </h3>
-                        {{-- Check if the collection of events is not empty --}}
-                        @if ($recentSystemEvents->isNotEmpty())
-                            <div class="space-y-4"> {{-- Container for individual event cards --}}
-                                @foreach ($recentSystemEvents as $event)
-                                    {{-- Loop through each event --}}
-                                    @php
-                                        // Default alert type
-                                        $alertType = 'info';
+<div
+    class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm overflow-hidden">
+    <div class="p-6">
+        <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-4">
+            Recent System Events
+        </h3>
+        {{-- Check if the collection of events is not empty --}}
+        @if ($recentSystemEvents->isNotEmpty())
+            <div class="space-y-4"> {{-- Container for individual event cards --}}
+                @foreach ($recentSystemEvents as $event)
+                    {{-- Loop through each event --}}
+                    @php
+                        // Default alert type
+                        $alertType = 'info';
 
-                                        // Check if 'level' column exists and determine type
-                                        if (isset($event->level)) {
-                                            if ($event->level === 'critical') {
-                                                $alertType = 'danger';
-                                            } elseif ($event->level === 'warning') {
-                                                $alertType = 'warning';
-                                            }
-                                            // You might add 'info' or 'success' levels here if they exist in your logs
-                                        }
-                                        // Fallback/additional check based on 'log_name' if 'level' isn't precise enough
-// This might be more robust if 'level' isn't consistently populated
-                                        elseif (isset($event->log_name)) {
-                                            if (
-                                                Str::contains(Str::lower($event->log_name), [
-                                                    'critical',
-                                                    'error',
-                                                    'failed',
-                                                ])
-                                            ) {
-                                                $alertType = 'danger';
-                                            } elseif (
-                                                Str::contains(Str::lower($event->log_name), ['warning', 'throttle'])
-                                            ) {
-                                                $alertType = 'warning';
-                                            } elseif (
-                                                Str::contains(Str::lower($event->log_name), [
-                                                    'login',
-                                                    'logout',
-                                                    'success',
-                                                    'created',
-                                                    'updated',
-                                                ])
-                                            ) {
-                                                $alertType = 'info';
-                                            }
-                                            // Add more conditions here based on your common log_name values
-                                        }
+                        // Check if 'level' column exists and determine type
+                        if (isset($event->level)) {
+                            if ($event->level === 'critical') {
+                                $alertType = 'danger';
+                            } elseif ($event->level === 'warning') {
+                                $alertType = 'warning';
+                            }
+                            // You might add 'info' or 'success' levels here if they exist in your logs
+                        }
+                        // Fallback/additional check based on 'log_name' if 'level' isn't precise enough
+                        // This might be more robust if 'level' isn't consistently populated
+                        elseif (isset($event->log_name)) {
+                            if (
+                                Str::contains(Str::lower($event->log_name), [
+                                    'critical',
+                                    'error',
+                                    'failed',
+                                ])
+                            ) {
+                                $alertType = 'danger';
+                            } elseif (
+                                Str::contains(Str::lower($event->log_name), ['warning', 'throttle'])
+                            ) {
+                                $alertType = 'warning';
+                            } elseif (
+                                Str::contains(Str::lower($event->log_name), [
+                                    'login',
+                                    'logout',
+                                    'success',
+                                    'created',
+                                    'updated',
+                                ])
+                            ) {
+                                $alertType = 'info';
+                            }
+                            // Add more conditions here based on your common log_name values
+                        }
 
-                                        $alertColors = [
-                                            'danger' =>
-                                                'bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
-                                            'warning' =>
-                                                'bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300',
-                                            'info' =>
-                                                'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300',
-                                            'success' =>
-                                                'bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
-                                        ];
-                                    @endphp
-                                    <div
-                                        class="rounded-lg border p-4 {{ $alertColors[$alertType] ?? $alertColors['info'] }}">
-                                        <div class="flex justify-between items-start">
-                                            <div class="flex-1 pr-2">
-                                                <strong class="text-sm font-medium">
-                                                    {{ $event->description ?? 'No description available' }}
-                                                </strong>
+                        $alertColors = [
+                            'danger' =>
+                                'bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
+                            'warning' =>
+                                'bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300',
+                            'info' =>
+                                'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300',
+                            'success' =>
+                                'bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
+                        ];
+                    @endphp
+                    <div
+                        class="rounded-lg border p-4 {{ $alertColors[$alertType] ?? $alertColors['info'] }}">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1 pr-2">
+                                <strong class="text-sm font-medium">
+                                    {{ $event->description ?? 'No description available' }}
+                                </strong>
 
-                                                {{-- Display Causer (User Name) --}}
-                                                @if ($event->causer && $event->causer_type === \App\Models\User::class)
-                                                    <div class="mt-1 text-xs opacity-75">
-                                                        Caused by: <span
-                                                            class="font-semibold">{{ $event->causer->name ?? $event->causer_id }}</span>
-                                                    </div>
-                                                @elseif (isset($event->causer_id))
-                                                    <div class="mt-1 text-xs opacity-75">
-                                                        Causer ID: {{ $event->causer_id }}
-                                                    </div>
-                                                @endif
-
-                                                {{-- Display Level (if available) --}}
-                                                @if (isset($event->level))
-                                                    <div class="mt-1 text-xs opacity-75">
-                                                        Level: {{ Str::title($event->level) }}
-                                                    </div>
-                                                @endif
-
-                                                {{-- Display Log Name --}}
-                                                @if (isset($event->log_name))
-                                                    <div class="mt-1 text-xs opacity-75">
-                                                        Type: {{ Str::title(str_replace('_', ' ', $event->log_name)) }}
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <span class="text-xs opacity-75 whitespace-nowrap text-right">
-                                                {{ \Carbon\Carbon::parse($event->created_at)->diffForHumans() }}
-                                            </span>
-                                        </div>
+                                {{-- Display User Name and Email from Properties --}}
+                                @if ($event->user_name || $event->user_email)
+                                    <div class="mt-1 text-xs opacity-75">
+                                        User: 
+                                        @if ($event->user_name)
+                                            <span class="font-semibold">{{ $event->user_name }}</span>
+                                        @endif
+                                        @if ($event->user_email)
+                                            <span class="ml-1">({{ $event->user_email }})</span>
+                                        @endif
                                     </div>
-                                @endforeach
+                                {{-- Fallback to Causer (User Name) --}}
+                                @elseif ($event->causer && $event->causer_type === \App\Models\User::class)
+                                    <div class="mt-1 text-xs opacity-75">
+                                        Caused by: <span
+                                            class="font-semibold">{{ $event->causer->name ?? $event->causer_id }}</span>
+                                    </div>
+                                @elseif (isset($event->causer_id))
+                                    <div class="mt-1 text-xs opacity-75">
+                                        Causer ID: {{ $event->causer_id }}
+                                    </div>
+                                @endif
+
+                                {{-- Display Level (if available) --}}
+                                @if (isset($event->level))
+                                    <div class="mt-1 text-xs opacity-75">
+                                        Level: {{ Str::title($event->level) }}
+                                    </div>
+                                @endif
+
+                                {{-- Display Log Name --}}
+                                @if (isset($event->log_name))
+                                    <div class="mt-1 text-xs opacity-75">
+                                        Type: {{ Str::title(str_replace('_', ' ', $event->log_name)) }}
+                                    </div>
+                                @endif
                             </div>
-                        @else
-                            <p class="text-neutral-500 dark:text-neutral-400 text-sm">No system events found.</p>
-                        @endif
+                            <span class="text-xs opacity-75 whitespace-nowrap text-right">
+                                {{ \Carbon\Carbon::parse($event->created_at)->diffForHumans() }}
+                            </span>
+                        </div>
                     </div>
-                </div>
+                @endforeach
+            </div>
+        @else
+            <p class="text-neutral-500 dark:text-neutral-400 text-sm">No system events found.</p>
+        @endif
+    </div>
+</div>
             </div>
         </div>
     </div>

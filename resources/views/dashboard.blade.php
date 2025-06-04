@@ -4,6 +4,23 @@
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
         <div class="flex flex-col gap-6 mt-6 w-full h-full rounded-xl admin-dashboard-section">
+              @php
+    $hour = date('H');
+    $greeting = match (true) {
+        $hour < 12 => 'Good morning',
+        $hour < 17 => 'Good afternoon',
+        default    => 'Good evening',
+    };
+@endphp
+
+<h2 class="text-2xl mb-6">
+    @auth
+        {{ $greeting }}, 
+        <span class="font-bold text-blue-600">{{ Auth::user()->name }}</span>!
+    @else
+        {{ $greeting }}, Guest!
+    @endauth
+</h2>
             <!-- Stats Grid -->
             <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 w-full">
                 <!-- Total Students -->
@@ -438,7 +455,23 @@
         </script>
     @elseif(auth()->user()->isStudent())
         <div class="student-dashboard-section">
-            <h2 class="text-2xl font-bold mb-4">Student Dashboard</h2>
+            @php
+    $hour = date('H');
+    $greeting = match (true) {
+        $hour < 12 => 'Good morning',
+        $hour < 17 => 'Good afternoon',
+        default    => 'Good evening',
+    };
+@endphp
+
+<h2 class="text-2xl mb-6">
+    @auth
+        {{ $greeting }}, 
+        <span class="font-bold text-blue-600">{{ Auth::user()->name }}</span>!
+    @else
+        {{ $greeting }}, Guest!
+    @endauth
+</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Total Papers Card -->
                 <div

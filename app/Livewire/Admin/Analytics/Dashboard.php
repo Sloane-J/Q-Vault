@@ -68,8 +68,13 @@ class Dashboard extends Component
 
         $this->activeUserTrendData = $this->getActiveUserTrend();
 
-        // Storage Used
-        $totalSizeInBytes = Paper::sum('file_size_bytes');
+        // Storage Used - Modified to handle missing column gracefully
+        try {
+            $totalSizeInBytes = Paper::sum('file_size_bytes') ?? 0;
+        } catch (\Exception $e) {
+            // If file_size_bytes column doesn't exist, set to 0 or calculate differently
+            $totalSizeInBytes = 0;
+        }
         $this->storageUsed = $this->formatBytes($totalSizeInBytes);
     }
 
@@ -121,20 +126,20 @@ class Dashboard extends Component
 
         switch ($this->downloadTrendAggregation) {
             case 'weekly':
-                $query = Download::selectRaw("strftime('%Y', created_at) as year, strftime('%W', created_at) as week, COUNT(*) as count")
+                $query = Download::selectRaw("YEAR(created_at) as year, WEEK(created_at) as week, COUNT(*) as count")
                     ->groupBy('year', 'week')
                     ->orderBy('year', 'asc')
                     ->orderBy('week', 'asc');
                 break;
             case 'monthly':
-                $query = Download::selectRaw("strftime('%Y', created_at) as year, strftime('%m', created_at) as month, COUNT(*) as count")
+                $query = Download::selectRaw("YEAR(created_at) as year, MONTH(created_at) as month, COUNT(*) as count")
                     ->groupBy('year', 'month')
                     ->orderBy('year', 'asc')
                     ->orderBy('month', 'asc');
                 break;
             case 'daily':
             default:
-                $query = Download::selectRaw('date(created_at) as date, COUNT(*) as count')
+                $query = Download::selectRaw('DATE(created_at) as date, COUNT(*) as count')
                     ->groupBy('date')
                     ->orderBy('date', 'asc');
                 break;
@@ -233,7 +238,13 @@ class Dashboard extends Component
         $this->recentSystemEvents = AuditLog::with('causer')
             ->orderBy('created_at', 'desc')
             ->take(5)
-            ->get(['description', 'created_at', 'causer_id', 'causer_type', 'level', 'log_name']);
+            ->get(['description', 'created_at', 'causer_id', 'causer_type', 'log_name', 'properties'])
+            ->map(function ($event) {
+                $properties = is_string($event->properties) ? json_decode($event->properties, true) : $event->properties;
+                $event->user_name = $properties['attributes']['name'] ?? null;
+                $event->user_email = $properties['attributes']['email'] ?? null;
+                return $event;
+            });
     }
 
     private function formatBytes($bytes, $precision = 2)

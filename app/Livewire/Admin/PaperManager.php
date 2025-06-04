@@ -167,6 +167,13 @@ class PaperManager extends Component
                 (object)['id' => 5, 'name' => 'Thermodynamics', 'department_id' => 3],
                 (object)['id' => 6, 'name' => 'Fluid Mechanics', 'department_id' => 3],
             ]);
+
+            $this->levels = collect([
+                (object)['id' => '100', 'name' => 'Level 100'],
+                (object)['id' => '200', 'name' => 'Level 200'],
+                (object)['id' => '300', 'name' => 'Level 300'],
+                (object)['id' => '400', 'name' => 'Level 400'],
+            ]);
         }
 
         // Generate years range
@@ -221,7 +228,7 @@ class PaperManager extends Component
                     'exam_type' => $this->exam_type,
                     'exam_year' => $this->exam_year,
                     'student_type' => $this->student_type,
-                    'level_id' => $this->level,
+                    'level_id' => $this->level_id, // Fixed: was $this->level
                     'is_visible' => 'public', // Always set to public
                 ]);
                 session()->flash('message', 'Paper updated successfully.');
@@ -243,7 +250,6 @@ class PaperManager extends Component
                 'student_type' => $this->student_type,
                 'level_id' => $this->level_id,
                 'is_visible' => 'public', // Always set to public
-               // 'user_id' => auth()->id(),
                 'uploaded_by' => auth()->id(),
             ]);
             session()->flash('message', 'Paper uploaded successfully.');
@@ -321,6 +327,43 @@ class PaperManager extends Component
         $this->resetPage();
     }
 
+    // Method to update search and reset pagination
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    // Methods to handle filter updates and reset pagination
+    public function updatedDepartmentFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedYearFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedLevelFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedExamTypeFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedStudentTypeFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSemesterFilter()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
         $papers = $this->getPapers();
@@ -347,7 +390,7 @@ class PaperManager extends Component
             $query->where(function ($q) {
                 $q->where('title', 'like', '%' . $this->search . '%')
                   ->orWhere('description', 'like', '%' . $this->search . '%')
-                  ->orWhere('course_name', 'like', '%' . $this->search . '%')
+                  // Removed the problematic course_name search
                   ->orWhereHas('course', function ($courseQuery) {
                       $courseQuery->where('name', 'like', '%' . $this->search . '%');
                   })

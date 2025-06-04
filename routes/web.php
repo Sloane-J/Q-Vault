@@ -18,7 +18,6 @@ Route::get('/', function () {
 
 // --- Authenticated & Verified Routes ---
 Route::middleware(['auth', 'verified'])->group(function () {
-
     Route::get('/dashboard', function () {
         $user = auth()->user();
 
@@ -33,7 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('settings')
         ->name('settings.')
         ->group(function () {
-            Route::redirect('/', 'profile'); 
+            Route::redirect('/', 'profile');
             Volt::route('/profile', 'settings.profile')->name('profile');
             Volt::route('/password', 'settings.password')->name('password');
             Volt::route('/appearance', 'settings.appearance')->name('appearance');
@@ -66,7 +65,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->prefix('student')
         ->name('student.')
         ->group(function () {
-
             Route::get('/dashboard', function () {
                 return view('dashboard');
             })->name('dashboard');
