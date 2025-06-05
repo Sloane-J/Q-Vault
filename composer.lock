@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "79527ce31ffb1b5eed91c4201ba1e8da",
+    "content-hash": "19bf9a309b6bdd967f611a7389032016",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2533,6 +2533,80 @@
                 }
             ],
             "time": "2025-03-24T10:02:05+00:00"
+        },
+        {
+            "name": "mydnic/volet",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mydnic/volet.git",
+                "reference": "af1c3da99d0b88e65f1a3f3599241aa481e8663c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mydnic/volet/zipball/af1c3da99d0b88e65f1a3f3599241aa481e8663c",
+                "reference": "af1c3da99d0b88e65f1a3f3599241aa481e8663c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^10.0||^11.0||^12.0",
+                "php": "^8.3",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.14",
+                "nunomaduro/collision": "^8.1.1||^7.10.0",
+                "orchestra/testbench": "^10.1.0",
+                "pestphp/pest": "^3.0",
+                "pestphp/pest-plugin-arch": "^3.0",
+                "pestphp/pest-plugin-laravel": "^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Volet": "Mydnic\\Volet\\Facades\\Volet"
+                    },
+                    "providers": [
+                        "Mydnic\\Volet\\VoletServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mydnic\\Volet\\": "src/",
+                    "Mydnic\\Volet\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Clément Rigo",
+                    "email": "rigoclement@mydnic.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A fully featured feedback component for Laravel, gather user feedbacks, chat, etc",
+            "homepage": "https://github.com/mydnic/volet",
+            "keywords": [
+                "laravel-volet",
+                "mydnic",
+                "volet"
+            ],
+            "support": {
+                "issues": "https://github.com/mydnic/volet/issues",
+                "source": "https://github.com/mydnic/volet/tree/v2.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Mydnic",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-06-03T07:47:39+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -10109,12 +10183,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
