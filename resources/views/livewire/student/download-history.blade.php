@@ -1,28 +1,52 @@
 <div>
     <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <!-- Stats Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Total Downloads Card -->
-                <div class="p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Downloads</p>
-                            <p class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">
-                                {{ number_format($totalDownloadsThisSemester) }}
-                            </p>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">This semester (All Users)</p>
-                        </div>
-                        <div class="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Recently Uploaded Papers Card -->
+                <div class="lg:col-span-1 p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-full">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Recently Added</p>
+                                <div class="p-2 rounded-lg bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-white">New Papers</p>
                         </div>
                     </div>
+                    
+                    @if(count($recentlyUploadedPapers) > 0)
+                        <div class="space-y-3 max-h-64 overflow-y-auto">
+                            @foreach($recentlyUploadedPapers as $paper)
+                                <div class="p-3 rounded-lg bg-gray-50 dark:bg-neutral-800 border border-gray-100 dark:border-neutral-700">
+                                    <div class="text-xs font-medium text-blue-600 dark:text-blue-400 truncate" title="{{ $paper['course_name'] }}">
+                                        {{ $paper['course_name'] }}
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        {{ $paper['department_name'] }} • {{ $paper['level'] }}
+                                    </div>
+                                    <div class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                        {{ $paper['uploaded_at_human'] }}
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-4">
+                            <svg class="mx-auto h-8 w-8 text-gray-400 dark:text-gray-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">No recent papers</p>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Popular Papers Card -->
-                <div class="p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm md:col-span-2">
+                <div class="lg:col-span-3 p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Trending Papers This Week</h3>
                     @if(!empty($popularPapersChart['categories']) && count($popularPapersChart['categories']) > 0)
                         <div x-data="{
@@ -44,12 +68,12 @@
                                     plotOptions: { 
                                         bar: { 
                                             borderRadius: 4, 
-                                            horizontal: true,
+                                            horizontal: false,
                                             distributed: false,
                                             barHeight: '70%'
                                         } 
                                     },
-                                    dataLabels: { enabled: false },
+                                    dataLabels: { enabled: true },
                                     colors: ['#3b82f6'],
                                     series: chartData.series,
                                     xaxis: { 
@@ -94,7 +118,7 @@
                         <div class="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400">
                             <div class="text-center">
                                 <svg class="mx-auto h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012-2h-2a2 2 0 01-2-2z" />
                                 </svg>
                                 <p class="text-sm">No trending papers this week</p>
                             </div>
@@ -103,10 +127,10 @@
                 </div>
             </div>
 
-            <!-- Course Download Trends Card -->
+            <!-- Download Trends Chart Card -->
             <div class="p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-sm">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Courses by Downloads (Last 6 Months)</h3>
-                @if(!empty($courseDownloadTrendsChart['categories']) && count($courseDownloadTrendsChart['categories']) > 0)
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Download Trends by Course (This Year)</h3>
+                @if(!empty($downloadTrendsChart['categories']) && count($downloadTrendsChart['categories']) > 0)
                     <div x-data="{
                         chart: null,
                         initChart() {
@@ -114,23 +138,22 @@
                                 this.chart.destroy();
                             }
                             
-                            const chartData = @js($courseDownloadTrendsChart);
+                            const chartData = @js($downloadTrendsChart);
                             
-                            this.chart = new ApexCharts(this.$refs.courseTrendsChart, {
+                            this.chart = new ApexCharts(this.$refs.trendsChart, {
                                 chart: { 
-                                    type: 'bar', 
-                                    height: 300, 
+                                    type: 'area', 
+                                    height: 350, 
                                     toolbar: { show: true },
-                                    background: 'transparent'
+                                    background: 'transparent',
+                                    zoom: { enabled: true }
                                 },
-                                plotOptions: {
-                                    bar: {
-                                        borderRadius: 4,
-                                        horizontal: false,
-                                    }
+                                stroke: {
+                                    curve: 'smooth',
+                                    width: 3
                                 },
                                 dataLabels: { enabled: false },
-                                colors: ['#3b82f6'],
+                                colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'],
                                 series: chartData.series,
                                 xaxis: { 
                                     categories: chartData.categories,
@@ -150,25 +173,24 @@
                                 grid: {
                                     borderColor: document.documentElement.classList.contains('dark') ? '#374151' : '#e5e7eb'
                                 },
-                                tooltip: { 
-                                    theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-                                    custom: function({ series, seriesIndex, dataPointIndex }) {
-                                        const value = series[seriesIndex][dataPointIndex];
-                                        const category = chartData.categories[dataPointIndex];
-                                        return `<div class='px-4 py-2 bg-white dark:bg-neutral-800 shadow-lg rounded-lg border border-gray-200 dark:border-neutral-700'>
-                                            <p class='font-semibold dark:text-white'>${category}</p>
-                                            <p class='text-sm text-gray-600 dark:text-gray-300'>Downloads: ${value}</p>
-                                        </div>`;
+                                legend: {
+                                    position: 'top',
+                                    horizontalAlign: 'left',
+                                    labels: {
+                                        colors: document.documentElement.classList.contains('dark') ? '#9ca3af' : '#374151'
                                     }
+                                },
+                                tooltip: { 
+                                    theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
                                 }
                             });
                             this.chart.render();
                         }
                     }" 
                     x-init="$nextTick(() => initChart())" 
-                    wire:key="course-trends-chart-{{ json_encode($courseDownloadTrendsChart) }}"
+                    wire:key="trends-chart-{{ json_encode($downloadTrendsChart) }}"
                     class="w-full">
-                        <div x-ref="courseTrendsChart"></div>
+                        <div x-ref="trendsChart"></div>
                     </div>
                 @else
                     <div class="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400">

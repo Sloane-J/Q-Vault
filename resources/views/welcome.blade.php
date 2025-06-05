@@ -86,7 +86,7 @@
         
         <style>
             .hero-gradient {
-                background: linear-gradient(135deg, #062546 0%, #0c3366 50%, #01152c 100%);
+                background: linear-gradient(135deg, #498dd6 0%, #154a91 50%, #042142 100%);
             }
                 
             .floating-card {
@@ -165,7 +165,7 @@
                                     Papers that help you 
                                     <span class="text-primary-500">stay focused</span>
                                 </h1>
-                                <p class="text-lg md:text-xl text-gray-500 max-w-lg leading-relaxed">
+                                <p class="text-lg md:text-xl text-gray-300 max-w-lg leading-relaxed">
                                     Your comprehensive solution for accessing, managing, and studying past exam papers. Streamline your preparation and achieve better results.
                                 </p>
                             </div>
