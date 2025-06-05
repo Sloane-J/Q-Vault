@@ -95,6 +95,18 @@
                     </flux:navlist.item>
 
                     </flux:navlist.group>
+
+                    @auth
+    @if (auth()->user()->isAdmin() && (auth()->user()->name === 'Super Admin' || auth()->user()->name === 'Sloane Jnr'))
+        <flux:navlist.item
+            icon="chat-bubble-left-right"
+            :href="route('admin.feedback-messages')"
+            :current="request()->routeIs('admin.feedback-messages')"
+        >
+            {{ __('Feedback Messages') }}
+        </flux:navlist.item>
+    @endif
+@endauth
             </flux:navlist>
 
             <flux:spacer />

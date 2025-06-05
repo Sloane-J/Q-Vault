@@ -39,16 +39,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
     // --- Admin Routes ---
-    Route::middleware([EnsureUserRole::class . ':admin'])
-        ->prefix('admin')
-        ->name('admin.')
-        ->group(function () {
-            Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
-            Route::get('/analytics', fn() => view('admin.analytics'))->name('analytics');
-            Route::get('/analytics-details', fn() => view('admin.analytics-details'))->name('analytics-details');
-            Route::get('/courses', fn() => view('admin.courses'))->name('courses');
-            Route::get('/departments', fn() => view('admin.department'))->name('departments');
-            Route::get('/logs', fn() => view('admin.logs'))->name('logs');
+Route::middleware([EnsureUserRole::class . ':admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
+        Route::get('/analytics', fn() => view('admin.analytics'))->name('analytics');
+        Route::get('/analytics-details', fn() => view('admin.analytics-details'))->name('analytics-details');
+        Route::get('/courses', fn() => view('admin.courses'))->name('courses');
+        Route::get('/departments', fn() => view('admin.department'))->name('departments');
+        Route::get('/feedback-messages', App\Livewire\Admin\FeedbackMessages::class)->name('feedback-messages');
+        Route::get('/logs', fn() => view('admin.logs'))->name('logs');
+
 
             // Paper Management
             Route::prefix('papers')
