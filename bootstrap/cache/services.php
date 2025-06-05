@@ -43,6 +43,7 @@
     39 => 'WireUi\\ServiceProvider',
     40 => 'App\\Providers\\AppServiceProvider',
     41 => 'App\\Providers\\VoltServiceProvider',
+    42 => 'App\\Providers\\VoletServiceProvider',
   ),
   'eager' => 
   array (
@@ -73,6 +74,7 @@
     24 => 'WireUi\\ServiceProvider',
     25 => 'App\\Providers\\AppServiceProvider',
     26 => 'App\\Providers\\VoltServiceProvider',
+    27 => 'App\\Providers\\VoletServiceProvider',
   ),
   'deferred' => 
   array (

@@ -3,6 +3,7 @@
 
 <head>
     @include('partials.head')
+    @voletStyles
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
@@ -118,6 +119,7 @@
     {{ $slot }}
 
     @fluxScripts
+    @volet
 </body>
 
 </html>
