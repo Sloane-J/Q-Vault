@@ -22,7 +22,7 @@ class VoletServiceProvider extends ServiceProvider
         $volet->register(
             (new FeedbackMessages)
                 // Configure feature display
-                ->setLabel('Send us feedback')
+                ->setLabel("We'd love your feedback!")
                 ->setIcon('https://api.iconify.design/lucide:message-square.svg?color=%23888888')
 
                 // Add feedback categories
