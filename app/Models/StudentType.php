@@ -34,7 +34,9 @@ class StudentType extends Model
         return [
             'hnd' => 'HND',
             'btech' => 'B-Tech',
-            'topup' => 'Top-Up'
+            'topup' => 'Top-Up',
+            'dbs' => 'DBS',
+            'mtech' => 'MTech',
         ];
     }
     
@@ -44,6 +46,9 @@ class StudentType extends Model
             'hnd' => [100, 200, 300],
             'btech' => [100, 200, 300, 400],
             'topup' => [300, 400],
+            'dbs' => [100, 200],	
+            'mtech' => [500, 600],
+            
             default => [],
         };
     }
