@@ -164,14 +164,14 @@
                                     <label for="student_type"
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Student
                                         Type</label>
-                                    <select id="student_type" wire:model="student_type"
+                                    <select id="student_type" wire:model.live="student_type"
                                         class="block w-full rounded-md
-                                        border border-neutral-300 dark:border-neutral-700
-                                        bg-white dark:bg-neutral-800
-                                        text-neutral-800 dark:text-neutral-200
-                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
-                                        transition ease-in-out duration-150
-                                        py-2 px-3 sm:text-sm">
+        border border-neutral-300 dark:border-neutral-700
+        bg-white dark:bg-neutral-800
+        text-neutral-800 dark:text-neutral-200
+        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+        transition ease-in-out duration-150
+        py-2 px-3 sm:text-sm">
                                         <option value="">Select Student Type</option>
                                         @foreach ($studentTypes as $type)
                                             <option value="{{ $type }}">{{ $type }}</option>
@@ -192,11 +192,15 @@
         text-neutral-800 dark:text-neutral-200
         focus:border-blue-500 focus:ring-blue-500 focus:ring-1
         transition ease-in-out duration-150
-        py-2 px-3 sm:text-sm">
-                                        <option value="">Select Level</option>
-                                        @foreach ($levels as $level)
-                                            <option value="{{ $level->id }}">{{ $level->name }}</option>
-                                        @endforeach
+        py-2 px-3 sm:text-sm"
+                                        {{ !$student_type ? 'disabled' : '' }}>
+                                        <option value="">
+                                            {{ $student_type ? 'Select Level' : 'Select Student Type First' }}</option>
+                                        @if ($student_type)
+                                            @foreach ($levels as $level)
+                                                <option value="{{ $level->id }}">{{ $level->name }}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                     @error('level_id')
                                         <span class="text-red-500 text-xs">{{ $message }}</span>

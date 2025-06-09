@@ -20,6 +20,7 @@ class PaperManager extends Component
     public $paperId, $title, $description, $file, $existingFilePath;
     public $department_id = '', $course_id = '', $semester, $exam_type;
     public $exam_year, $student_type, $level_id, $is_visible = 'public';
+    public $filteredLevels = [];
     public $showForm = false;
 
     // Filters
@@ -75,6 +76,7 @@ class PaperManager extends Component
         $this->department_id = '';
         $this->course_id = '';
         $this->filteredCourses = collect();
+        $this->filteredLevels = collect();
         
         // Load dropdown data
         $this->loadDropdownData();
@@ -140,6 +142,41 @@ class PaperManager extends Component
                 $this->updatedDepartmentId($course->department_id);
             }
         }
+    }
+
+    public function updatedStudentType($value)
+    {
+        \Log::info('Student type changed', ['student_type' => $value]);
+        
+        // Reset level selection
+        $this->level_id = '';
+        $this->resetValidation(['level_id']);
+        
+        if ($value) {
+            // Filter levels by student type
+            try {
+                $studentType = StudentType::where('name', $value)->first();
+                if ($studentType) {
+                    $this->filteredLevels = Level::where('student_type_id', $studentType->id)
+                        ->orderBy('level_number')
+                        ->get();
+                } else {
+                    $this->filteredLevels = collect();
+                }
+            } catch (\Exception $e) {
+                // Fallback: filter from loaded levels if database query fails
+                $this->filteredLevels = $this->levels->filter(function($level) use ($value) {
+                    return str_contains($level->name, $value);
+                });
+            }
+        } else {
+            $this->filteredLevels = collect();
+        }
+        
+        \Log::info('Filtered levels', [
+            'count' => $this->filteredLevels->count(),
+            'levels' => $this->filteredLevels->pluck('name')->toArray()
+        ]);
     }
 
     protected function loadDropdownData()
@@ -280,6 +317,11 @@ class PaperManager extends Component
             $this->updatedDepartmentId($this->department_id);
         }
         
+        // Load filtered levels for the selected student type
+        if ($this->student_type) {
+            $this->updatedStudentType($this->student_type);
+        }
+        
         $this->showForm = true;
     }
 
@@ -292,9 +334,10 @@ class PaperManager extends Component
         ]);
         
         $this->filteredCourses = collect();
+        $this->filteredLevels = collect();
         $this->is_visible = 'public'; // Always reset to public
         $this->resetValidation();
-    }
+}
 
     public function confirmDelete($paperId)
     {
@@ -374,7 +417,7 @@ class PaperManager extends Component
             'courses' => $this->courses,
             'filteredCourses' => $this->filteredCourses,
             'studentTypes' => $this->studentTypes,
-            'levels' => $this->levels,
+            'levels' => $this->filteredLevels,
             'examTypes' => $this->examTypes,
             'years' => $this->years,
         ]);
