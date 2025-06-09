@@ -5,7 +5,6 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\User;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 
 class StudentTable extends Component
@@ -23,9 +22,11 @@ class StudentTable extends Component
     public function getActiveTodayCountProperty()
     {
         return User::where('role', 'student')
-            ->whereHas('sessions', function($query) {
-                $query->where('last_activity', '>=', now()->subDay()->timestamp);
+            ->whereHas('activities', function($query) {
+                $query->where('description', 'Successful login')
+                    ->where('created_at', '>=', now()->subDay());
             })
+            ->distinct()
             ->count();
     }
 
@@ -43,7 +44,9 @@ class StudentTable extends Component
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%');
             })
-            ->with('sessions') // Eager load sessions
+            ->with(['activities' => function($query) {
+                $query->where('description', 'Successful login')->latest();
+            }])
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
@@ -66,21 +69,26 @@ class StudentTable extends Component
 
     public function getLastActivity($studentId)
     {
-        $student = User::with('sessions')->find($studentId);
-        if ($student && $student->sessions->isNotEmpty()) {
-            $latestSession = $student->sessions->sortByDesc('last_activity')->first();
-            return Carbon::createFromTimestamp($latestSession->last_activity)->diffForHumans();
-        }
-        return 'Never';
+        $lastLogin = \Spatie\Activitylog\Models\Activity::where('subject_id', $studentId)
+            ->where('subject_type', User::class)
+            ->where('description', 'Successful login')
+            ->latest()
+            ->first();
+        
+        return $lastLogin ? $lastLogin->created_at->diffForHumans() : 'Never';
     }
 
     public function getLastIpAddress($studentId)
     {
-        $student = User::with('sessions')->find($studentId);
-        if ($student && $student->sessions->isNotEmpty()) {
-            return $student->sessions->sortByDesc('last_activity')->first()->ip_address;
-        }
-        return 'N/A';
+        $lastLogin = \Spatie\Activitylog\Models\Activity::where('subject_id', $studentId)
+            ->where('subject_type', User::class)
+            ->where('description', 'Successful login')
+            ->latest()
+            ->first();
+        
+        return $lastLogin && isset($lastLogin->properties['ip_address']) 
+            ? $lastLogin->properties['ip_address'] 
+            : 'N/A';
     }
 
     public function editStudent($studentId)

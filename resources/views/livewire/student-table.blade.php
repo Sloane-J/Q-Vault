@@ -70,7 +70,8 @@
                             @endif
                         </div>
                     </th>
-                    <th class="px-6 py-4">Last Activity</th>
+                    <th class="px-6 py-4">Last Login</th>
+                    <th class="px-6 py-4">Status</th>
                     <th class="px-6 py-4">IP Address</th>
                     <th class="px-6 py-4 text-right">Actions</th>
                 </tr>
@@ -91,6 +92,27 @@
                         </td>
                         <td class="px-6 py-4 text-neutral-800 dark:text-neutral-100">{{ $student->email }}</td>
                         <td class="px-6 py-4 text-neutral-500 dark:text-neutral-400">{{ $this->getLastActivity($student->id) }}</td>
+                        <td class="px-6 py-4">
+                            @php
+                                $lastLogin = \Spatie\Activitylog\Models\Activity::where('subject_id', $student->id)
+                                    ->where('subject_type', App\Models\User::class)
+                                    ->where('description', 'Successful login')
+                                    ->where('created_at', '>=', now()->subDay())
+                                    ->exists();
+                            @endphp
+                            
+                            @if($lastLogin)
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                                    Active
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300">
+                                    <div class="w-2 h-2 bg-gray-500 rounded-full mr-1"></div>
+                                    Inactive
+                                </span>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 text-neutral-500 dark:text-neutral-400">{{ $this->getLastIpAddress($student->id) }}</td>
                         <td class="px-6 py-4 text-right">
                             <div class="inline-flex items-center space-x-2">
@@ -109,7 +131,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-6 text-center text-neutral-500 dark:text-neutral-400">
+                        <td colspan="6" class="px-6 py-6 text-center text-neutral-500 dark:text-neutral-400">
                             No students found matching your search.
                         </td>
                     </tr>
