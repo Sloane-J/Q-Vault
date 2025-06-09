@@ -149,9 +149,9 @@
                                 </label>
                                 <input
                                     type="text"
-                                    wire:model="code"
-                                    id="code"
-                                    class="block w-full rounded-md border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition ease-in-out duration-150 py-2 px-3 text-sm placeholder-neutral-400 dark:placeholder-neutral-500"
+                                    wire:model="name"
+                                    id="name"
+                                   class="block w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition ease-in-out duration-150 py-2 px-3 text-sm placeholder-neutral-400 dark:placeholder-neutral-500"
                                     required
                                 >
                                 @error('code')

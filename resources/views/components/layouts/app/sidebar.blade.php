@@ -7,7 +7,7 @@
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+            <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse">
                 <x-app-logo />
             </a>
 
@@ -74,17 +74,9 @@
                         >
                             {{ __('Analytics Overview') }}
                         </flux:navlist.item>
-                            {{-- For: download-statistics.blade.php, user-engagement.blade.php, content-analytics.blade.php and user download history--}}
-                         <flux:navlist.item 
-                            :href="route('admin.analytics-details')" 
-                            icon="chart-bar"
-                            :current="request()->routeIs('admin.analytics.download-statistics')"
-                            wire:navigate
-                        >
-                            {{ __('Analytics Details') }}
-                        </flux:navlist.item>
 
-                        {{-- For: storage-analytics.blade.php, export-data.blade.php --}}
+
+                        {{-- For: storage-analytics.blade.php, export-data.blade.php 
                         <flux:navlist.item 
                             :href="route('admin.papers.index')" 
                             icon="wrench-screwdriver"
@@ -93,7 +85,7 @@
                         >
                             {{ __('Systems Analytics') }}
                     </flux:navlist.item>
-
+--}}
                     </flux:navlist.group>
 
                     @auth
@@ -169,7 +161,7 @@
 
         {{-- Mobile User Menu --}}
         <flux:header class="lg:hidden">
-            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+            <flux:sidebar.toggle class="lg:hidden" icon="bars-3" inset="left" />
 
             <flux:spacer />
 

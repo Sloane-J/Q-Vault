@@ -32,9 +32,9 @@
                                         class="mt-1 block w-full rounded-md
                                     border border-neutral-300 dark:border-neutral-700
                                     bg-white dark:bg-neutral-800
-                                    text-neutral-800 dark:text-neutral-200
+                                    text-neutral-800  dark:text-neutral-500
                                     shadow-sm
-                                    focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                    focus:ring-1
                                     transition ease-in-out duration-150
                                     py-2 px-3
                                     sm:text-sm
@@ -52,11 +52,11 @@
                                         class="block w-full rounded-md
                                             border border-neutral-300 dark:border-neutral-700
                                             bg-white dark:bg-neutral-800
-                                            text-neutral-800 dark:text-neutral-200
-                                            focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                            text-neutral-800 dark:text-neutral-500
+                                            focus:ring-1
                                             transition ease-in-out duration-150
                                             py-2 px-3 sm:text-sm">
-                                        <option value="">Select Department</option>
+                                        <option value="Select Department">Select Department</option>
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->id }}">{{ $department->name }}</option>
                                         @endforeach
@@ -75,9 +75,9 @@
                                         class="mt-1 block w-full rounded-md
                                                 border border-neutral-300 dark:border-neutral-700
                                                 bg-white dark:bg-neutral-800
-                                                text-neutral-800 dark:text-neutral-200
+                                                text-neutral-800  dark:text-neutral-500
                                                 shadow-sm
-                                                focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                                focus:ring-1
                                                 transition ease-in-out duration-150
                                                 py-2 px-3
                                                 sm:text-sm
@@ -104,8 +104,8 @@
                                         class="block w-full rounded-md
                                         border border-neutral-300 dark:border-neutral-700
                                         bg-white dark:bg-neutral-800
-                                        text-neutral-800 dark:text-neutral-200
-                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                        text-neutral-800  dark:text-neutral-500
+                                        focus:ring-1
                                         transition ease-in-out duration-150
                                         py-2 px-3 sm:text-sm">
                                         <option value="">Select Year</option>
@@ -126,8 +126,8 @@
                                         class="block w-full rounded-md
                                         border border-neutral-300 dark:border-neutral-700
                                         bg-white dark:bg-neutral-800
-                                        text-neutral-800 dark:text-neutral-200
-                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                        text-neutral-800  dark:text-neutral-500
+                                        focus:ring-1
                                         transition ease-in-out duration-150
                                         py-2 px-3 sm:text-sm">
                                         <option value="">Select Type</option>
@@ -147,8 +147,8 @@
                                         class="block w-full rounded-md
                                         border border-neutral-300 dark:border-neutral-700
                                         bg-white dark:bg-neutral-800
-                                        text-neutral-800 dark:text-neutral-200
-                                        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+                                        text-neutral-800  dark:text-neutral-500
+                                        focus:ring-1
                                         transition ease-in-out duration-150
                                         py-2 px-3 sm:text-sm">
                                         <option value="">Select Semester</option>
@@ -168,8 +168,8 @@
                                         class="block w-full rounded-md
         border border-neutral-300 dark:border-neutral-700
         bg-white dark:bg-neutral-800
-        text-neutral-800 dark:text-neutral-200
-        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+        text-neutral-800  dark:text-neutral-500
+        focus:ring-1
         transition ease-in-out duration-150
         py-2 px-3 sm:text-sm">
                                         <option value="">Select Student Type</option>
@@ -189,8 +189,8 @@
                                         class="block w-full rounded-md
         border border-neutral-300 dark:border-neutral-700
         bg-white dark:bg-neutral-800
-        text-neutral-800 dark:text-neutral-200
-        focus:border-blue-500 focus:ring-blue-500 focus:ring-1
+        text-neutral-800  dark:text-neutral-500
+        focus:ring-1
         transition ease-in-out duration-150
         py-2 px-3 sm:text-sm"
                                         {{ !$student_type ? 'disabled' : '' }}>
@@ -211,7 +211,7 @@
                                     <label for="description"
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                                     <textarea id="description" wire:model="description" rows="3"
-                                        class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                                        class="mt-1 block w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm sm:text-sm"></textarea>
                                     @error('description')
                                         <span class="text-red-500 text-xs">{{ $message }}</span>
                                     @enderror
@@ -245,11 +245,11 @@
 
                             <div class="mt-4 flex justify-end space-x-3">
                                 <button type="button" wire:click="toggleForm"
-                                    class="px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    class="px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2  ">
                                     Cancel
                                 </button>
                                 <button type="submit"
-                                    class="px-4 py-2 bg-blue-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    class="px-4 py-2 bg-blue-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2  ">
                                     {{ $paperId ? 'Update Paper' : 'Save Paper' }}
                                 </button>
                             </div>
@@ -282,7 +282,7 @@
                                 </svg>
                             </div>
                             <input type="text" wire:model.live="search" placeholder="Search papers..."
-                                class="pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 text-base placeholder-neutral-400 dark:placeholder-neutral-500">
+                                class="pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:border-blue-500 focus:ring-2   focus:ring-opacity-50 transition duration-200 text-base placeholder-neutral-400 dark:placeholder-neutral-500">
                         </div>
                         <button wire:click="resetFilters"
                             class="flex items-center justify-center px-4 py-2 text-sm bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 shadow-sm transition duration-200">
@@ -305,7 +305,7 @@
                                 </svg>
                             </div>
                             <select wire:model="departmentFilter"
-                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 text-base appearance-none">
+                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:border-blue-500 focus:ring-2   focus:ring-opacity-50 transition duration-200 text-base appearance-none">
                                 <option value="">All Departments</option>
                                 @foreach ($departments as $d)
                                     <option value="{{ $d->id }}">{{ $d->name }}</option>
@@ -322,7 +322,7 @@
                                 </svg>
                             </div>
                             <select wire:model="yearFilter"
-                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 text-base appearance-none">
+                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:border-blue-500 focus:ring-2   focus:ring-opacity-50 transition duration-200 text-base appearance-none">
                                 <option value="">All Years</option>
                                 @foreach ($years as $y)
                                     <option value="{{ $y }}">{{ $y }}</option>
@@ -339,7 +339,7 @@
                                 </svg>
                             </div>
                             <select wire:model="levelFilter"
-                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 text-base appearance-none">
+                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:border-blue-500 focus:ring-2   focus:ring-opacity-50 transition duration-200 text-base appearance-none">
                                 <option value="">All Levels</option>
                                 @foreach ($levels as $level)
                                     <option value="{{ $level->id }}">{{ $level->name }}</option>
@@ -356,7 +356,7 @@
                                 </svg>
                             </div>
                             <select wire:model="examTypeFilter"
-                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 text-base appearance-none">
+                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:border-blue-500 focus:ring-2   focus:ring-opacity-50 transition duration-200 text-base appearance-none">
                                 <option value="">All Exam Types</option>
                                 @foreach ($examTypes as $type)
                                     <option value="{{ $type }}">{{ $type }}</option>
@@ -373,7 +373,7 @@
                                 </svg>
                             </div>
                             <select wire:model="studentTypeFilter"
-                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 text-base appearance-none">
+                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:border-blue-500 focus:ring-2   focus:ring-opacity-50 transition duration-200 text-base appearance-none">
                                 <option value="">All Student Types</option>
                                 @foreach ($studentTypes as $type)
                                     <option value="{{ $type }}">{{ $type }}</option>
@@ -390,7 +390,7 @@
                                 </svg>
                             </div>
                             <select wire:model="semesterFilter"
-                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 text-base appearance-none">
+                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:border-blue-500 focus:ring-2   focus:ring-opacity-50 transition duration-200 text-base appearance-none">
                                 <option value="">All Semesters</option>
                                 <option value="1">First Semester</option>
                                 <option value="2">Second Semester</option>
@@ -576,7 +576,7 @@
                                             Delete
                                         </button>
                                         <button wire:click="$set('confirmingDeletion', false)" type="button"
-                                            class="mt-3 w-full inline-flex justify-center rounded-md border border-neutral-200 dark:border-neutral-700 shadow-sm px-4 py-2 bg-white dark:bg-neutral-700 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                            class="mt-3 w-full inline-flex justify-center rounded-md border border-neutral-200 dark:border-neutral-700 shadow-sm px-4 py-2 bg-white dark:bg-neutral-700 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2   sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                                             Cancel
                                         </button>
                                     </div>
@@ -593,7 +593,7 @@
     @push('styles')
         <style>
             .filter-select {
-                @apply block w-full py-1.5 px-2 text-sm border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-700 dark:text-gray-300;
+                @apply block w-full py-1.5 px-2 text-sm border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-md shadow-sm focus:outline-none   focus:border-blue-500 text-gray-700 dark:text-gray-300;
             }
 
             .table-head {
