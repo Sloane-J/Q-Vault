@@ -160,18 +160,19 @@
                                     @enderror
                                 </div>
 
+                                <!-- Student Type Dropdown -->
                                 <div>
                                     <label for="student_type"
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Student
                                         Type</label>
                                     <select id="student_type" wire:model.live="student_type"
                                         class="block w-full rounded-md
-        border border-neutral-300 dark:border-neutral-700
-        bg-white dark:bg-neutral-800
-        text-neutral-800  dark:text-neutral-500
-        focus:ring-1
-        transition ease-in-out duration-150
-        py-2 px-3 sm:text-sm">
+                border border-neutral-300 dark:border-neutral-700
+                bg-white dark:bg-neutral-800
+                text-neutral-800 dark:text-neutral-500
+                focus:ring-1
+                transition ease-in-out duration-150
+                py-2 px-3 sm:text-sm">
                                         <option value="">Select Student Type</option>
                                         @foreach ($studentTypes as $type)
                                             <option value="{{ $type }}">{{ $type }}</option>
@@ -182,22 +183,28 @@
                                     @enderror
                                 </div>
 
+                                {{-- Levels Dropdown--}}
                                 <div>
                                     <label for="level_id"
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Level</label>
                                     <select id="level_id" wire:model="level_id"
-                                        class="block w-full rounded-md
-        border border-neutral-300 dark:border-neutral-700
-        bg-white dark:bg-neutral-800
-        text-neutral-800  dark:text-neutral-500
-        focus:ring-1
-        transition ease-in-out duration-150
-        py-2 px-3 sm:text-sm"
+                                        class="mt-1 block w-full rounded-md
+                    border border-neutral-300 dark:border-neutral-700
+                    bg-white dark:bg-neutral-800
+                    text-neutral-800 dark:text-neutral-500
+                    shadow-sm
+                    focus:ring-1
+                    transition ease-in-out duration-150
+                    py-2 px-3
+                    sm:text-sm
+                    {{ !$student_type ? 'opacity-50 cursor-not-allowed' : '' }}"
                                         {{ !$student_type ? 'disabled' : '' }}>
                                         <option value="">
-                                            {{ $student_type ? 'Select Level' : 'Select Student Type First' }}</option>
-                                        @if ($student_type)
-                                            @foreach ($levels as $level)
+                                            {{ $student_type ? 'Select Level' : 'Select Student Type First' }}
+                                        </option>
+                                        @if ($student_type && count($filteredLevels) > 0)
+                                            @foreach ($filteredLevels as $level)
+                                                
                                                 <option value="{{ $level->id }}">{{ $level->name }}</option>
                                             @endforeach
                                         @endif
@@ -206,6 +213,7 @@
                                         <span class="text-red-500 text-xs">{{ $message }}</span>
                                     @enderror
                                 </div>
+
 
                                 <div class="md:col-span-2">
                                     <label for="description"
@@ -254,7 +262,7 @@
                                 </button>
                             </div>
                         </form>
-                    </div>
+                    
                 @else
                     {{-- Add Button --}}
                     <div class="mb-4 text-right">
@@ -282,8 +290,17 @@
                                 </svg>
                             </div>
                             <input type="text" wire:model.live="search" placeholder="Search papers..."
-                                class="pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:border-blue-500 focus:ring-2   focus:ring-opacity-50 transition duration-200 text-base placeholder-neutral-400 dark:placeholder-neutral-500">
+                                class="pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:ring-1   focus:ring-opacity-50 transition duration-200 text-base placeholder-neutral-400 dark:placeholder-neutral-500">
                         </div>
+                        <button wire:click="$set('confirmingDeletion', false)" type="button"
+                                            class="mt-3 w-full inline-flex justify-center rounded-md border border-neutral-200 dark:border-neutral-700 shadow-sm px-4 py-2 bg-white dark:bg-neutral-700 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2   sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                            
+                                            <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /> 
+</svg>
+Search
+                        </button>
+                        
                         <button wire:click="resetFilters"
                             class="flex items-center justify-center px-4 py-2 text-sm bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 shadow-sm transition duration-200">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -364,22 +381,7 @@
                             </select>
                         </div>
 
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-neutral-400 dark:text-neutral-500" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                            </div>
-                            <select wire:model="studentTypeFilter"
-                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:border-blue-500 focus:ring-2   focus:ring-opacity-50 transition duration-200 text-base appearance-none">
-                                <option value="">All Student Types</option>
-                                @foreach ($studentTypes as $type)
-                                    <option value="{{ $type }}">{{ $type }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        
 
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -593,7 +595,7 @@
     @push('styles')
         <style>
             .filter-select {
-                @apply block w-full py-1.5 px-2 text-sm border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-md shadow-sm focus:outline-none   focus:border-blue-500 text-gray-700 dark:text-gray-300;
+                @apply block w-full py-1.5 px-2 text-sm border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-md shadow-sm focus:outline-none focus:border-blue-500 text-gray-700 dark:text-gray-300;
             }
 
             .table-head {

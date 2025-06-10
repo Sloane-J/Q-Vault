@@ -17,6 +17,8 @@ class LevelSeeder extends Seeder
         $hndId = DB::table('student_type')->where('name', 'HND')->value('id');
         $btechId = DB::table('student_type')->where('name', 'B-Tech')->value('id');
         $topupId = DB::table('student_type')->where('name', 'Top-Up')->value('id');
+        $dbsId = DB::table('student_type')->where('name', 'DBS')->value('id');
+        $mtechId = DB::table('student_type')->where('name', 'MTech')->value('id');
 
         $levels = [
             // HND Levels (100-300)
@@ -35,12 +37,12 @@ class LevelSeeder extends Seeder
             ['name' => 'Top-Up Level 400', 'student_type_id' => $topupId, 'level_number' => 400],
 
             //DBS Levels (100-200)
-            ['name' => 'DBS Level 100', 'student_type_id' => $hndId, 'level_number' => 100],
-            ['name' => 'DBS Level 200', 'student_type_id' => $hndId, 'level_number' => 200],
+            ['name' => 'DBS Level 100', 'student_type_id' => $dbsId, 'level_number' => 100],
+            ['name' => 'DBS Level 200', 'student_type_id' => $dbsId, 'level_number' => 200],
 
             // MTech Levels (500-600)
-            ['name' => 'MTech Level 500', 'student_type_id' => $hndId, 'level_number' => 500],
-            ['name' => 'MTech Level 600', 'student_type_id' => $hndId, 'level_number' => 600],
+            ['name' => 'MTech Level 500', 'student_type_id' => $mtechId, 'level_number' => 500],
+            ['name' => 'MTech Level 600', 'student_type_id' => $mtechId, 'level_number' => 600],
         ];
 
         foreach ($levels as $level) {
