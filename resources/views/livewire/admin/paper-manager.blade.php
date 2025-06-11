@@ -381,7 +381,24 @@ Search
                             </select>
                         </div>
 
-                        
+                        {{--  STUDENT TYPE FILTER HAS BEEN COMMENTED OUT DUE TO SQL ERROR
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-neutral-400 dark:text-neutral-500" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
+                            <select wire:model="studentTypeFilter"
+                                class="filter-select pl-10 pr-4 py-2 w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800  dark:text-neutral-500 focus:border-blue-500 focus:ring-2   focus:ring-opacity-50 transition duration-200 text-base appearance-none">
+                                <option value="">All Student Types</option>
+                                @foreach ($studentTypes as $type)
+                                    <option value="{{ $type }}">{{ $type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        Semester Filter --}}
 
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
