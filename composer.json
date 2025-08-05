@@ -18,6 +18,7 @@
         "livewire/volt": "^1.7.0",
         "mydnic/volet": "^2.1",
         "power-components/livewire-powergrid": "^6.3",
+        "predis/predis": "^3.1",
         "spatie/laravel-activitylog": "^4.10",
         "wireui/wireui": "^2.4"
     },
