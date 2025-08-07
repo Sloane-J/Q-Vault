@@ -93,7 +93,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => env('DB_SCHEMA', 'public'),  // This sets the default schema
+            'search_path' => env('DB_SCHEMA', 'q-vault'),  // This sets the default schema
             'sslmode' => 'prefer',
         ],
 
