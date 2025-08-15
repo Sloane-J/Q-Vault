@@ -1,5 +1,5 @@
 # Use official PHP 8.2 FPM image
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
 # Set Composer's memory limit
 ENV COMPOSER_MEMORY_LIMIT=-1
