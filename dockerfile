@@ -28,7 +28,7 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 
 # Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN composer install --no-dev --no-scripts
 
 # Copy project files
 COPY . .
