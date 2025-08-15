@@ -1,0 +1,55 @@
+services:
+  - type: web
+    name: q-vault
+    env: docker
+    plan: starter
+    buildCommand: |
+      chmod +x deploy.sh && ./deploy.sh
+    healthCheckPath: /
+    envVars:
+      - key: APP_NAME
+        value: Q-Vault
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        value: base64:q9gAiwuM7htgnrlijkhTmXVlYtRhUdFCTcJOpuS6OJQ=
+      - key: APP_URL
+        value: https://q-vault.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        value: aws-0-eu-central-1.pooler.supabase.com
+      - key: DB_PORT
+        value: 5432
+      - key: DB_DATABASE
+        value: postgres
+      - key: DB_USERNAME
+        value: postgres.tndjmwuyhqpwxqiqnair
+      - key: DB_PASSWORD
+        value: JxB^^KWrqRFUs7!3g$MB
+      - key: DB_SCHEMA
+        value: q-vault
+      - key: FILESYSTEM_DISK
+        value: local
+      - key: FILESYSTEM_DISK_PAPERS
+        value: papers
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_LIFETIME
+        value: 120
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: MAIL_MAILER
+        value: log
+      - key: MAIL_FROM_ADDRESS
+        value: samuelleonard63@gmail.com
+      - key: MAIL_FROM_NAME
+        value: Q-Vault
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: info
