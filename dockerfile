@@ -1,6 +1,9 @@
 # Use official PHP 8.2 FPM image
 FROM php:8.2-fpm
 
+# Set Composer's memory limit
+ENV COMPOSER_MEMORY_LIMIT=-1
+
 # Install system dependencies & PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
@@ -28,7 +31,9 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 
 # Install PHP dependencies
-RUN composer install --no-dev --no-scripts
+# Note: --no-optimize-autoloader is temporarily removed to test if that was causing the issue.
+# You can add it back later if the build is stable.
+RUN composer install --no-dev --no-scripts --verbose
 
 # Copy project files
 COPY . .
