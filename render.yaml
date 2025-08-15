@@ -16,7 +16,7 @@ services:
       - key: APP_KEY
         value: base64:q9gAiwuM7htgnrlijkhTmXVlYtRhUdFCTcJOpuS6OJQ=
       - key: APP_URL
-        value: https://q-vault.onrender.com
+        value: https://q-vault-1.onrender.com
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST

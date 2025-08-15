@@ -1,5 +1,5 @@
 # Use official PHP 8.2 FPM image
-FROM php:8.3-fpm
+FROM php:8.3-apache
 
 # Set Composer's memory limit
 ENV COMPOSER_MEMORY_LIMIT=-1
@@ -50,8 +50,4 @@ RUN mkdir -p storage/logs storage/framework/sessions storage/framework/views sto
 # Don't run Laravel commands during build - they need environment variables
 # These will be run in Render's build/deploy phase
 
-# Expose port 9000
-EXPOSE 9000
-
-# Start PHP-FPM
-CMD ["php-fpm"]
+EXPOSE 80
