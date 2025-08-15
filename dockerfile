@@ -1,10 +1,10 @@
 # Use official PHP 8.2 FPM image
 FROM php:8.2-fpm
 
-# Install system dependencies
+# Install system dependencies & PHP extensions
 RUN apt-get update && apt-get install -y \
-    git unzip libpq-dev libzip-dev zip curl && \
-    docker-php-ext-install pdo pdo_pgsql zip
+    git unzip libpq-dev libzip-dev zip curl \
+    && docker-php-ext-install pdo pdo_pgsql zip mbstring bcmath exif pcntl
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
@@ -12,7 +12,7 @@ COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy all project files
+# Copy project files
 COPY . .
 
 # Install PHP dependencies
@@ -23,7 +23,10 @@ RUN php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache
 
-# Expose port 9000 (PHP-FPM)
+# Run database migrations automatically
+RUN php artisan migrate --force
+
+# Expose port 9000
 EXPOSE 9000
 
 # Start PHP-FPM
