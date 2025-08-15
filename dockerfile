@@ -1,4 +1,4 @@
-# Use official PHP 8.2 FPM image
+# Use official PHP 8.3 Apache image
 FROM php:8.3-apache
 
 # Set Composer's memory limit
@@ -31,12 +31,21 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 
 # Install PHP dependencies
-# Note: --no-optimize-autoloader is temporarily removed to test if that was causing the issue.
-# You can add it back later if the build is stable.
 RUN composer install --no-dev --no-scripts --verbose
 
 # Copy project files
 COPY . .
+
+# Configure Apache for Laravel
+RUN a2enmod rewrite \
+    && echo 'DocumentRoot /var/www/html/public' > /etc/apache2/sites-available/000-default.conf \
+    && echo '<VirtualHost *:80>' >> /etc/apache2/sites-available/000-default.conf \
+    && echo '    DocumentRoot /var/www/html/public' >> /etc/apache2/sites-available/000-default.conf \
+    && echo '    <Directory /var/www/html/public>' >> /etc/apache2/sites-available/000-default.conf \
+    && echo '        AllowOverride All' >> /etc/apache2/sites-available/000-default.conf \
+    && echo '        Require all granted' >> /etc/apache2/sites-available/000-default.conf \
+    && echo '    </Directory>' >> /etc/apache2/sites-available/000-default.conf \
+    && echo '</VirtualHost>' >> /etc/apache2/sites-available/000-default.conf
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
@@ -46,8 +55,5 @@ RUN chown -R www-data:www-data /var/www/html \
 # Create required directories
 RUN mkdir -p storage/logs storage/framework/sessions storage/framework/views storage/framework/cache \
     && mkdir -p bootstrap/cache
-
-# Don't run Laravel commands during build - they need environment variables
-# These will be run in Render's build/deploy phase
 
 EXPOSE 80
